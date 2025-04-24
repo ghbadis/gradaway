@@ -11,6 +11,7 @@ import java.util.List;
 public class ServiceUser implements Services.IService<User> {
     private Connection con;
 
+
     public ServiceUser() {
         con = MyDatabase.getInstance().getCnx();
     }
