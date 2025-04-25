@@ -3,7 +3,7 @@ package entities;
 public class Evenement {
     private int id_evenement;
     private String nom;
-    private String description;
+    private String description             ;
     private String date;
     private String lieu;
     private String domaine;
