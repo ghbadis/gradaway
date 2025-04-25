@@ -20,6 +20,7 @@ public class Mainwajdi {
         ServiceReservationFoyer serviceReservationFoyer = new ServiceReservationFoyer();
         ServiceReservationRestaurant serviceReservationRestaurant = new ServiceReservationRestaurant();
 
+
         try {
             // Test Foyer CRUD
             System.out.println("=== Testing Foyer CRUD ===");
