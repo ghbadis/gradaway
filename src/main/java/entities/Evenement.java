@@ -1,7 +1,7 @@
 package entities;
 
 public class Evenement {
-    private int id_evenement;
+    private int id,id_evenement;
     private String nom;
     private String description;
     private String date;
