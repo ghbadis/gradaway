@@ -76,13 +76,14 @@ public class serviceVols implements IService<Vols> {
     }
 
     @Override
-    public void supprimer(Vols vol) throws SQLException {
+    public boolean supprimer(Vols vol) throws SQLException {
         String sql = "DELETE FROM vols WHERE id_vol = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, vol.getIdVol());
             ps.executeUpdate();
         }
+        return false;
     }
 
     @Override

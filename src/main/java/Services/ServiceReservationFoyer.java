@@ -46,12 +46,13 @@ public class ServiceReservationFoyer implements IService<ReservationFoyer> {
     }
 
     @Override
-    public void supprimer(ReservationFoyer reservation) throws SQLException {
+    public boolean supprimer(ReservationFoyer reservation) throws SQLException {
         String req = "DELETE FROM reservationfoyer WHERE IdReservation=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, reservation.getIdReservation());
         ps.executeUpdate();
         System.out.println("Réservation supprimée !");
+        return false;
     }
 
     @Override

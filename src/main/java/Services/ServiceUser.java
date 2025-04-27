@@ -65,12 +65,13 @@ public class ServiceUser implements Services.IService<User> {
     }
 
     @Override
-    public void supprimer(User user) throws SQLException {
+    public boolean supprimer(User user) throws SQLException {
         String req = "delete from user where id=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, user.getId());
         ps.executeUpdate();
         System.out.println("user supprimé");
+        return false;
     }
 
     @Override

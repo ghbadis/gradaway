@@ -8,12 +8,14 @@ import entities.Foyer;
 import entities.ReservationFoyer;
 import entities.ReservationRestaurant;
 import entities.Restaurant;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Mainwajdi {
+public class Mainwajdi extends Application {
     public static void main(String[] args) {
         ServiceFoyer serviceFoyer = new ServiceFoyer();
         ServiceRestaurant serviceRestaurant = new ServiceRestaurant();
@@ -237,5 +239,10 @@ public class Mainwajdi {
 
         // Clean up - delete the test restaurant
         restaurantService.supprimer(restaurants.get(0));
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+
     }
 }

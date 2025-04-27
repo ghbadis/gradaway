@@ -37,12 +37,13 @@ import java.util.List;
             System.out.println("Université modifiée");
         }
 
-        public void supprimer(Universite universite) throws SQLException {
+        public boolean supprimer(Universite universite) throws SQLException {
             String req = "DELETE FROM universite WHERE id_universite=?";
             PreparedStatement ps = this.con.prepareStatement(req);
             ps.setInt(1, universite.getId_universite());
             ps.executeUpdate();
             System.out.println("Université supprimée");
+            return false;
         }
 
         public List<Universite> recuperer() throws SQLException {
