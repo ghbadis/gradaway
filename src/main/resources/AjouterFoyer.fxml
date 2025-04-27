@@ -63,12 +63,12 @@
       <TextField fx:id="tf_nombre_de_chambre" layoutX="134.0" layoutY="254.0" />
       <TextField fx:id="tf_ville" layoutX="135.0" layoutY="179.0" />
       <TextField fx:id="tf_capacite" layoutX="136.0" layoutY="296.0" />
-      <Button layoutX="327.0" layoutY="350.0" mnemonicParsing="false" onAction="modifierfoyer" prefHeight="28.0" prefWidth="80.0" text="Modifier" textFill="#d12121">
+      <Button layoutX="327.0" layoutY="350.0" mnemonicParsing="false" onAction="#navigateToModify" prefHeight="28.0" prefWidth="80.0" text="Modifier" textFill="#d12121">
          <font>
             <Font name="Arial Black" size="13.0" />
          </font>
       </Button>
-      <Button layoutX="418.0" layoutY="350.0" mnemonicParsing="false" onAction="#supprimerFoyer" prefHeight="28.0" prefWidth="110.0" text="Supprimer" textFill="#d12121">
+      <Button layoutX="418.0" layoutY="350.0" mnemonicParsing="false" onAction="#navigateToDelete" prefHeight="28.0" prefWidth="110.0" text="Supprimer" textFill="#d12121">
          <font>
             <Font name="Arial Rounded MT Bold" size="15.0" />
          </font>

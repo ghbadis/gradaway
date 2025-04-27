@@ -10,10 +10,13 @@ import entities.Foyer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 public class AjouterFoyerControllers {
 
@@ -83,13 +86,28 @@ public class AjouterFoyerControllers {
         }
     }
 
-    public void NavigateToModify(ActionEvent event) {
+    @FXML
+    void navigateToModify(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierFoyer.fxml"));
-            Parent ajouterHotelView = loader.load();
-            rootPane.getChildren().setAll(ajouterHotelView);
+            Parent root = FXMLLoader.load(getClass().getResource("/ModifierFoyer.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
         } catch (IOException e) {
-            System.out.println("Error loading modify page: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void navigateToDelete(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/SupprimerFoyer.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
