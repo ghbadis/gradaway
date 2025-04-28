@@ -1,219 +1,192 @@
 package controllers;
 
-import entities.Foyer;
 import Services.ServiceFoyer;
+import entities.Foyer;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.layout.Region;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
-import javafx.scene.input.KeyCode;
 
 public class ListFoyerControllers {
-    @FXML
-    private GridPane foyerGrid;
-    @FXML
-    private TextField searchField;
-    @FXML
-    private MenuButton locationMenu;
 
-    private ServiceFoyer serviceFoyer = new ServiceFoyer();
-
-    @FXML
-    public void search() {
-        try {
-            String searchText = searchField.getText().toLowerCase();
-            List<Foyer> allFoyers = serviceFoyer.recuperer();
-            
-            List<Foyer> filteredFoyers = allFoyers.stream()
-                .filter(foyer -> 
-                    foyer.getNom().toLowerCase().contains(searchText) ||
-                    foyer.getPays().toLowerCase().contains(searchText))
-                .collect(Collectors.toList());
-            
-            displayFoyers(filteredFoyers);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    @FXML private GridPane foyerGrid;
+    @FXML private TextField searchField;
+    @FXML private MenuButton locationMenu;
+    
+    private final ServiceFoyer serviceFoyer = new ServiceFoyer();
 
     @FXML
     public void initialize() {
         try {
-            List<Foyer> foyers = serviceFoyer.recuperer();
-            displayFoyers(foyers);
-            
-            // Setup search field to search on enter key
-            if (searchField != null) {
-                searchField.setOnKeyPressed(event -> {
-                    if (event.getCode() == KeyCode.ENTER) {
-                        search();
-                    }
-                });
+            // Setup location menu items with event handlers
+            for (MenuItem item : locationMenu.getItems()) {
+                item.setOnAction(e -> filterByLocation(item.getText()));
             }
 
-            // Add event handlers for location menu items
-            if (locationMenu != null && locationMenu.getItems() != null) {
-                for (MenuItem item : locationMenu.getItems()) {
-                    item.setOnAction(event -> {
-                        String selectedLocation = item.getText();
-                        locationMenu.setText(selectedLocation);
-                        filterFoyersByLocation(selectedLocation);
-                    });
+            // Setup search field listener
+            searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+                try {
+                    searchFoyers(newVal);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    showAlert("Erreur", "Erreur lors de la recherche: " + e.getMessage(), Alert.AlertType.ERROR);
                 }
-            }
+            });
 
-            // Add "Tous les pays" option
-            if (locationMenu != null) {
-                MenuItem allLocations = new MenuItem("Tous les pays");
-                allLocations.setOnAction(event -> {
-                    locationMenu.setText("Location"); // Reset to default text
-                    displayFoyers(foyers); // Show all foyers
-                });
-                if (locationMenu.getItems() != null) {
-                    locationMenu.getItems().add(0, allLocations); // Add at the beginning of the menu
-                }
-            }
-
+            // Initial display
+            displayFoyers(serviceFoyer.recuperer());
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'initialisation: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
     private void displayFoyers(List<Foyer> foyers) {
         foyerGrid.getChildren().clear();
-        int col = 0;
+        int column = 0;
         int row = 0;
-        
+
         for (Foyer foyer : foyers) {
-            VBox card = createFoyerCard(foyer);
-            foyerGrid.add(card, col, row);
+            VBox foyerCard = createFoyerCard(foyer);
             
-            col++;
-            if (col == 3) {
-                col = 0;
+            // Add click handler
+            foyerCard.setOnMouseClicked(e -> openModifierFoyer(foyer));
+            
+            // Add hover effect
+            foyerCard.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 5;");
+            foyerCard.setOnMouseEntered(e -> foyerCard.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-color: #999999; -fx-border-radius: 5;"));
+            foyerCard.setOnMouseExited(e -> foyerCard.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 5;"));
+
+            foyerGrid.add(foyerCard, column, row);
+
+            column++;
+            if (column == 3) {
+                column = 0;
                 row++;
             }
         }
     }
 
-    private void filterFoyersByLocation(String location) {
-        try {
-            List<Foyer> allFoyers = serviceFoyer.recuperer();
-            List<Foyer> filteredFoyers;
-            
-            if (location == null || location.isEmpty()) {
-                filteredFoyers = allFoyers;
-            } else {
-                filteredFoyers = allFoyers.stream()
-                    .filter(foyer -> location.equals(foyer.getPays()))
-                    .collect(Collectors.toList());
-            }
-            
-            displayFoyers(filteredFoyers);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     private VBox createFoyerCard(Foyer foyer) {
-        // Main card container
-        VBox card = new VBox(0);
+        VBox card = new VBox(10);
         card.setPrefWidth(250);
-        card.setStyle("-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2); -fx-background-radius: 8;");
-        card.setAlignment(Pos.TOP_CENTER); // Center align the content
-
-        // Image container
-        StackPane imageContainer = new StackPane();
-        imageContainer.setMinHeight(160);
-        imageContainer.setMaxHeight(160);
-        imageContainer.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 8 8 0 0;");
-
-        // Image setup
-        ImageView imageView;
-        if (foyer.getImage() != null && !foyer.getImage().isEmpty()) {
-            try {
-                Image image = new Image(foyer.getImage(), 250, 160, true, true);
-                imageView = new ImageView(image);
-                imageView.setFitWidth(250);
-                imageView.setFitHeight(160);
-                imageView.setStyle("-fx-background-radius: 8 8 0 0;");
-            } catch (Exception e) {
-                imageView = createPlaceholderImage();
-            }
-        } else {
-            imageView = createPlaceholderImage();
-        }
+        card.setPrefHeight(300);
         
-        imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 0); -fx-background-radius: 8 8 0 0;");
-        imageContainer.getChildren().add(imageView);
+        ImageView imageView = new ImageView();
+        imageView.setFitWidth(200);
+        imageView.setFitHeight(150);
+        imageView.setPreserveRatio(true);
+        
+        try {
+            Image image = new Image(foyer.getImage());
+            imageView.setImage(image);
+        } catch (Exception e) {
+            // Use default image if loading fails
+            imageView.setImage(new Image(getClass().getResourceAsStream("/default-foyer.png")));
+        }
 
-        // Content container
-        VBox content = new VBox(10); // Increased spacing between elements
-        content.setPadding(new Insets(15));
-        content.setStyle("-fx-background-color: white; -fx-background-radius: 0 0 8 8;");
-        content.setAlignment(Pos.TOP_LEFT);
-        content.setMaxWidth(250);
+        Label nameLabel = new Label(foyer.getNom());
+        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+        
+        Label locationLabel = new Label(foyer.getVille() + ", " + foyer.getPays());
+        Label capacityLabel = new Label("Capacité: " + foyer.getCapacite() + " personnes");
+        Label roomsLabel = new Label("Chambres: " + foyer.getNombreDeChambre());
 
-        // Foyer name
-        Label nomLabel = new Label(foyer.getNom());
-        nomLabel.setWrapText(true);
-        nomLabel.setStyle("-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;");
-        nomLabel.setMaxWidth(220);
-
-        // Location with icon
-        HBox locationBox = new HBox(8);
-        locationBox.setAlignment(Pos.CENTER_LEFT);
-        Label locationIcon = new Label("📍");
-        locationIcon.setStyle("-fx-font-size: 12px;");
-        Label paysLabel = new Label(foyer.getPays());
-        paysLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
-        locationBox.getChildren().addAll(locationIcon, paysLabel);
-
-        // Add spacing between location and capacity
-        Region spacer = new Region();
-        spacer.setMinHeight(5);
-
-        // Capacity with icon
-        HBox capacityBox = new HBox(8);
-        capacityBox.setAlignment(Pos.CENTER_LEFT);
-        Label capacityIcon = new Label("👥");
-        capacityIcon.setStyle("-fx-font-size: 12px;");
-        Label capaciteLabel = new Label(foyer.getCapacite() + " places");
-        capaciteLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
-        capacityBox.getChildren().addAll(capacityIcon, capaciteLabel);
-
-        content.getChildren().addAll(nomLabel, locationBox, spacer, capacityBox);
-        card.getChildren().addAll(imageContainer, content);
-
-        // Hover effect
-        card.setOnMouseEntered(e -> {
-            card.setStyle("-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 12, 0, 0, 3); -fx-background-radius: 8; -fx-cursor: hand;");
-        });
-        card.setOnMouseExited(e -> {
-            card.setStyle("-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2); -fx-background-radius: 8;");
-        });
-
+        card.getChildren().addAll(imageView, nameLabel, locationLabel, capacityLabel, roomsLabel);
         return card;
     }
 
-    private ImageView createPlaceholderImage() {
-        ImageView placeholder = new ImageView();
-        placeholder.setFitWidth(250);
-        placeholder.setFitHeight(160);
-        placeholder.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 8 8 0 0;");
-        return placeholder;
+    @FXML
+    void search(ActionEvent event) {
+        try {
+            searchFoyers(searchField.getText());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la recherche: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void searchFoyers(String searchText) throws SQLException {
+        List<Foyer> foyers = serviceFoyer.recuperer();
+        foyers.removeIf(foyer -> 
+            !foyer.getNom().toLowerCase().contains(searchText.toLowerCase()) &&
+            !foyer.getVille().toLowerCase().contains(searchText.toLowerCase()) &&
+            !foyer.getPays().toLowerCase().contains(searchText.toLowerCase())
+        );
+        displayFoyers(foyers);
+    }
+
+    private void filterByLocation(String location) {
+        try {
+            List<Foyer> foyers = serviceFoyer.recuperer();
+            foyers.removeIf(foyer -> !foyer.getPays().equalsIgnoreCase(location));
+            displayFoyers(foyers);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors du filtrage: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void openModifierFoyer(Foyer foyer) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/ModifierFoyer.fxml"));
+            Parent root = loader.load();
+            
+            ModifierFoyerControllers controller = loader.getController();
+            controller.initData(foyer);
+            
+            Stage stage = new Stage();
+            stage.setTitle("Modifier Foyer");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL); // Make it modal
+            stage.show();
+            
+            // Add a listener to refresh the list when the window closes
+            stage.setOnHidden(e -> {
+                try {
+                    displayFoyers(serviceFoyer.recuperer());
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture de la fenêtre de modification: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void navigateToAjouter(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterFoyer.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

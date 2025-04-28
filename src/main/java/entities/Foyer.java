@@ -8,9 +8,11 @@ public class Foyer {
     private String pays;
     private int nombreDeChambre;
     private int capacite;
-    private String image; // ==> Ajout de l'attribut image
+    private String image;
 
-    // Constructeur complet avec tous les paramètres
+    public Foyer() {
+    }
+
     public Foyer(int idFoyer, String nom, String adresse, String ville, String pays, int nombreDeChambre, int capacite, String image) {
         this.idFoyer = idFoyer;
         this.nom = nom;
@@ -22,7 +24,6 @@ public class Foyer {
         this.image = image;
     }
 
-    // Constructeur sans ID (pour création)
     public Foyer(String nom, String adresse, String ville, String pays, int nombreDeChambre, int capacite, String image) {
         this.nom = nom;
         this.adresse = adresse;
@@ -33,10 +34,6 @@ public class Foyer {
         this.image = image;
     }
 
-    // Constructeur vide
-    public Foyer() {}
-
-    // Getters et Setters
     public int getIdFoyer() {
         return idFoyer;
     }

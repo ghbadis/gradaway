@@ -2,11 +2,15 @@ package controllers;
 
 import Services.ServiceFoyer;
 import entities.Foyer;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+
+import java.sql.SQLException;
 
 public class ModifierFoyerControllers {
 
@@ -17,77 +21,103 @@ public class ModifierFoyerControllers {
     @FXML private TextField tf_pays;
     @FXML private TextField tf_nombre_de_chambre;
     @FXML private TextField tf_capacite;
-    @FXML private Button btn_modifier;
     @FXML private TextField tf_image;
-
+    @FXML private Button btn_modifier;
+    @FXML private Button btn_supprimer;
+    @FXML private ImageView imageView;
 
     private final ServiceFoyer serviceFoyer = new ServiceFoyer();
+    private Foyer currentFoyer;
 
     @FXML
-    public void search(ActionEvent event) {
-        try {
-            String idText = tf_id.getText().trim();
+    public void initialize() {
+        // Disable buttons initially
+        if (btn_modifier != null) btn_modifier.setDisable(true);
+        if (btn_supprimer != null) btn_supprimer.setDisable(true);
+        
+        // Make ID field read-only
+        if (tf_id != null) tf_id.setEditable(false);
+    }
 
-            if (idText.isEmpty()) {
-                showAlert("Erreur", "Veuillez entrer un ID", Alert.AlertType.ERROR);
-                return;
+    public void initData(Foyer foyer) {
+        if (foyer != null) {
+            currentFoyer = foyer;
+            
+            // Set text fields
+            if (tf_id != null) tf_id.setText(String.valueOf(foyer.getIdFoyer()));
+            if (tf_nom != null) tf_nom.setText(foyer.getNom());
+            if (tf_adresse != null) tf_adresse.setText(foyer.getAdresse());
+            if (tf_ville != null) tf_ville.setText(foyer.getVille());
+            if (tf_pays != null) tf_pays.setText(foyer.getPays());
+            if (tf_nombre_de_chambre != null) tf_nombre_de_chambre.setText(String.valueOf(foyer.getNombreDeChambre()));
+            if (tf_capacite != null) tf_capacite.setText(String.valueOf(foyer.getCapacite()));
+            if (tf_image != null) tf_image.setText(foyer.getImage());
+            
+            // Load and display the image
+            if (imageView != null && foyer.getImage() != null && !foyer.getImage().isEmpty()) {
+                try {
+                    Image image = new Image(foyer.getImage());
+                    imageView.setImage(image);
+                } catch (Exception e) {
+                    // Use default image if loading fails
+                    imageView.setImage(new Image(getClass().getResourceAsStream("/images/default-foyer.png")));
+                }
             }
-
-            int idFoyer = Integer.parseInt(idText);
-            Foyer foyer = serviceFoyer.getFoyerById(idFoyer);
-
-            if (foyer != null) {
-                tf_nom.setText(foyer.getNom());
-                tf_adresse.setText(foyer.getAdresse());
-                tf_ville.setText(foyer.getVille());
-                tf_pays.setText(foyer.getPays());
-                tf_nombre_de_chambre.setText(String.valueOf(foyer.getNombreDeChambre()));
-                tf_capacite.setText(String.valueOf(foyer.getCapacite()));
-
-                setFieldsEditable(true);
-                btn_modifier.setDisable(false);
-            } else {
-                showAlert("Information", "Aucun foyer trouvé avec cet ID", Alert.AlertType.INFORMATION);
-                clearFields();
-                setFieldsEditable(false);
-            }
-        } catch (NumberFormatException e) {
-            showAlert("Erreur", "L'ID doit être un nombre valide", Alert.AlertType.ERROR);
-            clearFields();
-        } catch (Exception e) {
-            showAlert("Erreur", "Erreur lors de la recherche: " + e.getMessage(), Alert.AlertType.ERROR);
-            e.printStackTrace();
+            
+            // Enable buttons
+            if (btn_modifier != null) btn_modifier.setDisable(false);
+            if (btn_supprimer != null) btn_supprimer.setDisable(false);
+            
+            // Enable text fields except ID
+            setFieldsEditable(true);
         }
     }
 
     @FXML
-    void enregistrerModifications(ActionEvent event) {
+    void enregistrerModifications() {
         try {
             if (!validateFields()) {
                 return;
             }
 
-            Foyer foyer = new Foyer(
-                    Integer.parseInt(tf_id.getText()),
-                    tf_nom.getText().trim(),
-                    tf_adresse.getText().trim(),
-                    tf_ville.getText().trim(),
-                    tf_pays.getText().trim(),
-                    Integer.parseInt(tf_nombre_de_chambre.getText()),
-                    Integer.parseInt(tf_capacite.getText()),
-                    tf_image.getText().trim()  // <<< AJOUT pour l'image
-            );
+            currentFoyer.setNom(tf_nom.getText().trim());
+            currentFoyer.setAdresse(tf_adresse.getText().trim());
+            currentFoyer.setVille(tf_ville.getText().trim());
+            currentFoyer.setPays(tf_pays.getText().trim());
+            currentFoyer.setNombreDeChambre(Integer.parseInt(tf_nombre_de_chambre.getText().trim()));
+            currentFoyer.setCapacite(Integer.parseInt(tf_capacite.getText().trim()));
+            currentFoyer.setImage(tf_image.getText().trim());
 
-
-            serviceFoyer.modifier(foyer);
+            serviceFoyer.modifier(currentFoyer);
             showAlert("Succès", "Foyer modifié avec succès", Alert.AlertType.INFORMATION);
-            setFieldsEditable(false);
-            btn_modifier.setDisable(true);
+            
+            // Close the window
+            closeWindow();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors de la modification: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    void supprimerFoyer() {
+        try {
+            serviceFoyer.supprimer(currentFoyer);
+            showAlert("Succès", "Foyer supprimé avec succès", Alert.AlertType.INFORMATION);
+            
+            // Close the window
+            closeWindow();
+            
+        } catch (SQLException e) {
+            showAlert("Erreur", "Erreur lors de la suppression: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) btn_modifier.getScene().getWindow();
+        stage.close();
     }
 
     private boolean validateFields() {
@@ -103,8 +133,8 @@ public class ModifierFoyerControllers {
         }
 
         try {
-            int chambres = Integer.parseInt(tf_nombre_de_chambre.getText());
-            int capacite = Integer.parseInt(tf_capacite.getText());
+            int chambres = Integer.parseInt(tf_nombre_de_chambre.getText().trim());
+            int capacite = Integer.parseInt(tf_capacite.getText().trim());
 
             if (chambres <= 0 || capacite <= 0) {
                 showAlert("Erreur", "Les valeurs numériques doivent être positives", Alert.AlertType.ERROR);
@@ -119,21 +149,15 @@ public class ModifierFoyerControllers {
     }
 
     private void setFieldsEditable(boolean editable) {
-        tf_nom.setEditable(editable);
-        tf_adresse.setEditable(editable);
-        tf_ville.setEditable(editable);
-        tf_pays.setEditable(editable);
-        tf_nombre_de_chambre.setEditable(editable);
-        tf_capacite.setEditable(editable);
-    }
-
-    private void clearFields() {
-        tf_nom.clear();
-        tf_adresse.clear();
-        tf_ville.clear();
-        tf_pays.clear();
-        tf_nombre_de_chambre.clear();
-        tf_capacite.clear();
+        // Check each field for null before setting editable
+        if (tf_nom != null) tf_nom.setEditable(editable);
+        if (tf_adresse != null) tf_adresse.setEditable(editable);
+        if (tf_ville != null) tf_ville.setEditable(editable);
+        if (tf_pays != null) tf_pays.setEditable(editable);
+        if (tf_nombre_de_chambre != null) tf_nombre_de_chambre.setEditable(editable);
+        if (tf_capacite != null) tf_capacite.setEditable(editable);
+        if (tf_image != null) tf_image.setEditable(editable);
+        if (tf_id != null) tf_id.setEditable(false); // ID should never be editable
     }
 
     private void showAlert(String title, String message, Alert.AlertType type) {
@@ -142,24 +166,5 @@ public class ModifierFoyerControllers {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    @FXML
-    void initialize() {
-        setFieldsEditable(false);
-        btn_modifier.setDisable(true);
-
-        // Validation automatique des champs numériques
-        tf_nombre_de_chambre.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal.matches("\\d*")) {
-                tf_nombre_de_chambre.setText(newVal.replaceAll("[^\\d]", ""));
-            }
-        });
-
-        tf_capacite.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal.matches("\\d*")) {
-                tf_capacite.setText(newVal.replaceAll("[^\\d]", ""));
-            }
-        });
     }
 }

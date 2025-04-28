@@ -1,9 +1,7 @@
 package controllers;
 
-import java.io.File;
-import java.io.IOException;
-
 import Services.ServiceFoyer;
+import entities.Foyer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +15,9 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import entities.Foyer;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 
 public class AjouterFoyerControllers {
 
@@ -138,6 +138,28 @@ public class AjouterFoyerControllers {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    void ListFoyer(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyer.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML

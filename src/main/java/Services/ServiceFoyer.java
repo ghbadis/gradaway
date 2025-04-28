@@ -16,8 +16,7 @@ public class ServiceFoyer implements IService<Foyer> {
 
     @Override
     public void ajouter(Foyer foyer) throws SQLException {
-        String req = "INSERT INTO foyer(nom, adresse, ville, pays, nombre_de_chambre, capacite, image) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO foyer(nom, adresse, ville, pays, nombre_de_chambre, capacite, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = con.prepareStatement(req)) {
             ps.setString(1, foyer.getNom());
             ps.setString(2, foyer.getAdresse());
@@ -25,11 +24,9 @@ public class ServiceFoyer implements IService<Foyer> {
             ps.setString(4, foyer.getPays());
             ps.setInt(5, foyer.getNombreDeChambre());
             ps.setInt(6, foyer.getCapacite());
-            ps.setString(7, foyer.getImage()); // ajouter l'image
+            ps.setString(7, foyer.getImage());
             ps.executeUpdate();
-            System.out.println("Foyer ajouté avec image");
-        } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Foyer ajouté avec succès");
         }
     }
 
@@ -43,10 +40,10 @@ public class ServiceFoyer implements IService<Foyer> {
             ps.setString(4, foyer.getPays());
             ps.setInt(5, foyer.getNombreDeChambre());
             ps.setInt(6, foyer.getCapacite());
-            ps.setString(7, foyer.getImage()); // modification de l'image
+            ps.setString(7, foyer.getImage());
             ps.setInt(8, foyer.getIdFoyer());
             ps.executeUpdate();
-            System.out.println("Foyer modifié avec image");
+            System.out.println("Foyer modifié avec succès");
         }
     }
 
@@ -57,9 +54,6 @@ public class ServiceFoyer implements IService<Foyer> {
             ps.setInt(1, foyer.getIdFoyer());
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 
@@ -67,18 +61,10 @@ public class ServiceFoyer implements IService<Foyer> {
     public List<Foyer> recuperer() throws SQLException {
         List<Foyer> foyers = new ArrayList<>();
         String req = "SELECT * FROM foyer";
-        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(req)) {
+        try (Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(req)) {
             while (rs.next()) {
-                int idF = rs.getInt("id");
-                String nomF = rs.getString("nom");
-                String adresseF = rs.getString("adresse");
-                String villeF = rs.getString("ville");
-                String paysF = rs.getString("pays");
-                int chambres = rs.getInt("nombre_de_chambre");
-                int capacite = rs.getInt("capacite");
-                String image = rs.getString("image"); // récupérer l'image aussi
-
-                Foyer foyer = new Foyer(idF, nomF, adresseF, villeF, paysF, chambres, capacite, image);
+                Foyer foyer = extractFoyerFromResultSet(rs);
                 foyers.add(foyer);
             }
         }
@@ -91,18 +77,23 @@ public class ServiceFoyer implements IService<Foyer> {
             ps.setInt(1, idFoyer);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    String nom = rs.getString("nom");
-                    String adresse = rs.getString("adresse");
-                    String ville = rs.getString("ville");
-                    String pays = rs.getString("pays");
-                    int nombreDeChambre = rs.getInt("nombre_de_chambre");
-                    int capacite = rs.getInt("capacite");
-                    String image = rs.getString("image");
-
-                    return new Foyer(idFoyer, nom, adresse, ville, pays, nombreDeChambre, capacite, image);
+                    return extractFoyerFromResultSet(rs);
                 }
             }
         }
         return null;
+    }
+
+    private Foyer extractFoyerFromResultSet(ResultSet rs) throws SQLException {
+        return new Foyer(
+            rs.getInt("id"),
+            rs.getString("nom"),
+            rs.getString("adresse"),
+            rs.getString("ville"),
+            rs.getString("pays"),
+            rs.getInt("nombre_de_chambre"),
+            rs.getInt("capacite"),
+            rs.getString("image")
+        );
     }
 }
