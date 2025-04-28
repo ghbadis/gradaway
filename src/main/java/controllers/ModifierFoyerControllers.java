@@ -5,144 +5,161 @@ import entities.Foyer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 public class ModifierFoyerControllers {
 
-    // Déclaration des champs de texte de l'interface
-    @FXML
-    private TextField tf_id;
+    @FXML private TextField tf_id;
+    @FXML private TextField tf_nom;
+    @FXML private TextField tf_adresse;
+    @FXML private TextField tf_ville;
+    @FXML private TextField tf_pays;
+    @FXML private TextField tf_nombre_de_chambre;
+    @FXML private TextField tf_capacite;
+    @FXML private Button btn_modifier;
+    @FXML private TextField tf_image;
+
+
+    private final ServiceFoyer serviceFoyer = new ServiceFoyer();
 
     @FXML
-    private TextField tf_nom;
-
-    @FXML
-    private TextField tf_adresse;
-
-    @FXML
-    private TextField tf_ville;
-
-    @FXML
-    private TextField tf_pays;
-
-    @FXML
-    private TextField tf_nombre_de_chambre;
-
-    @FXML
-    private TextField tf_capacite;
-
-    // Instance du service pour effectuer des opérations CRUD
-    private ServiceFoyer serviceFoyer = new ServiceFoyer();
-
-    // Méthode pour récupérer les informations du foyer via l'ID et les remplir dans le formulaire
-    // Méthode pour récupérer les informations du foyer via l'ID et les remplir dans le formulaire
-    @FXML
-    public void modifierfoyer(ActionEvent event) {
+    public void search(ActionEvent event) {
         try {
-            // Lire l'ID du foyer à partir du champ de texte
-            int idFoyer = Integer.parseInt(tf_id.getText());
+            String idText = tf_id.getText().trim();
 
-            // Appeler la méthode du service pour obtenir le foyer par son ID
-            Foyer foyer = serviceFoyer.getFoyerById(idFoyer);  // Utilisation de la méthode getFoyerById
+            if (idText.isEmpty()) {
+                showAlert("Erreur", "Veuillez entrer un ID", Alert.AlertType.ERROR);
+                return;
+            }
 
-            // Vérifier si le foyer a été trouvé
+            int idFoyer = Integer.parseInt(idText);
+            Foyer foyer = serviceFoyer.getFoyerById(idFoyer);
+
             if (foyer != null) {
-                // Si foyer trouvé, remplir les champs avec les informations du foyer
                 tf_nom.setText(foyer.getNom());
                 tf_adresse.setText(foyer.getAdresse());
                 tf_ville.setText(foyer.getVille());
                 tf_pays.setText(foyer.getPays());
                 tf_nombre_de_chambre.setText(String.valueOf(foyer.getNombreDeChambre()));
                 tf_capacite.setText(String.valueOf(foyer.getCapacite()));
-            } else {
-                // Si aucun foyer n'est trouvé avec l'ID, afficher un message d'erreur
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erreur");
-                alert.setHeaderText(null);
-                alert.setContentText("Foyer non trouvé !");
-                alert.showAndWait();
-            }
 
+                setFieldsEditable(true);
+                btn_modifier.setDisable(false);
+            } else {
+                showAlert("Information", "Aucun foyer trouvé avec cet ID", Alert.AlertType.INFORMATION);
+                clearFields();
+                setFieldsEditable(false);
+            }
         } catch (NumberFormatException e) {
-            // Si l'ID n'est pas un nombre valide, afficher un message d'erreur
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText(null);
-            alert.setContentText("Veuillez entrer un ID valide.");
-            alert.showAndWait();
+            showAlert("Erreur", "L'ID doit être un nombre valide", Alert.AlertType.ERROR);
+            clearFields();
         } catch (Exception e) {
+            showAlert("Erreur", "Erreur lors de la recherche: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur inconnue");
-            alert.setHeaderText(null);
-            alert.setContentText("Une erreur est survenue.");
-            alert.showAndWait();
         }
     }
 
-
-    // Méthode pour modifier un foyer dans la base de données
     @FXML
     void enregistrerModifications(ActionEvent event) {
         try {
-            // Lire les valeurs des champs de texte
-            int idFoyer = Integer.parseInt(tf_id.getText());
-            String nom = tf_nom.getText();
-            String adresse = tf_adresse.getText();
-            String ville = tf_ville.getText();
-            String pays = tf_pays.getText();
-            int nombreDeChambre = Integer.parseInt(tf_nombre_de_chambre.getText());
-            int capacite = Integer.parseInt(tf_capacite.getText());
-
-            // Créer un objet Foyer avec les nouvelles valeurs
-            Foyer foyer = new Foyer(idFoyer, nom, adresse, ville, pays, nombreDeChambre, capacite);
-
-            // Appeler la méthode du service pour enregistrer les modifications
-            ServiceFoyer serviceFoyer = new ServiceFoyer();
-
-            // Afficher une alerte selon le résultat de l'opération
-            boolean success = false;
-            if (success) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Succès");
-                alert.setHeaderText(null);
-                alert.setContentText("Foyer modifié avec succès !");
-                alert.showAndWait();
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erreur");
-                alert.setHeaderText(null);
-                alert.setContentText("La modification a échoué. Veuillez vérifier les informations.");
-                alert.showAndWait();
+            if (!validateFields()) {
+                return;
             }
 
-        } catch (NumberFormatException e) {
-            // Gérer les erreurs de format des champs numériques
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText(null);
-            alert.setContentText("Veuillez entrer des nombres valides pour nombre de chambres et capacité.");
-            alert.showAndWait();
+            Foyer foyer = new Foyer(
+                    Integer.parseInt(tf_id.getText()),
+                    tf_nom.getText().trim(),
+                    tf_adresse.getText().trim(),
+                    tf_ville.getText().trim(),
+                    tf_pays.getText().trim(),
+                    Integer.parseInt(tf_nombre_de_chambre.getText()),
+                    Integer.parseInt(tf_capacite.getText()),
+                    tf_image.getText().trim()  // <<< AJOUT pour l'image
+            );
+
+
+            serviceFoyer.modifier(foyer);
+            showAlert("Succès", "Foyer modifié avec succès", Alert.AlertType.INFORMATION);
+            setFieldsEditable(false);
+            btn_modifier.setDisable(true);
+
         } catch (Exception e) {
+            showAlert("Erreur", "Erreur lors de la modification: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur inconnue");
-            alert.setHeaderText(null);
-            alert.setContentText("Une erreur est survenue.");
-            alert.showAndWait();
         }
     }
 
-    // Méthode d'initialisation, à appeler après l'injection des éléments FXML
+    private boolean validateFields() {
+        if (tf_nom.getText().trim().isEmpty() ||
+                tf_adresse.getText().trim().isEmpty() ||
+                tf_ville.getText().trim().isEmpty() ||
+                tf_pays.getText().trim().isEmpty() ||
+                tf_nombre_de_chambre.getText().trim().isEmpty() ||
+                tf_capacite.getText().trim().isEmpty()) {
+
+            showAlert("Erreur", "Tous les champs doivent être remplis", Alert.AlertType.ERROR);
+            return false;
+        }
+
+        try {
+            int chambres = Integer.parseInt(tf_nombre_de_chambre.getText());
+            int capacite = Integer.parseInt(tf_capacite.getText());
+
+            if (chambres <= 0 || capacite <= 0) {
+                showAlert("Erreur", "Les valeurs numériques doivent être positives", Alert.AlertType.ERROR);
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Erreur", "Valeurs numériques invalides", Alert.AlertType.ERROR);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void setFieldsEditable(boolean editable) {
+        tf_nom.setEditable(editable);
+        tf_adresse.setEditable(editable);
+        tf_ville.setEditable(editable);
+        tf_pays.setEditable(editable);
+        tf_nombre_de_chambre.setEditable(editable);
+        tf_capacite.setEditable(editable);
+    }
+
+    private void clearFields() {
+        tf_nom.clear();
+        tf_adresse.clear();
+        tf_ville.clear();
+        tf_pays.clear();
+        tf_nombre_de_chambre.clear();
+        tf_capacite.clear();
+    }
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     @FXML
     void initialize() {
-        assert tf_id != null : "fx:id=\"tf_id\" was not injected: check your FXML file 'ModifierFoyer.fxml'.";
-        assert tf_nom != null : "fx:id=\"tf_nom\" was not injected: check your FXML file 'ModifierFoyer.fxml'.";
-        assert tf_adresse != null : "fx:id=\"tf_adresse\" was not injected: check your FXML file 'ModifierFoyer.fxml'.";
-        assert tf_ville != null : "fx:id=\"tf_ville\" was not injected: check your FXML file 'ModifierFoyer.fxml'.";
-        assert tf_pays != null : "fx:id=\"tf_pays\" was not injected: check your FXML file 'ModifierFoyer.fxml'.";
-        assert tf_nombre_de_chambre != null : "fx:id=\"tf_nombre_de_chambre\" was not injected: check your FXML file 'ModifierFoyer.fxml'.";
-        assert tf_capacite != null : "fx:id=\"tf_capacite\" was not injected: check your FXML file 'ModifierFoyer.fxml'.";
+        setFieldsEditable(false);
+        btn_modifier.setDisable(true);
+
+        // Validation automatique des champs numériques
+        tf_nombre_de_chambre.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("\\d*")) {
+                tf_nombre_de_chambre.setText(newVal.replaceAll("[^\\d]", ""));
+            }
+        });
+
+        tf_capacite.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("\\d*")) {
+                tf_capacite.setText(newVal.replaceAll("[^\\d]", ""));
+            }
+        });
     }
 }
-

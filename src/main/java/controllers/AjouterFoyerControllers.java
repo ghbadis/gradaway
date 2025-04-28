@@ -1,12 +1,9 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import Services.ServiceFoyer;
-import entities.Foyer;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,8 +12,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import entities.Foyer;
 
 public class AjouterFoyerControllers {
 
@@ -39,7 +40,7 @@ public class AjouterFoyerControllers {
     private TextField tf_ville;
 
     @FXML
-    private AnchorPane rootPane;
+    private ImageView imageUploaded;
 
     private ServiceFoyer serviceFoyer = new ServiceFoyer();
 
@@ -53,9 +54,13 @@ public class AjouterFoyerControllers {
             String pays = tf_pays.getText();
             int nombreDeChambre = Integer.parseInt(tf_nombre_de_chambre.getText());
             int capacite = Integer.parseInt(tf_capacite.getText());
+            String image = null;
+            if (imageUploaded.getImage() != null) {
+                image = imageUploaded.getImage().getUrl();
+            }
 
             // Créer un objet Foyer
-            Foyer foyer = new Foyer(nom, adresse, ville, pays, nombreDeChambre, capacite);
+            Foyer foyer = new Foyer(nom, adresse, ville, pays, nombreDeChambre, capacite, image);
 
             // Ajouter à la base via le service
             serviceFoyer.ajouter(foyer);
@@ -74,6 +79,7 @@ public class AjouterFoyerControllers {
             tf_pays.clear();
             tf_nombre_de_chambre.clear();
             tf_capacite.clear();
+            imageUploaded.setImage(new Image("@placeholder/placeholder.png")); // Reset to placeholder
 
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -83,6 +89,28 @@ public class AjouterFoyerControllers {
             alert.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void addimages(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir une image");
+
+        // Limiter les types de fichiers visibles
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            String imagePath = selectedFile.toURI().toString(); // chemin URI utilisable
+
+            // Afficher l'image dans ImageView
+            Image image = new Image(imagePath);
+            imageUploaded.setImage(image); // Mettre l'image dans l'ImageView
         }
     }
 
@@ -120,5 +148,6 @@ public class AjouterFoyerControllers {
         assert tf_nombre_de_chambre != null : "fx:id=\"tf_nombre_de_chambre\" was not injected: check your FXML file 'AjouterFoyer.fxml'.";
         assert tf_pays != null : "fx:id=\"tf_pays\" was not injected: check your FXML file 'AjouterFoyer.fxml'.";
         assert tf_ville != null : "fx:id=\"tf_ville\" was not injected: check your FXML file 'AjouterFoyer.fxml'.";
+        assert imageUploaded != null : "fx:id=\"imageUploaded\" was not injected: check your FXML file 'AjouterFoyer.fxml'.";
     }
 }

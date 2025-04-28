@@ -22,7 +22,6 @@ public class Mainwajdi extends Application {
         ServiceReservationFoyer serviceReservationFoyer = new ServiceReservationFoyer();
         ServiceReservationRestaurant serviceReservationRestaurant = new ServiceReservationRestaurant();
 
-
         try {
             // Test Foyer CRUD
             System.out.println("=== Testing Foyer CRUD ===");
@@ -49,7 +48,15 @@ public class Mainwajdi extends Application {
     private static void testFoyerCRUD(ServiceFoyer service) throws SQLException {
         // Create
         System.out.println("Testing Create (Ajouter)");
-        Foyer newFoyer = new Foyer("Foyer Test", "123 Test Street", "Test City", "Test Country", 10, 50);
+        Foyer newFoyer = new Foyer(
+                "Foyer Test",
+                "123 Test Street",
+                "Test City",
+                "Test Country",
+                10,
+                50,
+                "default.jpg" // <=== image ajoutée
+        );
         service.ajouter(newFoyer);
         System.out.println("New foyer created successfully");
 
@@ -64,7 +71,7 @@ public class Mainwajdi extends Application {
         // Update
         System.out.println("\nTesting Update (Modifier)");
         if (!foyers.isEmpty()) {
-            Foyer foyerToUpdate = foyers.get(0);
+            Foyer foyerToUpdate = foyers.get(foyers.size() - 1); // prendre le dernier ajouté
             foyerToUpdate.setNom("Updated Foyer Name");
             foyerToUpdate.setCapacite(75);
             service.modifier(foyerToUpdate);
@@ -73,8 +80,9 @@ public class Mainwajdi extends Application {
 
         // Delete
         System.out.println("\nTesting Delete (Supprimer)");
+        foyers = service.recuperer(); // refresh list
         if (!foyers.isEmpty()) {
-            Foyer foyerToDelete = foyers.get(0);
+            Foyer foyerToDelete = foyers.get(foyers.size() - 1); // supprimer le dernier
             service.supprimer(foyerToDelete);
             System.out.println("Foyer deleted successfully");
         }
@@ -108,7 +116,7 @@ public class Mainwajdi extends Application {
         // Update
         System.out.println("\nTesting Update (Modifier)");
         if (!restaurants.isEmpty()) {
-            Restaurant restaurantToUpdate = restaurants.get(0);
+            Restaurant restaurantToUpdate = restaurants.get(restaurants.size() - 1);
             restaurantToUpdate.setNom("Updated Restaurant Name");
             restaurantToUpdate.setCapaciteTotale(150);
             service.modifier(restaurantToUpdate);
@@ -117,8 +125,9 @@ public class Mainwajdi extends Application {
 
         // Delete
         System.out.println("\nTesting Delete (Supprimer)");
+        restaurants = service.recuperer(); // refresh list
         if (!restaurants.isEmpty()) {
-            Restaurant restaurantToDelete = restaurants.get(0);
+            Restaurant restaurantToDelete = restaurants.get(restaurants.size() - 1);
             service.supprimer(restaurantToDelete);
             System.out.println("Restaurant deleted successfully");
         }
@@ -127,7 +136,15 @@ public class Mainwajdi extends Application {
     private static void testReservationFoyerCRUD(ServiceFoyer foyerService, ServiceReservationFoyer reservationService) throws SQLException {
         // First create a foyer to use for the reservation
         System.out.println("Creating a foyer for the reservation");
-        Foyer newFoyer = new Foyer("Reservation Foyer", "456 Reservation St", "Reservation City", "Reservation Country", 20, 100);
+        Foyer newFoyer = new Foyer(
+                "Reservation Foyer",
+                "456 Reservation St",
+                "Reservation City",
+                "Reservation Country",
+                20,
+                100,
+                "reservation.jpg" // <=== image ajoutée
+        );
         foyerService.ajouter(newFoyer);
 
         // Get the created foyer's ID
@@ -135,13 +152,13 @@ public class Mainwajdi extends Application {
         if (foyers.isEmpty()) {
             throw new SQLException("Failed to create foyer for reservation");
         }
-        int foyerId = foyers.get(0).getIdFoyer();
+        int foyerId = foyers.get(foyers.size() - 1).getIdFoyer(); // dernier ajouté
 
         // Create
         System.out.println("Testing Create (Ajouter)");
         ReservationFoyer newReservation = new ReservationFoyer(
-                foyerId, // Use the actual foyer ID
-                31, // idEtudiant
+                foyerId,
+                31,
                 LocalDate.now(),
                 LocalDate.now().plusDays(7),
                 LocalDate.now()
@@ -160,7 +177,7 @@ public class Mainwajdi extends Application {
         // Update
         System.out.println("\nTesting Update (Modifier)");
         if (!reservations.isEmpty()) {
-            ReservationFoyer reservationToUpdate = reservations.get(0);
+            ReservationFoyer reservationToUpdate = reservations.get(reservations.size() - 1);
             reservationToUpdate.setDateFin(LocalDate.now().plusDays(14));
             reservationService.modifier(reservationToUpdate);
             System.out.println("Foyer reservation updated successfully");
@@ -168,14 +185,18 @@ public class Mainwajdi extends Application {
 
         // Delete
         System.out.println("\nTesting Delete (Supprimer)");
+        reservations = reservationService.recuperer();
         if (!reservations.isEmpty()) {
-            ReservationFoyer reservationToDelete = reservations.get(0);
+            ReservationFoyer reservationToDelete = reservations.get(reservations.size() - 1);
             reservationService.supprimer(reservationToDelete);
             System.out.println("Foyer reservation deleted successfully");
         }
 
         // Clean up - delete the test foyer
-        foyerService.supprimer(foyers.get(0));
+        foyers = foyerService.recuperer();
+        if (!foyers.isEmpty()) {
+            foyerService.supprimer(foyers.get(foyers.size() - 1));
+        }
     }
 
     private static void testReservationRestaurantCRUD(ServiceRestaurant restaurantService, ServiceReservationRestaurant reservationService) throws SQLException {
@@ -199,15 +220,15 @@ public class Mainwajdi extends Application {
         if (restaurants.isEmpty()) {
             throw new SQLException("Failed to create restaurant for reservation");
         }
-        int restaurantId = restaurants.get(0).getIdRestaurant();
+        int restaurantId = restaurants.get(restaurants.size() - 1).getIdRestaurant();
 
         // Create
         System.out.println("Testing Create (Ajouter)");
         ReservationRestaurant newReservation = new ReservationRestaurant(
-                restaurantId, // Use the actual restaurant ID
-                31, // idEtudiant
+                restaurantId,
+                31,
                 LocalDate.now(),
-                4 // number of people
+                4
         );
         reservationService.ajouter(newReservation);
         System.out.println("New restaurant reservation created successfully");
@@ -223,7 +244,7 @@ public class Mainwajdi extends Application {
         // Update
         System.out.println("\nTesting Update (Modifier)");
         if (!reservations.isEmpty()) {
-            ReservationRestaurant reservationToUpdate = reservations.get(0);
+            ReservationRestaurant reservationToUpdate = reservations.get(reservations.size() - 1);
             reservationToUpdate.setNombrePersonnes(6);
             reservationService.modifier(reservationToUpdate);
             System.out.println("Restaurant reservation updated successfully");
@@ -231,18 +252,22 @@ public class Mainwajdi extends Application {
 
         // Delete
         System.out.println("\nTesting Delete (Supprimer)");
+        reservations = reservationService.recuperer();
         if (!reservations.isEmpty()) {
-            ReservationRestaurant reservationToDelete = reservations.get(0);
+            ReservationRestaurant reservationToDelete = reservations.get(reservations.size() - 1);
             reservationService.supprimer(reservationToDelete);
             System.out.println("Restaurant reservation deleted successfully");
         }
 
         // Clean up - delete the test restaurant
-        restaurantService.supprimer(restaurants.get(0));
+        restaurants = restaurantService.recuperer();
+        if (!restaurants.isEmpty()) {
+            restaurantService.supprimer(restaurants.get(restaurants.size() - 1));
+        }
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-
+        // Pas besoin pour tests console
     }
 }

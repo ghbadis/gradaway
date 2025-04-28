@@ -9,12 +9,12 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterFoyerControllers">
+<AnchorPane prefHeight="646.0" prefWidth="793.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterFoyerControllers" stylesheets="@ajouterFoyer.css">
    <children>
       <Accordion layoutX="88.0" layoutY="83.0" />
-      <ImageView fitHeight="210.0" fitWidth="211.0" layoutX="368.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="238.0" fitWidth="371.0" layoutX="437.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@iamge/images FOYER.jpeg" />
+            <Image url="@iamge/imagesFOYER.jpeg" />
          </image>
       </ImageView>
       <Text fill="#ff0004" fontSmoothingType="LCD" layoutX="68.0" layoutY="66.0" strokeWidth="0.0" text="Ajouter Foyer">
@@ -53,7 +53,7 @@
             <Font name="Arial Black" size="13.0" />
          </font>
       </Text>
-      <Button layoutX="234.0" layoutY="350.0" mnemonicParsing="false" onAction="#AjouterFoyer" prefHeight="26.0" prefWidth="80.0" text="Ajouter" textFill="#d12121">
+      <Button layoutX="473.0" layoutY="294.0" mnemonicParsing="false" onAction="#AjouterFoyer" prefHeight="26.0" prefWidth="80.0" text="Ajouter" textFill="#d12121">
          <font>
             <Font name="Arial Black" size="13.0" />
          </font>
@@ -63,15 +63,30 @@
       <TextField fx:id="tf_nombre_de_chambre" layoutX="134.0" layoutY="254.0" />
       <TextField fx:id="tf_ville" layoutX="135.0" layoutY="179.0" />
       <TextField fx:id="tf_capacite" layoutX="136.0" layoutY="296.0" />
-      <Button layoutX="327.0" layoutY="350.0" mnemonicParsing="false" onAction="#navigateToModify" prefHeight="28.0" prefWidth="80.0" text="Modifier" textFill="#d12121">
+      <Button layoutX="568.0" layoutY="295.0" mnemonicParsing="false" onAction="#navigateToModify" prefHeight="28.0" prefWidth="80.0" text="Modifier" textFill="#d12121">
          <font>
             <Font name="Arial Black" size="13.0" />
          </font>
       </Button>
-      <Button layoutX="418.0" layoutY="350.0" mnemonicParsing="false" onAction="#navigateToDelete" prefHeight="28.0" prefWidth="110.0" text="Supprimer" textFill="#d12121">
+      <Button layoutX="668.0" layoutY="295.0" mnemonicParsing="false" onAction="#navigateToDelete" prefHeight="28.0" prefWidth="110.0" text="Supprimer" textFill="#d12121">
          <font>
             <Font name="Arial Rounded MT Bold" size="15.0" />
          </font>
       </Button>
+      <Button layoutX="18.0" layoutY="435.0" mnemonicParsing="false" onAction="#addimages" prefHeight="28.0" prefWidth="109.0" text="add" textFill="#df1919">
+         <font>
+            <Font name="Arial Black" size="13.0" />
+         </font>
+      </Button>
+      <ImageView fx:id="imageUploaded" fitHeight="132.0" fitWidth="150.0" layoutX="136.0" layoutY="358.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@placeholder/placeholder.png" />
+         </image>
+      </ImageView>
+      <Text fontSmoothingType="LCD" layoutX="18.0" layoutY="385.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Image">
+         <font>
+            <Font name="Arial Black" size="13.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

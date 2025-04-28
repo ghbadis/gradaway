@@ -8,9 +8,10 @@ public class Foyer {
     private String pays;
     private int nombreDeChambre;
     private int capacite;
+    private String image; // ==> Ajout de l'attribut image
 
     // Constructeur complet avec tous les paramètres
-    public Foyer(int idFoyer, String nom, String adresse, String ville, String pays, int nombreDeChambre, int capacite) {
+    public Foyer(int idFoyer, String nom, String adresse, String ville, String pays, int nombreDeChambre, int capacite, String image) {
         this.idFoyer = idFoyer;
         this.nom = nom;
         this.adresse = adresse;
@@ -18,21 +19,24 @@ public class Foyer {
         this.pays = pays;
         this.nombreDeChambre = nombreDeChambre;
         this.capacite = capacite;
+        this.image = image;
     }
 
-    public Foyer(String nom, String adresse, String ville, String pays, int nombreDeChambre, int capacite) {
+    // Constructeur sans ID (pour création)
+    public Foyer(String nom, String adresse, String ville, String pays, int nombreDeChambre, int capacite, String image) {
         this.nom = nom;
         this.adresse = adresse;
         this.ville = ville;
         this.pays = pays;
         this.nombreDeChambre = nombreDeChambre;
         this.capacite = capacite;
+        this.image = image;
     }
 
-    // Constructeur sans paramètre
+    // Constructeur vide
     public Foyer() {}
 
-    // Getters et setters
+    // Getters et Setters
     public int getIdFoyer() {
         return idFoyer;
     }
@@ -89,6 +93,14 @@ public class Foyer {
         this.capacite = capacite;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
         return "Foyer{" +
@@ -99,6 +111,7 @@ public class Foyer {
                 ", pays='" + pays + '\'' +
                 ", nombreDeChambre=" + nombreDeChambre +
                 ", capacite=" + capacite +
+                ", image='" + image + '\'' +
                 '}';
     }
 }

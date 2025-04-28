@@ -2,68 +2,76 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierFoyerControllers">
+<AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierFoyerControllers">
    <children>
-      <Text fill="#f40505" fontSmoothingType="LCD" layoutX="59.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modifier Foyer" textAlignment="CENTER" wrappingWidth="222.13677978515625">
+      <Text fill="#f40505" fontSmoothingType="LCD" layoutX="250.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modifier Foyer" textAlignment="CENTER">
          <font>
             <Font name="Arial Rounded MT Bold" size="30.0" />
          </font>
       </Text>
-      <ImageView fitHeight="173.0" fitWidth="234.0" layoutX="339.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@iamge/images FOYER.jpeg" />
-         </image>
-      </ImageView>
-      <TextField fx:id="tf_id" layoutX="143.0" layoutY="75.0" />
-      <Text layoutX="31.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID :" wrappingWidth="46.93670654296875">
+
+      <!-- Champ ID et bouton Rechercher -->
+      <Text layoutX="150.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID du foyer :">
          <font>
-            <Font name="Arial Black" size="13.0" />
+            <Font name="Arial Black" size="14.0" />
          </font>
       </Text>
-      <Text fontSmoothingType="LCD" layoutX="11.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="nom de foyer :" wrappingWidth="108.55157470703125">
+      <TextField fx:id="tf_id" layoutX="280.0" layoutY="100.0" prefWidth="150.0" promptText="Entrez l'ID" />
+      <Button layoutX="450.0" layoutY="100.0" mnemonicParsing="false" onAction="#search" prefWidth="100.0" text="Rechercher" textFill="#f40505">
          <font>
-            <Font name="Arial Black" size="13.0" />
+            <Font name="Arial Black" size="12.0" />
+         </font>
+      </Button>
+
+      <!-- Formulaire -->
+      <Text layoutX="150.0" layoutY="170.0" text="Nom :">
+         <font>
+            <Font name="Arial Black" size="14.0" />
          </font>
       </Text>
-      <TextField fx:id="tf_nom" layoutX="143.0" layoutY="117.0" />
-      <TextField fx:id="tf_adresse" layoutX="143.0" layoutY="161.0" />
-      <TextField fx:id="tf_ville" layoutX="143.0" layoutY="208.0" />
-      <TextField fx:id="tf_pays" layoutX="143.0" layoutY="246.0" />
-      <TextField fx:id="tf_nombre_de_chambre" layoutX="143.0" layoutY="287.0" />
-      <Text fontSmoothingType="LCD" layoutX="25.0" layoutY="178.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adresse :  " wrappingWidth="80.0">
+      <TextField fx:id="tf_nom" editable="false" layoutX="280.0" layoutY="150.0" prefWidth="300.0" />
+
+      <Text layoutX="150.0" layoutY="220.0" text="Adresse :">
          <font>
-            <Font name="Arial Black" size="13.0" />
+            <Font name="Arial Black" size="14.0" />
          </font>
       </Text>
-      <Text fontSmoothingType="LCD" layoutX="37.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ville : ">
+      <TextField fx:id="tf_adresse" editable="false" layoutX="280.0" layoutY="200.0" prefWidth="300.0" />
+
+      <Text layoutX="150.0" layoutY="270.0" text="Ville :">
          <font>
-            <Font name="Arial Black" size="13.0" />
+            <Font name="Arial Black" size="14.0" />
          </font>
       </Text>
-      <Text fontSmoothingType="LCD" layoutX="33.0" layoutY="263.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pays :">
+      <TextField fx:id="tf_ville" editable="false" layoutX="280.0" layoutY="250.0" prefWidth="300.0" />
+
+      <Text layoutX="150.0" layoutY="320.0" text="Pays :">
          <font>
-            <Font name="Arial Black" size="13.0" />
+            <Font name="Arial Black" size="14.0" />
          </font>
       </Text>
-      <Text fontSmoothingType="LCD" layoutX="11.0" layoutY="304.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre de chambre :">
+      <TextField fx:id="tf_pays" editable="false" layoutX="280.0" layoutY="300.0" prefWidth="300.0" />
+
+      <Text layoutX="93.0" layoutY="368.0" text="Nombre de chambres :">
          <font>
-            <Font name="Arial Black" size="11.0" />
+            <Font name="Arial Black" size="14.0" />
          </font>
       </Text>
-      <Text fontSmoothingType="LCD" layoutX="29.0" layoutY="352.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Capacite :">
+      <TextField fx:id="tf_nombre_de_chambre" editable="false" layoutX="280.0" layoutY="350.0" prefWidth="100.0" />
+
+      <Text layoutX="150.0" layoutY="420.0" text="Capacité :">
          <font>
-            <Font name="Arial Black" size="13.0" />
+            <Font name="Arial Black" size="14.0" />
          </font>
       </Text>
-      <TextField fx:id="tf_capacite" layoutX="143.0" layoutY="335.0" />
-      <Button layoutX="417.0" layoutY="329.0" mnemonicParsing="false" onAction="#modifierfoyer" prefHeight="36.0" prefWidth="116.0" text="Modifier" textFill="#d12121">
+      <TextField fx:id="tf_capacite" editable="false" layoutX="280.0" layoutY="400.0" prefWidth="100.0" />
+
+      <!-- Bouton Enregistrer -->
+      <Button fx:id="btn_modifier" layoutX="474.0" layoutY="424.0" mnemonicParsing="false" onAction="#enregistrerModifications" prefWidth="150.0" text="Enregistrer" textFill="#df0c0c">
          <font>
             <Font name="Arial Black" size="14.0" />
          </font>
