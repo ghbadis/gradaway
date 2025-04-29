@@ -17,7 +17,7 @@
       </Text>
       <ImageView cache="true" fitHeight="150.0" fitWidth="200.0" layoutX="386.0" layoutY="63.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@iamge/images FOYER.jpeg" />
+            <Image url="@iamge/imagesFOYER.jpeg" />
          </image>
       </ImageView>
       <Text layoutX="46.0" layoutY="248.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID :" textAlignment="CENTER" wrappingWidth="74.13671875">

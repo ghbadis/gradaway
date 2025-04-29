@@ -12,62 +12,73 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.shape.Line?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane accessibleRole="IMAGE_VIEW" prefHeight="691.0" prefWidth="893.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListFoyerControllers">
+<AnchorPane accessibleRole="IMAGE_VIEW" prefHeight="723.0" prefWidth="909.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListFoyerControllers">
    <children>
-      <ButtonBar layoutX="191.0" layoutY="190.0" prefHeight="40.0" prefWidth="247.0">
-         <buttons>
-            <TextField fx:id="searchField" prefHeight="26.0" prefWidth="122.0" />
-            <Button minWidth="58.0" mnemonicParsing="false" onAction="#search" prefHeight="26.0" prefWidth="78.0" text="search " />
-            <ImageView fitHeight="18.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@iamge/604a0294-7130-4b23-b112-c80f6de4690d_removalai_preview.png" />
-               </image>
-            </ImageView>
-         </buttons>
-      </ButtonBar>
-      <Line endX="766.5999755859375" layoutX="115.0" layoutY="166.0" startX="-100.0" />
-      <MenuButton fx:id="locationMenu" layoutX="508.0" layoutY="197.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="135.0" text="Location">
-        <items>
-          <MenuItem mnemonicParsing="false" text="spain" />
-          <MenuItem mnemonicParsing="false" text="bresil" />
-          <MenuItem mnemonicParsing="false" text="portugale" />
-          <MenuItem mnemonicParsing="false" text="napoli" />
-          <MenuItem mnemonicParsing="false" text="canada" />
-          <MenuItem mnemonicParsing="false" text="argentine" />
-          <MenuItem mnemonicParsing="false" text="anglettere" />
-          <MenuItem mnemonicParsing="false" text="france" />
-          <MenuItem mnemonicParsing="false" text="suisse" />
-        </items>
-      </MenuButton>
-      <ScrollPane fitToWidth="true" layoutX="50.0" layoutY="281.0" prefHeight="498.0" prefWidth="800.0" style="-fx-background-color: transparent;">
-         <content>
-            <GridPane fx:id="foyerGrid" hgap="20" vgap="20">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="300.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="300.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="300.0" />
-              </columnConstraints>
-              <padding>
-                <Insets bottom="10" left="10" right="10" top="10" />
-              </padding>
-            </GridPane>
-         </content>
-         <padding>
-            <Insets bottom="5" left="5" right="5" top="5" />
-         </padding>
-      </ScrollPane>
-      <Button alignment="CENTER" layoutX="779.0" layoutY="197.0" mnemonicParsing="false" onAction="#navigateToAjouter" prefHeight="32.0" prefWidth="100.0" style="-fx-background-color: #2196F3;" text="Back" textFill="WHITE">
-         <font>
-            <Font name="Arial Black" size="14.0" />
-         </font>
-      </Button>
-      <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="785.0" layoutY="201.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@iamge/df8dc2cc-ea34-4e71-aee9-de6e6472018a_removalai_preview.png" />
-         </image>
-      </ImageView>
+      <VBox spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <!-- Foyers List Section -->
+         <ScrollPane fitToWidth="true" style="-fx-background: white; -fx-background-color: white;" VBox.vgrow="ALWAYS">
+            <content>
+               <VBox>
+                  <children>
+                     <AnchorPane prefHeight="76.0" prefWidth="870.0">
+                        <children>
+                           <ButtonBar layoutX="70.0" layoutY="16.0" prefHeight="40.0" prefWidth="247.0">
+                              <buttons>
+                                 <TextField fx:id="searchField" prefHeight="26.0" prefWidth="122.0" />
+                                 <Button minWidth="58.0" mnemonicParsing="false" onAction="#search" prefHeight="26.0" prefWidth="78.0" text="search " />
+                                 <ImageView fitHeight="18.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                       <Image url="@iamge/604a0294-7130-4b23-b112-c80f6de4690d_removalai_preview.png" />
+                                    </image>
+                                 </ImageView>
+                              </buttons>
+                           </ButtonBar>
+                           <MenuButton fx:id="locationMenu" layoutX="508.0" layoutY="27.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="135.0" text="Location">
+                             <items>
+                               <MenuItem mnemonicParsing="false" text="Spain" />
+                               <MenuItem mnemonicParsing="false" text="Brazil" />
+                               <MenuItem mnemonicParsing="false" text="Portugal" />
+                               <MenuItem mnemonicParsing="false" text="Italy" />
+                               <MenuItem mnemonicParsing="false" text="Canada" />
+                               <MenuItem mnemonicParsing="false" text="Argentine" />
+                               <MenuItem mnemonicParsing="false" text="England" />
+                               <MenuItem mnemonicParsing="false" text="France" />
+                               <MenuItem mnemonicParsing="false" text="Switzerland" />
+                             </items>
+                           </MenuButton>
+                           <Button alignment="CENTER" layoutX="722.0" layoutY="24.0" mnemonicParsing="false" onAction="#navigateToAjouter" prefHeight="32.0" prefWidth="100.0" style="-fx-background-color: #2196F3;" text="Back" textFill="WHITE">
+                              <font>
+                                 <Font name="Arial Black" size="14.0" />
+                              </font>
+                           </Button>
+                           <Button fx:id="btnListeReservation" layoutX="580.0" layoutY="24.0" mnemonicParsing="false" onAction="#navigateToListeReservation" prefHeight="32.0" prefWidth="140.0" style="-fx-background-color: #d40606;" text="Liste Reservation" textFill="WHITE">
+                              <font>
+                                 <Font name="System Bold" size="12.0" />
+                              </font>
+                           </Button>
+                           <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="832.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@iamge/df8dc2cc-ea34-4e71-aee9-de6e6472018a_removalai_preview.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </AnchorPane>
+                     <GridPane fx:id="foyerGrid" hgap="20" style="-fx-padding: 20;" vgap="20">
+                        <columnConstraints>
+                           <ColumnConstraints hgrow="SOMETIMES" />
+                        </columnConstraints>
+                     </GridPane>
+
+                  </children>
+               </VBox>
+            </content>
+            <padding>
+               <Insets bottom="20" left="20" right="20" top="20" />
+            </padding>
+         </ScrollPane>
+      </VBox>
    </children>
 </AnchorPane>

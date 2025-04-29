@@ -9,11 +9,14 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.animation.FadeTransition;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +44,9 @@ public class AjouterFoyerControllers {
 
     @FXML
     private ImageView imageUploaded;
+    
+    @FXML
+    private Button btnListeReservation;
 
     private ServiceFoyer serviceFoyer = new ServiceFoyer();
 
@@ -161,6 +167,29 @@ public class AjouterFoyerControllers {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    
+    @FXML
+    void navigateToListeReservation(ActionEvent event) {
+        try {
+            System.out.println("Navigating to Liste Reservation...");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListeReservation.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            
+            // Add fade transition for smooth navigation
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la navigation vers la liste des réservations: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
 
     @FXML
     void initialize() {
@@ -171,5 +200,6 @@ public class AjouterFoyerControllers {
         assert tf_pays != null : "fx:id=\"tf_pays\" was not injected: check your FXML file 'AjouterFoyer.fxml'.";
         assert tf_ville != null : "fx:id=\"tf_ville\" was not injected: check your FXML file 'AjouterFoyer.fxml'.";
         assert imageUploaded != null : "fx:id=\"imageUploaded\" was not injected: check your FXML file 'AjouterFoyer.fxml'.";
+        btnListeReservation.setOnAction(e -> navigateToListeReservation(e));
     }
 }

@@ -13,6 +13,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.animation.FadeTransition;
+import javafx.util.Duration;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -25,6 +27,7 @@ public class ListFoyerControllers {
     @FXML private GridPane foyerGrid;
     @FXML private TextField searchField;
     @FXML private MenuButton locationMenu;
+    @FXML private Button btnListeReservation;
     
     private final ServiceFoyer serviceFoyer = new ServiceFoyer();
 
@@ -189,4 +192,51 @@ public class ListFoyerControllers {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    
+    @FXML
+    private void navigateToListeReservation() {
+        try {
+            System.out.println("Navigating to Liste Reservation...");
+            // Try different ways to load the FXML file
+            Parent root = null;
+            try {
+                // Try with leading slash
+                root = FXMLLoader.load(getClass().getResource("/ListeReservation.fxml"));
+            } catch (Exception e1) {
+                try {
+                    // Try without leading slash
+                    root = FXMLLoader.load(getClass().getResource("ListeReservation.fxml"));
+                } catch (Exception e2) {
+                    try {
+                        // Try with full path - this is a debugging approach
+                        String fxmlPath = "file:///" + System.getProperty("user.dir").replace("\\", "/") + "/src/main/resources/ListeReservation.fxml";
+                        System.out.println("Trying full path: " + fxmlPath);
+                        root = FXMLLoader.load(new java.net.URL(fxmlPath));
+                    } catch (Exception e3) {
+                        // If all approaches fail, throw the original exception
+                        throw e1;
+                    }
+                }
+            }
+            
+            if (root != null) {
+                Stage stage = (Stage) btnListeReservation.getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                
+                // Add fade transition for smooth navigation
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                fadeIn.play();
+            } else {
+                throw new IOException("Could not load ListeReservation.fxml");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    // Reservation navigation method removed
 }
