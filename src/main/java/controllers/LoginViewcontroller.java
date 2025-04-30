@@ -83,7 +83,7 @@ public class LoginViewcontroller {
 
         try {
             System.out.println("LoginViewcontroller: Attempting to query database for user: " + email);
-            String query = "SELECT id FROM user WHERE email = ? AND mdp = ?";
+            String query = "SELECT id, role FROM user WHERE email = ? AND mdp = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
@@ -93,12 +93,22 @@ public class LoginViewcontroller {
 
             if (resultSet.next()) {
                 int userId = resultSet.getInt("id");
-                System.out.println("LoginViewcontroller: Login successful for user ID: " + userId);
+                String role = resultSet.getString("role");
+                System.out.println("LoginViewcontroller: Login successful for user ID: " + userId + " with role: " + role);
                 
                 Stage loginStage = (Stage) loginEmail.getScene().getWindow();
                 loginStage.close();
 
-                openAccueil(userId);
+                if ("admin".equalsIgnoreCase(role)) {
+                    System.out.println("Opening Admin interface");
+                    openAdminInterface(userId);
+                } else if ("etudiant".equalsIgnoreCase(role)) {
+                    System.out.println("Opening Etudiant interface");
+                    openAccueil(userId);
+                } else {
+                    System.err.println("Role non reconnu: '" + role + "'");
+                    showAlert("Erreur", "Rôle non reconnu: " + role);
+                }
             } else {
                 System.out.println("LoginViewcontroller: Login failed - invalid credentials for user: " + email);
                 showAlert("Erreur", "Email ou mot de passe incorrect");
@@ -109,7 +119,7 @@ public class LoginViewcontroller {
             e.printStackTrace();
         } catch (IOException e) {
             System.err.println("LoginViewcontroller: Error loading view: " + e.getMessage());
-            showAlert("Erreur", "Erreur lors de l'ouverture de la vue d'ajout de dossier.");
+            showAlert("Erreur", "Erreur lors de l'ouverture de la vue.");
             e.printStackTrace();
         }
     }
@@ -126,6 +136,25 @@ public class LoginViewcontroller {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Accueil - GradAway");
+        stage.setMinWidth(1200);
+        stage.setMinHeight(700);
+        stage.setResizable(true);
+        stage.centerOnScreen();
+        stage.show();
+    }
+
+    private void openAdminInterface(int userId) throws IOException {
+        System.out.println("LoginViewcontroller: Opening Admin interface for User ID: " + userId);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin.fxml"));
+        Parent root = loader.load();
+
+        Admincontroller adminController = loader.getController();
+        // You can set any necessary data in the admin controller here
+
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Admin Dashboard - GradAway");
         stage.setMinWidth(1200);
         stage.setMinHeight(700);
         stage.setResizable(true);
