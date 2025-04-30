@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="764.0" prefWidth="914.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListFoyerClientControllers">
+<AnchorPane prefHeight="764.0" prefWidth="914.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListFoyerClientControllers">
    <children>
       <VBox spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -23,7 +23,7 @@
                      </font>
                   </TextField>
                   
-                  <Button fx:id="btnB" mnemonicParsing="false" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20;" text="Retour admin">
+                  <Button fx:id="btnSearch" mnemonicParsing="false" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20;" text="Search">
                      <font>
                         <Font size="14.0" />
                      </font>

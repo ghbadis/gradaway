@@ -93,12 +93,41 @@ public class ListFoyerControllers {
         imageView.setFitHeight(150);
         imageView.setPreserveRatio(true);
         
-        try {
-            Image image = new Image(foyer.getImage());
-            imageView.setImage(image);
-        } catch (Exception e) {
-            // Use default image if loading fails
-            imageView.setImage(new Image(getClass().getResourceAsStream("/default-foyer.png")));
+        // Gérer l'image de manière plus robuste
+        boolean imageLoaded = false;
+        if (foyer.getImage() != null && !foyer.getImage().isEmpty()) {
+            try {
+                Image image = new Image(foyer.getImage());
+                imageView.setImage(image);
+                imageLoaded = true;
+            } catch (Exception e) {
+                System.out.println("Erreur lors du chargement de l'image: " + e.getMessage());
+                // L'image n'a pas pu être chargée, on utilisera l'image par défaut
+            }
+        }
+        
+        // Si l'image n'a pas été chargée, utiliser une couleur de fond au lieu d'une image par défaut
+        if (!imageLoaded) {
+            // Créer un rectangle coloré comme placeholder
+            imageView.setStyle("-fx-background-color: #e0e0e0;");
+            // On peut aussi définir une image par défaut si elle existe
+            try {
+                // Essayer plusieurs chemins possibles pour l'image par défaut
+                java.io.InputStream is = getClass().getResourceAsStream("/iamge/images.png");
+                if (is == null) {
+                    is = getClass().getResourceAsStream("/placeholder/placeholder.png");
+                }
+                if (is == null) {
+                    is = getClass().getResourceAsStream("/iamge/téléchargé.png");
+                }
+                
+                if (is != null) {
+                    Image defaultImage = new Image(is);
+                    imageView.setImage(defaultImage);
+                }
+            } catch (Exception e) {
+                System.out.println("Impossible de charger l'image par défaut: " + e.getMessage());
+            }
         }
 
         Label nameLabel = new Label(foyer.getNom());

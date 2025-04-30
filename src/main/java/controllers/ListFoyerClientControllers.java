@@ -26,7 +26,7 @@ public class ListFoyerClientControllers {
 
     @FXML private VBox foyerContainer;
     @FXML private TextField searchField;
-    @FXML private Button btnB;
+    @FXML private Button btnSearch;
     @FXML private MenuButton locationMenu;
 
     private ServiceFoyer serviceFoyer = new ServiceFoyer();
@@ -57,18 +57,49 @@ public class ListFoyerClientControllers {
         HBox card = new HBox(20);
         card.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-border-color: #e0e0e0; -fx-border-radius: 5;");
 
-        // Image
+        // Image avec gestion améliorée
         ImageView imageView = new ImageView();
-        try {
-            Image image = new Image(foyer.getImage());
-            imageView.setImage(image);
-        } catch (Exception e) {
-            // Use a default image if the foyer image is not available
-            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default_foyer.png")));
-        }
         imageView.setFitWidth(200);
         imageView.setFitHeight(150);
         imageView.setPreserveRatio(true);
+        
+        // Gérer l'image de manière plus robuste
+        boolean imageLoaded = false;
+        if (foyer.getImage() != null && !foyer.getImage().isEmpty()) {
+            try {
+                Image image = new Image(foyer.getImage());
+                imageView.setImage(image);
+                imageLoaded = true;
+            } catch (Exception e) {
+                System.out.println("Erreur lors du chargement de l'image: " + e.getMessage());
+                // L'image n'a pas pu être chargée, on utilisera l'image par défaut
+            }
+        }
+        
+        // Si l'image n'a pas été chargée, utiliser une couleur de fond ou une image par défaut
+        if (!imageLoaded) {
+            // Créer un rectangle coloré comme placeholder
+            imageView.setStyle("-fx-background-color: #e0e0e0;");
+            
+            // On peut aussi définir une image par défaut si elle existe
+            try {
+                // Essayer plusieurs chemins possibles pour l'image par défaut
+                java.io.InputStream is = getClass().getResourceAsStream("/iamge/images.png");
+                if (is == null) {
+                    is = getClass().getResourceAsStream("/placeholder/placeholder.png");
+                }
+                if (is == null) {
+                    is = getClass().getResourceAsStream("/iamge/téléchargé.png");
+                }
+                
+                if (is != null) {
+                    Image defaultImage = new Image(is);
+                    imageView.setImage(defaultImage);
+                }
+            } catch (Exception e) {
+                System.out.println("Impossible de charger l'image par défaut: " + e.getMessage());
+            }
+        }
 
         // Info VBox
         VBox infoBox = new VBox(10);
@@ -89,12 +120,21 @@ public class ListFoyerClientControllers {
         Label addressLabel = new Label("🏠 " + foyer.getAdresse());
         addressLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666666;");
 
-        // Réserver button
+        // Réserver button - s'assurer qu'il est bien configuré
         Button reserverButton = new Button("Réserver");
         reserverButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;");
         reserverButton.setOnMouseEntered(e -> reserverButton.setStyle("-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"));
         reserverButton.setOnMouseExited(e -> reserverButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"));
-        reserverButton.setOnAction(e -> navigateToReservation(foyer));
+        
+        // Configurer l'action du bouton pour naviguer vers la page de réservation avec le foyer sélectionné
+        reserverButton.setOnAction(e -> {
+            try {
+                navigateToReservation(foyer);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlert("Erreur", "Erreur lors de la navigation vers la page de réservation: " + ex.getMessage(), Alert.AlertType.ERROR);
+            }
+        });
 
         infoBox.getChildren().addAll(nameLabel, locationLabel, addressLabel, capacityLabel, roomsLabel, reserverButton);
         card.getChildren().addAll(imageView, infoBox);
@@ -127,7 +167,35 @@ public class ListFoyerClientControllers {
     }
 
     private void setupNavigationButton() {
-        btnB.setOnAction(e -> navigateToListFoyer());
+        btnSearch.setOnAction(e -> {
+            String searchTerm = searchField.getText().trim();
+            if (!searchTerm.isEmpty()) {
+                try {
+                    List<Foyer> foyers = serviceFoyer.recuperer();
+                    foyerContainer.getChildren().clear();
+                    
+                    for (Foyer foyer : foyers) {
+                        if (matchesSearch(foyer, searchTerm)) {
+                            foyerContainer.getChildren().add(createFoyerCard(foyer));
+                        }
+                    }
+                    
+                    if (foyerContainer.getChildren().isEmpty()) {
+                        showAlert("Aucun résultat", "Aucun foyer ne correspond à votre recherche.", Alert.AlertType.INFORMATION);
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    showAlert("Erreur", "Erreur lors de la recherche: " + e1.getMessage(), Alert.AlertType.ERROR);
+                }
+            } else {
+                try {
+                    loadFoyers(); // Recharger tous les foyers si le champ de recherche est vide
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    showAlert("Erreur", "Erreur lors du chargement des foyers: " + ex.getMessage(), Alert.AlertType.ERROR);
+                }
+            }
+        });
     }
 
     private void setupLocationMenu() {

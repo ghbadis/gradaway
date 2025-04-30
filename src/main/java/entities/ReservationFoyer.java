@@ -29,6 +29,10 @@ public class ReservationFoyer {
         this.dateReservation = dateReservation;
     }
 
+    public ReservationFoyer() {
+
+    }
+
 
     public int getIdReservation() {
         return idReservation;
@@ -88,5 +92,11 @@ public class ReservationFoyer {
                 ", dateFin=" + dateFin +
                 ", dateReservation=" + dateReservation +
                 '}';
+    }
+
+    public void setIdEtudient(int currentUserId) {
+    }
+
+    public void setIdFoyer(int selectedFoyerId) {
     }
 }

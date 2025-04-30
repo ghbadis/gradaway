@@ -265,16 +265,58 @@ public class ListeReservationControllers {
     
     private void declineReservation(ReservationFoyer reservation) {
         try {
-            // Update status in our map (in a real app, you would update this in the database)
-            reservationStatusMap.put(reservation.getIdReservation(), "Refusée");
+            // Afficher une boîte de dialogue de confirmation
+            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmAlert.setTitle("Confirmation");
+            confirmAlert.setHeaderText(null);
+            confirmAlert.setContentText("Êtes-vous sûr de vouloir refuser et supprimer définitivement la réservation #" + 
+                    reservation.getIdReservation() + " ?");
             
-            // Refresh table to show updated status
-            reservationTable.refresh();
+            // Styliser l'alerte
+            DialogPane dialogPane = confirmAlert.getDialogPane();
+            dialogPane.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
+            javafx.scene.effect.DropShadow shadow = new javafx.scene.effect.DropShadow();
+            shadow.setColor(javafx.scene.paint.Color.color(0, 0, 0, 0.2));
+            dialogPane.setEffect(shadow);
             
-            showAlert("Succès", "Réservation #" + reservation.getIdReservation() + " refusée", Alert.AlertType.INFORMATION);
+            // Personnaliser les boutons
+            ((Button) dialogPane.lookupButton(ButtonType.OK)).setText("Supprimer");
+            ((Button) dialogPane.lookupButton(ButtonType.OK)).setStyle(
+                    "-fx-background-color: #F44336; -fx-text-fill: white; -fx-background-radius: 5;");
+            ((Button) dialogPane.lookupButton(ButtonType.CANCEL)).setText("Annuler");
+            
+            // Attendre la réponse de l'utilisateur
+            confirmAlert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    try {
+                        // Supprimer la réservation de la base de données
+                        boolean deleted = serviceReservation.supprimer(reservation);
+                        
+                        if (deleted) {
+                            // Supprimer la réservation de notre map de statuts
+                            reservationStatusMap.remove(reservation.getIdReservation());
+                            
+                            // Supprimer la réservation de notre liste observable
+                            allReservations.remove(reservation);
+                            
+                            // Rafraîchir la table
+                            reservationTable.refresh();
+                            
+                            showAlert("Succès", "Réservation #" + reservation.getIdReservation() + 
+                                    " supprimée définitivement", Alert.AlertType.INFORMATION);
+                        } else {
+                            showAlert("Erreur", "Impossible de supprimer la réservation", Alert.AlertType.ERROR);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        showAlert("Erreur", "Erreur lors de la suppression de la réservation: " + 
+                                e.getMessage(), Alert.AlertType.ERROR);
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Erreur", "Erreur lors du refus de la réservation: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Erreur", "Erreur lors du traitement de la demande: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     

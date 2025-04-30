@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane accessibleRole="IMAGE_VIEW" prefHeight="723.0" prefWidth="909.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListFoyerControllers">
+<AnchorPane accessibleRole="IMAGE_VIEW" prefHeight="723.0" prefWidth="909.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListFoyerControllers">
    <children>
       <VBox spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <!-- Foyers List Section -->

@@ -50,9 +50,30 @@ public class ServiceReservationFoyer implements IService<ReservationFoyer> {
         String req = "DELETE FROM reservationfoyer WHERE IdReservation=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, reservation.getIdReservation());
-        ps.executeUpdate();
+        int result = ps.executeUpdate();
         System.out.println("Réservation supprimée !");
-        return false;
+        return result > 0; // Retourne true si au moins une ligne a été supprimée
+    }
+
+
+    public boolean studentExists(int studentId) throws SQLException {
+        String sql = "SELECT id FROM user WHERE id = ?";
+        Connection connection;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, studentId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        }
+    }
+
+    public boolean foyerExists(int foyerId) throws SQLException {
+        String sql = "SELECT id FROM foyer WHERE id = ?";
+        Connection connection;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, foyerId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        }
     }
 
     @Override
