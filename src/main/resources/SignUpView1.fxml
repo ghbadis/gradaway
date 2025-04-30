@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #e5e5e5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SignUpView1controller">
+   <children>
+      <Pane prefHeight="600.0" prefWidth="358.0" style="-fx-background-color: #ffff;">
+         <children>
+            <ImageView fitHeight="336.0" fitWidth="269.0" layoutX="57.0" layoutY="-17.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/logo.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="307.0" fitWidth="232.0" layoutX="42.0" layoutY="240.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/photo.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <ImageView fitHeight="76.0" fitWidth="365.0" layoutX="493.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/etape1.png" />
+         </image>
+      </ImageView>
+      <TextField fx:id="tfnom" layoutX="434.0" layoutY="227.0" prefHeight="42.0" prefWidth="402.0" promptText="Nom" />
+      <TextField fx:id="tfmdp" layoutX="434.0" layoutY="434.0" prefHeight="42.0" prefWidth="402.0" promptText="Mot de passe" />
+      <TextField fx:id="tfemail" layoutX="434.0" layoutY="365.0" prefHeight="42.0" prefWidth="402.0" promptText="Email" />
+      <TextField fx:id="tfprenom" layoutX="434.0" layoutY="300.0" prefHeight="42.0" prefWidth="402.0" promptText="Prénom" />
+      <Button id="register" layoutX="434.0" layoutY="526.0" mnemonicParsing="false" onAction="#continuer" prefHeight="42.0" prefWidth="402.0" style="-fx-background-color: #6988f2;" text="Continuer">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Text fx:id="login" layoutX="434.0" layoutY="500.0" onMouseClicked="#login" strokeType="OUTSIDE" strokeWidth="0.0" text="You have an account? Login Here" />
+      <Group fx:id="back" layoutX="381.0" layoutY="48.0" onMouseClicked="#back">
+         <children>
+            <Text layoutX="19.0" layoutY="13.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Back" />
+            <ImageView fitHeight="35.0" fitWidth="15.0" layoutY="0.94921875" pickOnBounds="true" preserveRatio="true">
+               <Image url="@images/back.png" />
+            </ImageView>
+         </children>
+      </Group>
+      <Label layoutX="585.0" layoutY="35.0" prefHeight="42.0" prefWidth="140.0" text="Welcome" textFill="#fc0101">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

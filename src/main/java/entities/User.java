@@ -4,13 +4,13 @@ import java.time.LocalDate;
 
 public class User {
     private int id, age, cin, telephone, moyennes, annee_obtention_diplome;
-    private String nom, prenom, nationalite, email, domaine_etude, universite_origine, role, mdp;
+    private String nom, prenom, nationalite, email, domaine_etude, universite_origine, role, mdp, image;
     private LocalDate dateNaissance;
 
     public User(int id, int age, int cin, int telephone, int moyennes, int annee_obtention_diplome,
                 String nom, String prenom, String nationalite, String email,
                 String domaine_etude, String universite_origine, String role,
-                LocalDate dateNaissance, String mdp) {
+                LocalDate dateNaissance, String mdp, String image) {
         this.id = id;
         this.age = age;
         this.cin = cin;
@@ -26,12 +26,13 @@ public class User {
         this.role = role;
         this.dateNaissance = dateNaissance;
         this.mdp = mdp;
+        this.image = image;
     }
 
     public User(int age, int cin, int telephone, int moyennes, int annee_obtention_diplome,
                 String nom, String prenom, String nationalite, String email,
                 String domaine_etude, String universite_origine, String role,
-                LocalDate dateNaissance, String mdp) {
+                LocalDate dateNaissance, String mdp, String image) {
         this.age = age;
         this.cin = cin;
         this.telephone = telephone;
@@ -46,6 +47,7 @@ public class User {
         this.role = role;
         this.dateNaissance = dateNaissance;
         this.mdp = mdp;
+        this.image = image;
     }
 
 
@@ -169,6 +171,14 @@ public class User {
         this.mdp = mdp;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -187,6 +197,7 @@ public class User {
                 ", role='" + role + '\'' +
                 ", dateNaissance=" + dateNaissance +
                 ", mdp='" + mdp + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
 }

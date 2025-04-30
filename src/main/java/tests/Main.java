@@ -47,7 +47,8 @@ public class Main {
                     "ISET Nabeul",        // universite_origine
                     "Etudiant",           // role
                     LocalDate.of(2000, 1, 1),  // dateNaissance
-                    "password123"         // mdp
+                    "password123",         // mdp
+                    "lien photo"
             ));
 
             //Modifier user
@@ -66,7 +67,8 @@ public class Main {
                     "ISET Nabeul",        // universite_origine
                     "Etudiant",           // role
                     LocalDate.of(2000, 1, 1),  // dateNaissance
-                    "newpassword123"      // mdp
+                    "newpassword123",      // mdp
+                    "lien photo"
             ));*/
 
             // Supprimer user
@@ -85,7 +87,8 @@ public class Main {
                     "ISET Nabeul",        // universite_origine
                     "Etudiant",           // role
                     LocalDate.of(2000, 1, 1),  // dateNaissance
-                    "password123"         // mdp
+                    "password123"   ,      // mdp
+                    "lien photo"
             ));*/
 
             //ajouter Dossier
