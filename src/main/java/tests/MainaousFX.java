@@ -6,16 +6,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class MainFXaous extends Application {
+public class MainaousFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Charger le fichier FXML de gestion des événements
+            // Charger le fichier FXML principal
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion_evenement.fxml"));
             Parent root = loader.load();
 
             // Configurer la scène
             Scene scene = new Scene(root);
+
+            // Charger le CSS
             scene.getStylesheets().add(getClass().getResource("/design.css").toExternalForm());
 
             // Configurer la fenêtre principale
@@ -24,6 +26,7 @@ public class MainFXaous extends Application {
             primaryStage.show();
 
         } catch (Exception e) {
+            System.err.println("Erreur lors du chargement de l'interface : " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -31,5 +34,4 @@ public class MainFXaous extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-}
-
+} 

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@design.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReservationEvenementController">
+    
+    <VBox alignment="CENTER" layoutX="18.4" prefHeight="360.0" prefWidth="562.0" spacing="20" stylesheets="@design.css" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
+        
+        <Label prefHeight="34.0" prefWidth="199.0" stylesheets="@design.css" text="Réservation d'événement">
+         <styleClass>
+            <String fx:value="title-label" />
+            <String fx:value="add-btn" />
+         </styleClass></Label>
+        
+        <GridPane hgap="10" vgap="10">
+            <Label text="Nom:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="nom_txtf" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            
+            <Label text="Prénom:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="prenom_txtf" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            
+            <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="email_txtf" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            
+            <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <DatePicker fx:id="date_picker" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+        
+        <Button fx:id="reserver_button" styleClass="update-btn" text="Réserver" />
+      <Button fx:id="afficher_mes_reservation_butt" mnemonicParsing="false" styleClass="clear-btn" stylesheets="@design.css" text="Afficher mes reservation " />
+      <styleClass>
+         <String fx:value="white-bg" />
+         <String fx:value="shadow" />
+      </styleClass>
+    </VBox>
+   <styleClass>
+      <String fx:value="white-bg" />
+      <String fx:value="shadow" />
+   </styleClass>
+</AnchorPane>

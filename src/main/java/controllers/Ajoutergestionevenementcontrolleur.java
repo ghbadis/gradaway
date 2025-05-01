@@ -4,13 +4,25 @@ import entities.Evenement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import Services.ServiceEvenement;
 
-
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+
 
 public class Ajoutergestionevenementcontrolleur {
     @FXML
@@ -32,7 +44,7 @@ public class Ajoutergestionevenementcontrolleur {
     @FXML
     private TableColumn<Evenement, Integer> place_disponible_col;
     @FXML
-    private TextField date_txtf;
+    private DatePicker date_picker;
     @FXML
     private TableColumn<Evenement, String> date_col;
     @FXML
@@ -40,13 +52,11 @@ public class Ajoutergestionevenementcontrolleur {
     @FXML
     private TextField place_disponible_txtf;
     @FXML
-    private ComboBox<String> lieu_comb;
+    private TextField lieu_txtf;
     @FXML
     private TextField chercher_txtf;
     @FXML
     private TableColumn<Evenement, Integer> evenement_id_col;
-    @FXML
-    private TextField evenement_id_txtf;
     @FXML
     private TableColumn<Evenement, String> description_col;
     @FXML
@@ -56,12 +66,23 @@ public class Ajoutergestionevenementcontrolleur {
 
     private ServiceEvenement serviceEvenement;
     private ObservableList<Evenement> evenementsList;
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    @FXML
+    private Button ajouter_image_fx;
+    @FXML
+    private ImageView imageviem_fx;
+    @FXML
+    private AnchorPane gestion_evenement_anchor;
+    @FXML
+    private TableColumn image_colonne;
+    @FXML
+    private Button liste_evenement_butt;
 
     @FXML
     public void initialize() {
         serviceEvenement = new ServiceEvenement();
         evenementsList = FXCollections.observableArrayList();
-
+        
         // Initialiser les colonnes du TableView
         evenement_id_col.setCellValueFactory(new PropertyValueFactory<>("id_evenement"));
         nom_col.setCellValueFactory(new PropertyValueFactory<>("nom"));
@@ -70,19 +91,19 @@ public class Ajoutergestionevenementcontrolleur {
         lieu_col.setCellValueFactory(new PropertyValueFactory<>("lieu"));
         domaine_col.setCellValueFactory(new PropertyValueFactory<>("domaine"));
         place_disponible_col.setCellValueFactory(new PropertyValueFactory<>("places_disponibles"));
-
-        // Ajouter les lieux au ComboBox
-        lieu_comb.getItems().addAll("Salle Polyvalente", "Amphithéâtre", "Salle de conférence", "Espace extérieur");
-
+        image_colonne.setCellValueFactory(new PropertyValueFactory<>("image"));
+        
         // Charger les données
         loadData();
-
+        
         // Ajouter les listeners pour les boutons
         ajouter_button.setOnAction(event -> ajouterEvenement());
         modifier_button.setOnAction(event -> modifierEvenement());
         supprimer_button.setOnAction(event -> supprimerEvenement());
         affichier_button.setOnAction(event -> afficherEvenement());
-
+        ajouter_image_fx.setOnAction(event -> ajouterImage());
+        liste_evenement_butt.setOnAction(event -> ouvrirListeEvenements());
+        
         // Ajouter un listener pour la sélection dans le TableView
         gestion_evenement_tableview.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -102,18 +123,34 @@ public class Ajoutergestionevenementcontrolleur {
         }
     }
 
+    private void ajouterImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir une image");
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+        
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            String imagePath = selectedFile.getAbsolutePath();
+            Image image = new Image(selectedFile.toURI().toString());
+            imageviem_fx.setImage(image);
+        }
+    }
+
     private void ajouterEvenement() {
         try {
             String nom = nom_txtf.getText();
             String description = description_txtf.getText();
-            String date = date_txtf.getText();
-            String lieu = lieu_comb.getValue();
+            String date = date_picker.getValue().format(dateFormatter);
+            String lieu = lieu_txtf.getText();
             String domaine = domaine_txtf.getText();
             int placesDisponibles = Integer.parseInt(place_disponible_txtf.getText());
+            String imagePath = imageviem_fx.getImage() != null ? imageviem_fx.getImage().getUrl() : null;
 
-            Evenement evenement = new Evenement(nom, description, date, lieu, domaine, placesDisponibles);
+            Evenement evenement = new Evenement(nom, description, date, lieu, domaine, placesDisponibles, imagePath);
             serviceEvenement.ajouter(evenement);
-
+            
             clearFields();
             loadData();
             showAlert("Succès", "Événement ajouté avec succès", null);
@@ -134,10 +171,13 @@ public class Ajoutergestionevenementcontrolleur {
         try {
             selectedEvenement.setNom(nom_txtf.getText());
             selectedEvenement.setDescription(description_txtf.getText());
-            selectedEvenement.setDate(date_txtf.getText());
-            selectedEvenement.setLieu(lieu_comb.getValue());
+            selectedEvenement.setDate(date_picker.getValue().format(dateFormatter));
+            selectedEvenement.setLieu(lieu_txtf.getText());
             selectedEvenement.setDomaine(domaine_txtf.getText());
             selectedEvenement.setPlaces_disponibles(Integer.parseInt(place_disponible_txtf.getText()));
+            if (imageviem_fx.getImage() != null) {
+                selectedEvenement.setImage(imageviem_fx.getImage().getUrl());
+            }
 
             serviceEvenement.modifier(selectedEvenement);
             loadData();
@@ -174,23 +214,27 @@ public class Ajoutergestionevenementcontrolleur {
     }
 
     private void afficherEvenementSelectionne(Evenement evenement) {
-        evenement_id_txtf.setText(String.valueOf(evenement.getId_evenement()));
         nom_txtf.setText(evenement.getNom());
         description_txtf.setText(evenement.getDescription());
-        date_txtf.setText(evenement.getDate());
-        lieu_comb.setValue(evenement.getLieu());
+        date_picker.setValue(LocalDate.parse(evenement.getDate(), dateFormatter));
+        lieu_txtf.setText(evenement.getLieu());
         domaine_txtf.setText(evenement.getDomaine());
         place_disponible_txtf.setText(String.valueOf(evenement.getPlaces_disponibles()));
+        if (evenement.getImage() != null) {
+            imageviem_fx.setImage(new Image(evenement.getImage()));
+        } else {
+            imageviem_fx.setImage(null);
+        }
     }
 
     private void clearFields() {
-        evenement_id_txtf.clear();
         nom_txtf.clear();
         description_txtf.clear();
-        date_txtf.clear();
-        lieu_comb.setValue(null);
+        date_picker.setValue(null);
+        lieu_txtf.clear();
         domaine_txtf.clear();
         place_disponible_txtf.clear();
+        imageviem_fx.setImage(null);
     }
 
     private void showAlert(String title, String header, String content) {
@@ -199,5 +243,19 @@ public class Ajoutergestionevenementcontrolleur {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    private void ouvrirListeEvenements() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = new Stage();
+            stage.setTitle("Liste des Événements");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture de la liste des événements", e.getMessage());
+        }
     }
 }

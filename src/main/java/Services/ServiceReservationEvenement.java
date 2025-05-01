@@ -16,29 +16,31 @@ public class ServiceReservationEvenement implements IService<ReservationEvenemen
 
     @Override
     public void ajouter(ReservationEvenement reservation) throws SQLException {
-        String req = "INSERT INTO reservationevenement(id_etudiant, id_evenement, domaine, statut, date) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String req = "INSERT INTO reservationevenement(id_etudiant, id_evenement, email, nom, prenom, date) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, reservation.getId_etudiant());
         ps.setInt(2, reservation.getId_evenement());
-        ps.setString(3, reservation.getDomaine());
-        ps.setString(4, reservation.getStatut());
-        ps.setString(5, reservation.getDate());
+        ps.setString(3, reservation.getEmail());
+        ps.setString(4, reservation.getNom());
+        ps.setString(5, reservation.getPrenom());
+        ps.setString(6, reservation.getDate());
         ps.executeUpdate();
         System.out.println("Réservation ajoutée");
     }
 
     @Override
     public void modifier(ReservationEvenement reservation) throws SQLException {
-        String req = "UPDATE reservationevenement SET id_etudiant=?, id_evenement=?, domaine=?, statut=?, date=? " +
+        String req = "UPDATE reservationevenement SET id_etudiant=?, id_evenement=?, email=?, nom=?, prenom=?, date=? " +
                 "WHERE id_reservation=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, reservation.getId_etudiant());
         ps.setInt(2, reservation.getId_evenement());
-        ps.setString(3, reservation.getDomaine());
-        ps.setString(4, reservation.getStatut());
-        ps.setString(5, reservation.getDate());
-        ps.setInt(6, reservation.getId_reservation());
+        ps.setString(3, reservation.getEmail());
+        ps.setString(4, reservation.getNom());
+        ps.setString(5, reservation.getPrenom());
+        ps.setString(6, reservation.getDate());
+        ps.setInt(7, reservation.getId_reservation());
         ps.executeUpdate();
         System.out.println("Réservation modifiée");
     }
@@ -62,10 +64,11 @@ public class ServiceReservationEvenement implements IService<ReservationEvenemen
             int id = rs.getInt("id_reservation");
             int idEtudiant = rs.getInt("id_etudiant");
             int idEvenement = rs.getInt("id_evenement");
-            String domaine = rs.getString("domaine");
-            String statut = rs.getString("statut");
+            String email = rs.getString("email");
+            String nom = rs.getString("nom");
+            String prenom = rs.getString("prenom");
             String date = rs.getString("date");
-            ReservationEvenement r = new ReservationEvenement(id, idEtudiant, idEvenement, domaine, statut, date);
+            ReservationEvenement r = new ReservationEvenement(id, idEtudiant, idEvenement, email, nom, prenom, date);
             reservations.add(r);
         }
         return reservations;
