@@ -50,9 +50,9 @@ public class ServiceReservationFoyer implements IService<ReservationFoyer> {
         String req = "DELETE FROM reservationfoyer WHERE IdReservation=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, reservation.getIdReservation());
-        int result = ps.executeUpdate();
+        ps.executeUpdate();
         System.out.println("Réservation supprimée !");
-        return result > 0; // Retourne true si au moins une ligne a été supprimée
+        return false;
     }
 
 

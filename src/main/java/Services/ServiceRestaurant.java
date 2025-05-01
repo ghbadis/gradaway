@@ -19,8 +19,8 @@ public class ServiceRestaurant implements IService<Restaurant> {
 
     @Override
     public void ajouter(Restaurant restaurant) throws SQLException {
-        String req = "INSERT INTO restaurant(nom, adresse, ville, pays, capacitetotal, horaireouverture, horairefermeture, telephone, email) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO restaurant(nom, adresse, ville, pays, capacitetotal, horaireouverture, horairefermeture, telephone, email, image) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setString(1, restaurant.getNom());
         ps.setString(2, restaurant.getAdresse());
@@ -31,13 +31,14 @@ public class ServiceRestaurant implements IService<Restaurant> {
         ps.setString(7, restaurant.getHoraireFermeture());
         ps.setString(8, restaurant.getTelephone());
         ps.setString(9, restaurant.getEmail());
+        ps.setString(10, restaurant.getImage());
         ps.executeUpdate();
         System.out.println("Restaurant ajouté !");
     }
 
     @Override
     public void modifier(Restaurant restaurant) throws SQLException {
-        String req = "UPDATE restaurant SET nom=?, adresse=?, ville=?, pays=?, capacitetotal=?, horaireouverture=?, horairefermeture=?, telephone=?, email=? WHERE idRestaurant=?";
+        String req = "UPDATE restaurant SET nom=?, adresse=?, ville=?, pays=?, capacitetotal=?, horaireouverture=?, horairefermeture=?, telephone=?, email=?, image=? WHERE idRestaurant=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setString(1, restaurant.getNom());
         ps.setString(2, restaurant.getAdresse());
@@ -48,7 +49,8 @@ public class ServiceRestaurant implements IService<Restaurant> {
         ps.setString(7, restaurant.getHoraireFermeture());
         ps.setString(8, restaurant.getTelephone());
         ps.setString(9, restaurant.getEmail());
-        ps.setInt(10, restaurant.getIdRestaurant());
+        ps.setString(10, restaurant.getImage());
+        ps.setInt(11, restaurant.getIdRestaurant());
         ps.executeUpdate();
         System.out.println("Restaurant modifié !");
     }
@@ -81,13 +83,18 @@ public class ServiceRestaurant implements IService<Restaurant> {
             String fermeture = rs.getString("horairefermeture");
             String tel = rs.getString("telephone");
             String email = rs.getString("email");
+            String image = rs.getString("image");
 
-            Restaurant r = new Restaurant(id, nom, adresse, ville, pays, capacite, ouverture, fermeture, tel, email);
+            Restaurant r = new Restaurant(id, nom, adresse, ville, pays, capacite, ouverture, fermeture, tel, email, image);
             restaurants.add(r);
         }
 
         return restaurants;
     }
 
+    public Restaurant getById(int restaurantId) {
+
+        return null;
     }
+}
 

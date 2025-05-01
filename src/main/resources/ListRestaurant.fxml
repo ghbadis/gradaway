@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.Region?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: linear-gradient(to bottom right, #f5f7fa, #e9ebee);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListRestaurantController">
+    <children>
+        <!-- Header Section -->
+        <StackPane layoutX="0.0" layoutY="0.0" prefHeight="80.0" prefWidth="1000.0" style="-fx-background-color: #2196F3; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 3);">
+            <children>
+                <Text fill="WHITE" text="Liste des Restaurants" textAlignment="CENTER">
+                    <font>
+                        <Font name="System Bold" size="28.0" />
+                    </font>
+                </Text>
+            </children>
+        </StackPane>
+        
+        <!-- Main Content -->
+        <VBox layoutX="20.0" layoutY="100.0" prefHeight="580.0" prefWidth="960.0" spacing="15.0">
+            <!-- Search and Actions Bar -->
+            <HBox spacing="10.0" alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-background-radius: 5px; -fx-padding: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);">
+                <TextField fx:id="searchField" promptText="Rechercher un restaurant..." prefHeight="40.0" prefWidth="300.0" style="-fx-background-radius: 20px; -fx-border-radius: 20px; -fx-border-color: #e0e0e0; -fx-padding: 8px 15px;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="refreshBtn" onAction="#refreshTable" text="Actualiser" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 20px;">
+                    <graphic>
+                        <Region prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: white; -fx-shape: 'M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 9h7V2l-2.35 2.35z'; -fx-scale-x: 0.7; -fx-scale-y: 0.7;" />
+                    </graphic>
+                </Button>
+                <Button fx:id="addBtn" onAction="#navigateToAdd" text="Ajouter" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 20px;">
+                    <graphic>
+                        <Region prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: white; -fx-shape: 'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'; -fx-scale-x: 0.7; -fx-scale-y: 0.7;" />
+                    </graphic>
+                </Button>
+            </HBox>
+            
+            <!-- Table View -->
+            <TableView fx:id="restaurantTable" prefHeight="500.0" prefWidth="960.0" style="-fx-background-color: white; -fx-background-radius: 5px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);">
+                <columns>
+                    <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
+                    <TableColumn fx:id="nomColumn" prefWidth="150.0" text="Nom" />
+                    <TableColumn fx:id="adresseColumn" prefWidth="150.0" text="Adresse" />
+                    <TableColumn fx:id="villeColumn" prefWidth="100.0" text="Ville" />
+                    <TableColumn fx:id="paysColumn" prefWidth="100.0" text="Pays" />
+                    <TableColumn fx:id="capaciteColumn" prefWidth="80.0" text="Capacité" />
+                    <TableColumn fx:id="ouvertureColumn" prefWidth="80.0" text="Ouverture" />
+                    <TableColumn fx:id="fermetureColumn" prefWidth="80.0" text="Fermeture" />
+                    <TableColumn fx:id="telephoneColumn" prefWidth="100.0" text="Téléphone" />
+                    <TableColumn fx:id="actionColumn" prefWidth="150.0" text="Actions" />
+                </columns>
+            </TableView>
+        </VBox>
+    </children>
+</AnchorPane> 
