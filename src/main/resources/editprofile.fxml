@@ -282,9 +282,6 @@
    <TextField fx:id="tfmdpprfil" layoutX="635.0" layoutY="413.0" prefHeight="26.0" prefWidth="137.0" />
    <Label layoutX="645.0" layoutY="394.0" text="Mot de passe : " />
    <Label layoutX="281.0" layoutY="476.0" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="Informations Académiques" />
-   <ImageView fitHeight="178.0" fitWidth="258.0" layoutX="854.0" layoutY="158.0" pickOnBounds="true" preserveRatio="true">
-      <image>
-         <Image url="@images/personne.png" />
-      </image></ImageView>
-   <Button layoutX="948.0" layoutY="353.0" mnemonicParsing="false" text="Change photo " />
+   <ImageView fx:id="ajouterimageprofil" fitHeight="178.0" fitWidth="258.0" layoutX="872.0" layoutY="158.0" pickOnBounds="true" preserveRatio="true" />
+   <Button layoutX="948.0" layoutY="353.0" mnemonicParsing="false" onAction="#changephoto" text="Change photo " />
 </AnchorPane>

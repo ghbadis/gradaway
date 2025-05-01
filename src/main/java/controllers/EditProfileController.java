@@ -4,7 +4,11 @@ import Services.ServiceUser;
 import entities.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.event.ActionEvent;
+import javafx.stage.FileChooser;
+import java.io.File;
 import java.sql.SQLException;
 
 public class EditProfileController {
@@ -42,6 +46,8 @@ public class EditProfileController {
     private ServiceUser serviceUser;
     private User currentUser;
     private int userId;
+    @FXML
+    private ImageView ajouterimageprofil;
 
     public EditProfileController() {
         serviceUser = new ServiceUser();
@@ -191,6 +197,34 @@ public class EditProfileController {
             setMessage("Erreur lors de la mise à jour du profil: " + e.getMessage());
             System.err.println("Error updating profile: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void changephoto(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Profile Picture");
+        
+        // Set extension filters
+        FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.jpeg", "*.png", "*.gif");
+        fileChooser.getExtensionFilters().add(imageFilter);
+        
+        // Show open file dialog
+        File selectedFile = fileChooser.showOpenDialog(null);
+        
+        if (selectedFile != null) {
+            try {
+                // Create an image from the selected file
+                Image image = new Image(selectedFile.toURI().toString());
+                
+                // Set the image to the ImageView
+                ajouterimageprofil.setImage(image);
+                
+                setMessage("Profile picture updated successfully!");
+            } catch (Exception e) {
+                setMessage("Error loading image: " + e.getMessage());
+                System.err.println("Error loading image: " + e.getMessage());
+            }
         }
     }
 }
