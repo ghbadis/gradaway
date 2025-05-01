@@ -29,6 +29,8 @@ import java.io.IOException;
 import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.DatePicker;
 
 public class AdminUsercontroller implements Initializable {
     @FXML
@@ -84,7 +86,18 @@ public class AdminUsercontroller implements Initializable {
         colTelephone.setCellValueFactory(new PropertyValueFactory<>("telephone"));
         colCin.setCellValueFactory(new PropertyValueFactory<>("cin"));
         colAge.setCellValueFactory(new PropertyValueFactory<>("age"));
-        colDateNaissance.setCellValueFactory(new PropertyValueFactory<>("date_naissance"));
+        colDateNaissance.setCellValueFactory(new PropertyValueFactory<>("dateNaissance"));
+        colDateNaissance.setCellFactory(column -> new TableCell<User, java.time.LocalDate>() {
+            @Override
+            protected void updateItem(java.time.LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.toString());
+                }
+            }
+        });
         colNationalite.setCellValueFactory(new PropertyValueFactory<>("nationalite"));
         colDomaineEtude.setCellValueFactory(new PropertyValueFactory<>("domaine_etude"));
         colUniversiteOrigine.setCellValueFactory(new PropertyValueFactory<>("universite_origine"));
@@ -176,6 +189,7 @@ public class AdminUsercontroller implements Initializable {
         TextField telephoneField = new TextField(String.valueOf(selectedUser.getTelephone()));
         TextField cinField = new TextField(String.valueOf(selectedUser.getCin()));
         TextField ageField = new TextField(String.valueOf(selectedUser.getAge()));
+        DatePicker dateNaissanceField = new DatePicker(selectedUser.getDateNaissance());
         TextField nationaliteField = new TextField(selectedUser.getNationalite());
         TextField domaineEtudeField = new TextField(selectedUser.getDomaine_etude());
         TextField universiteOrigineField = new TextField(selectedUser.getUniversite_origine());
@@ -196,20 +210,22 @@ public class AdminUsercontroller implements Initializable {
         grid.add(cinField, 1, 4);
         grid.add(new Label("Age:"), 0, 5);
         grid.add(ageField, 1, 5);
-        grid.add(new Label("Nationalite:"), 0, 6);
-        grid.add(nationaliteField, 1, 6);
-        grid.add(new Label("Domaine Etude:"), 0, 7);
-        grid.add(domaineEtudeField, 1, 7);
-        grid.add(new Label("Universite Origine:"), 0, 8);
-        grid.add(universiteOrigineField, 1, 8);
-        grid.add(new Label("Role:"), 0, 9);
-        grid.add(roleField, 1, 9);
-        grid.add(new Label("Moyennes:"), 0, 10);
-        grid.add(moyennesField, 1, 10);
-        grid.add(new Label("Annee Obtention Diplome:"), 0, 11);
-        grid.add(anneeObtentionDiplomeField, 1, 11);
-        grid.add(new Label("Image:"), 0, 12);
-        grid.add(imageField, 1, 12);
+        grid.add(new Label("Date de Naissance:"), 0, 6);
+        grid.add(dateNaissanceField, 1, 6);
+        grid.add(new Label("Nationalite:"), 0, 7);
+        grid.add(nationaliteField, 1, 7);
+        grid.add(new Label("Domaine Etude:"), 0, 8);
+        grid.add(domaineEtudeField, 1, 8);
+        grid.add(new Label("Universite Origine:"), 0, 9);
+        grid.add(universiteOrigineField, 1, 9);
+        grid.add(new Label("Role:"), 0, 10);
+        grid.add(roleField, 1, 10);
+        grid.add(new Label("Moyennes:"), 0, 11);
+        grid.add(moyennesField, 1, 11);
+        grid.add(new Label("Annee Obtention Diplome:"), 0, 12);
+        grid.add(anneeObtentionDiplomeField, 1, 12);
+        grid.add(new Label("Image:"), 0, 13);
+        grid.add(imageField, 1, 13);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -228,6 +244,7 @@ public class AdminUsercontroller implements Initializable {
                 selectedUser.setTelephone(Integer.parseInt(telephoneField.getText()));
                 selectedUser.setCin(Integer.parseInt(cinField.getText()));
                 selectedUser.setAge(Integer.parseInt(ageField.getText()));
+                selectedUser.setDateNaissance(dateNaissanceField.getValue());
                 selectedUser.setNationalite(nationaliteField.getText());
                 selectedUser.setDomaine_etude(domaineEtudeField.getText());
                 selectedUser.setUniversite_origine(universiteOrigineField.getText());
