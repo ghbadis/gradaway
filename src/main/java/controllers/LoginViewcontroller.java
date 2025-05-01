@@ -145,10 +145,10 @@ public class LoginViewcontroller {
 
     private void openAdminInterface(int userId) throws IOException {
         System.out.println("LoginViewcontroller: Opening Admin interface for User ID: " + userId);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AcceuilAdmin.fxml"));
         Parent root = loader.load();
 
-        Admincontroller adminController = loader.getController();
+        AcceuilAdmincontroller adminController = loader.getController();
         // You can set any necessary data in the admin controller here
 
         Stage stage = new Stage();

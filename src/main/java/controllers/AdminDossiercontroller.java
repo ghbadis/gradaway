@@ -6,11 +6,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -76,43 +81,7 @@ public class AdminDossiercontroller implements Initializable {
         }
     }
 
-    @javafx.fxml.FXML
-    public void onhebergementButtonClick(ActionEvent actionEvent) {
-    }
 
-    @javafx.fxml.FXML
-    public void onentretienButtonClick(ActionEvent actionEvent) {
-    }
 
-    @javafx.fxml.FXML
-    public void onuniversiteButtonClick(ActionEvent actionEvent) {
-    }
 
-    @javafx.fxml.FXML
-    public void onvolsButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void ondossierButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onlogoutButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onUserButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onevenementButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onrestaurantButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onAccueilButtonClick(ActionEvent actionEvent) {
-    }
 }

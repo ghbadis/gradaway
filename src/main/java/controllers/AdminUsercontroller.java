@@ -21,8 +21,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 import javafx.util.Pair;
 import javafx.geometry.Insets;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.io.IOException;
+import javafx.fxml.Initializable;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class Admincontroller {
+public class AdminUsercontroller implements Initializable {
     @FXML
     private TableView<User> TvUser;
 
@@ -66,9 +74,9 @@ public class Admincontroller {
     private ServiceUser serviceUser = new ServiceUser();
     private ServiceDossier serviceDossier = new ServiceDossier();
 
-    @FXML
-    public void onUserButtonClick(ActionEvent actionEvent) {
-        // Set cell value factories
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Set up the table columns
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
         colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
@@ -76,7 +84,7 @@ public class Admincontroller {
         colTelephone.setCellValueFactory(new PropertyValueFactory<>("telephone"));
         colCin.setCellValueFactory(new PropertyValueFactory<>("cin"));
         colAge.setCellValueFactory(new PropertyValueFactory<>("age"));
-        colDateNaissance.setCellValueFactory(new PropertyValueFactory<>("dateNaissance"));
+        colDateNaissance.setCellValueFactory(new PropertyValueFactory<>("date_naissance"));
         colNationalite.setCellValueFactory(new PropertyValueFactory<>("nationalite"));
         colDomaineEtude.setCellValueFactory(new PropertyValueFactory<>("domaine_etude"));
         colUniversiteOrigine.setCellValueFactory(new PropertyValueFactory<>("universite_origine"));
@@ -85,50 +93,22 @@ public class Admincontroller {
         colAnneeObtentionDiplome.setCellValueFactory(new PropertyValueFactory<>("annee_obtention_diplome"));
         colImage.setCellValueFactory(new PropertyValueFactory<>("image"));
 
-        // Load data
+        // Load and display users
+        loadUsers();
+    }
+
+    private void loadUsers() {
         try {
             List<User> users = serviceUser.recuperer();
-            TvUser.getItems().clear();
-            TvUser.getItems().addAll(users);
+            TvUser.getItems().setAll(users);
         } catch (Exception e) {
             e.printStackTrace();
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Erreur lors du chargement des utilisateurs.");
+            alert.showAndWait();
         }
-    }
-
-    @javafx.fxml.FXML
-    public void onhebergementButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onentretienButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onuniversiteButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onvolsButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void ondossierButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onlogoutButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onevenementButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onrestaurantButtonClick(ActionEvent actionEvent) {
-    }
-
-    @javafx.fxml.FXML
-    public void onAccueilButtonClick(ActionEvent actionEvent) {
     }
 
     @FXML

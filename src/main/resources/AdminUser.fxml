@@ -2,128 +2,19 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!-- Changed controller -->
-
-<AnchorPane fx:id="rootPane" prefHeight="678.0" prefWidth="1200.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierDossierController">
-    <children>
-        <VBox alignment="TOP_CENTER" layoutX="259.2" layoutY="38.0" prefHeight="673.0" prefWidth="823.0" spacing="20.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="239.0" AnchorPane.rightAnchor="125.79999999999995" AnchorPane.topAnchor="38.0">
-            <children>
-                <!-- Changed title -->
-                <Label prefHeight="43.0" prefWidth="287.0" text="Modifier Mon Dossier" textFill="RED">
-                    <font>
-                        <Font name="System Bold" size="28.0" />
-                    </font>
-                </Label>
-                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-                    <content>
-                        <GridPane hgap="15.0" prefHeight="506.0" prefWidth="991.0" vgap="15.0">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                            </rowConstraints>
-                            <children>
-                                <!-- Fields are the same as AjoutDossier -->
-                                <!-- CIN -->
-                                <Label text="CIN:" GridPane.halignment="RIGHT" />
-                                <TextField fx:id="cinPathField" editable="false" promptText="Aucun fichier sélectionné" GridPane.columnIndex="1" />
-                                <Button mnemonicParsing="false" onAction="#handleUploadCin" text="Choisir Fichier..." GridPane.columnIndex="2" />
-
-                                <!-- Photo -->
-                                <Label text="Photo:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                                <TextField fx:id="photoPathField" editable="false" promptText="Aucun fichier sélectionné" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                <Button mnemonicParsing="false" onAction="#handleUploadPhoto" text="Choisir Fichier..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
-
-                                <!-- Diplôme Baccalauréat -->
-                                <Label text="Diplôme Baccalauréat:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                                <TextField fx:id="diplomeBacPathField" editable="false" promptText="Aucun fichier sélectionné" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                <Button mnemonicParsing="false" onAction="#handleUploadDiplomeBac" text="Choisir Fichier..." GridPane.columnIndex="2" GridPane.rowIndex="2" />
-
-                                <!-- Relevé de Notes -->
-                                <Label text="Relevé de Notes:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                                <TextField fx:id="releveNotePathField" editable="false" promptText="Aucun fichier sélectionné" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                <Button mnemonicParsing="false" onAction="#handleUploadReleveNote" text="Choisir Fichier..." GridPane.columnIndex="2" GridPane.rowIndex="3" />
-
-                                <!-- Diplômes Obtenus -->
-                                <Label text="Diplômes Obtenus:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-                                <TextField fx:id="diplomeObtenuPathField" editable="false" promptText="Aucun fichier sélectionné" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                <Button mnemonicParsing="false" onAction="#handleUploadDiplomeObtenu" text="Choisir Fichier..." GridPane.columnIndex="2" GridPane.rowIndex="4" />
-
-                                <!-- Lettre de Motivations -->
-                                <Label text="Lettre de Motivations:" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-                                <TextField fx:id="lettreMotivationPathField" editable="false" promptText="Aucun fichier sélectionné" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                <Button mnemonicParsing="false" onAction="#handleUploadLettreMotivation" text="Choisir Fichier..." GridPane.columnIndex="2" GridPane.rowIndex="5" />
-
-                                <!-- Dossier Santé -->
-                                <Label text="Dossier Santé:" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-                                <TextField fx:id="dossierSantePathField" editable="false" promptText="Aucun fichier sélectionné" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                <Button mnemonicParsing="false" onAction="#handleUploadDossierSante" text="Choisir Fichier..." GridPane.columnIndex="2" GridPane.rowIndex="6" />
-
-                                <!-- CV -->
-                                <Label text="CV:" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
-                                <TextField fx:id="cvPathField" editable="false" promptText="Aucun fichier sélectionné" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                <Button mnemonicParsing="false" onAction="#handleUploadCv" text="Choisir Fichier..." GridPane.columnIndex="2" GridPane.rowIndex="7" />
-
-                                <!-- Date de Dépôt -->
-                                <Label text="Date de Dépôt:" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
-                                <DatePicker fx:id="dateDepotPicker" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-
-                            </children>
-                           <padding>
-                              <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                           </padding>
-                        </GridPane>
-                    </content>
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                </ScrollPane>
-                <HBox alignment="CENTER" spacing="20.0">
-                    <children>
-                         <!-- Changed button text and action -->
-                        <Button fx:id="updateButton" mnemonicParsing="false" onAction="#handleUpdateDossier" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Enregistrer">
-                            <font>
-                                <Font size="16.0" />
-                            </font>
-                        </Button>
-                        <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Annuler">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Button>
-                    </children>
-                    <VBox.margin>
-                        <Insets top="20.0" />
-                    </VBox.margin>
-                </HBox>
-            </children>
-        </VBox>
-      <AnchorPane layoutX="10.0" layoutY="8.0" prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
+<AnchorPane prefHeight="699.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminUsercontroller">
+   <children>
+      <AnchorPane prefHeight="699.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
          <children>
             <VBox alignment="CENTER" layoutY="157.0" prefHeight="536.0" prefWidth="250.0" style="-fx-background-color: #1a237e; -fx-background-radius: 0 15 15 0;">
                <children>
@@ -134,7 +25,7 @@
                               <Image url="@images/acceuil.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE">
+                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -348,8 +239,26 @@
             <Label layoutX="46.0" layoutY="111.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="GRADAWAY" />
          </children>
       </AnchorPane>
-    </children>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
+      <TableView fx:id="TvUser" layoutX="257.0" layoutY="167.0" prefHeight="242.0" prefWidth="700.0">
+        <columns>
+          <TableColumn fx:id="colId" prefWidth="75.0" text="ID" />
+          <TableColumn fx:id="colNom" prefWidth="100.0" text="Nom" />
+          <TableColumn fx:id="colPrenom" prefWidth="100.0" text="Prenom" />
+          <TableColumn fx:id="colEmail" prefWidth="150.0" text="Email" />
+          <TableColumn fx:id="colTelephone" prefWidth="100.0" text="Téléphone" />
+          <TableColumn fx:id="colCin" prefWidth="100.0" text="CIN" />
+          <TableColumn fx:id="colAge" prefWidth="75.0" text="Age" />
+          <TableColumn fx:id="colDateNaissance" prefWidth="125.0" text="Date Naissance" />
+          <TableColumn fx:id="colNationalite" prefWidth="100.0" text="Nationalité" />
+          <TableColumn fx:id="colDomaineEtude" prefWidth="100.0" text="Domaine Etude" />
+          <TableColumn fx:id="colUniversiteOrigine" prefWidth="125.0" text="Université Origine" />
+          <TableColumn fx:id="colRole" prefWidth="75.0" text="Role" />
+          <TableColumn fx:id="colMoyennes" prefWidth="75.0" text="Moyennes" />
+          <TableColumn fx:id="colAnneeObtentionDiplome" prefWidth="125.0" text="Année Obtention" />
+          <TableColumn fx:id="colImage" prefWidth="100.0" text="Image" />
+        </columns>
+      </TableView>
+      <Button fx:id="deleteButton" layoutX="257.0" layoutY="419.0" mnemonicParsing="false" onAction="#onDeleteButtonClick" prefHeight="40.0" prefWidth="100.0" text="Supprimer" />
+      <Button fx:id="modifyButton" layoutX="367.0" layoutY="419.0" mnemonicParsing="false" onAction="#onModifyButtonClick" prefHeight="40.0" prefWidth="100.0" text="Modifier" />
+   </children>
 </AnchorPane>
