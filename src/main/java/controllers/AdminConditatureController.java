@@ -71,19 +71,9 @@ public class AdminConditatureController {
 
     @FXML
     void handleLogoutButton(ActionEvent event) {
-        try {
-            // Navigate back to the dashboard
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) logoutButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Gradaway - Dashboard");
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Impossible de retourner au dashboard.", e.getMessage());
-            e.printStackTrace();
-        }
+        // Close the current window instead of opening a new dashboard
+        Stage stage = (Stage) logoutButton.getScene().getWindow();
+        stage.close();
     }
 
     private void showAlert(String title, String header, String content) {
