@@ -76,11 +76,6 @@
                             onAction="#handleRechercherUniversite"
                             prefWidth="200" prefHeight="40"
                             style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
-                    
-                    <Button text="Suivi des Candidatures" 
-                            onAction="#handleSuiviCandidatures"
-                            prefWidth="200" prefHeight="40"
-                            style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
                 </VBox>
             </VBox>
         </HBox>

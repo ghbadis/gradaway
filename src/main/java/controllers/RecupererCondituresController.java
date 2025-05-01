@@ -2,6 +2,7 @@ package controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -44,6 +45,12 @@ public class RecupererCondituresController implements Initializable {
     private TableColumn<Candidature, String> domaineColumn;
     
     @FXML
+    private TextField searchField;
+    
+    @FXML
+    private Button searchButton;
+    
+    @FXML
     private Button refreshButton;
     
     @FXML
@@ -53,10 +60,12 @@ public class RecupererCondituresController implements Initializable {
     private Button logoutButton;
     
     private CandidatureService candidatureService;
-    private ObservableList<Candidature> candidaturesList;
+    private ObservableList<Candidature> candidaturesList = FXCollections.observableArrayList();
+    private FilteredList<Candidature> filteredCandidatures;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        System.out.println("Initializing RecupererCondituresController...");
         candidatureService = new CandidatureService();
         
         // Configuration des colonnes du TableView
@@ -66,16 +75,141 @@ public class RecupererCondituresController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date_de_remise_c"));
         domaineColumn.setCellValueFactory(new PropertyValueFactory<>("domaine"));
         
-        // Charger les candidatures
+        // Use simplified cell factories without custom styling
+        userColumn.setCellFactory(column -> new TableCell<Candidature, Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item != null ? String.valueOf(item) : "");
+                }
+            }
+        });
+        
+        dossierColumn.setCellFactory(column -> new TableCell<Candidature, Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item != null ? String.valueOf(item) : "");
+                }
+            }
+        });
+        
+        universiteColumn.setCellFactory(column -> new TableCell<Candidature, Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item != null ? String.valueOf(item) : "");
+                }
+            }
+        });
+        
+        dateColumn.setCellFactory(column -> new TableCell<Candidature, Date>() {
+            @Override
+            protected void updateItem(Date item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item != null ? item.toString() : "");
+                }
+            }
+        });
+        
+        domaineColumn.setCellFactory(column -> new TableCell<Candidature, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(item != null ? item : "");
+                }
+            }
+        });
+        
+        // Default row factory
+        candidaturesTable.setRowFactory(tv -> new TableRow<>());
+        
+        // Load data
         loadCandidatures();
+        
+        // Setup the filtered list if searchField is available
+        if (searchField != null) {
+            filteredCandidatures = new FilteredList<>(candidaturesList, p -> true);
+            candidaturesTable.setItems(filteredCandidatures);
+            
+            // Add search text listener
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    filteredCandidatures.setPredicate(p -> true);
+                }
+            });
+        } else {
+            candidaturesTable.setItems(candidaturesList);
+        }
+        
+        System.out.println("RecupererCondituresController initialized successfully.");
+    }
+    
+    @FXML
+    private void handleSearchButton() {
+        if (searchField != null) {
+            String searchText = searchField.getText().toLowerCase();
+            
+            if (searchText == null || searchText.isEmpty()) {
+                filteredCandidatures.setPredicate(p -> true);
+            } else {
+                filteredCandidatures.setPredicate(candidature -> 
+                    candidature.getDomaine().toLowerCase().contains(searchText) ||
+                    String.valueOf(candidature.getUser_id()).contains(searchText) ||
+                    String.valueOf(candidature.getId_universite()).contains(searchText)
+                );
+            }
+        }
     }
     
     private void loadCandidatures() {
         try {
             List<Candidature> candidatures = candidatureService.getAllCandidatures();
-            candidaturesList = FXCollections.observableArrayList(candidatures);
-            candidaturesTable.setItems(candidaturesList);
+            System.out.println("DEBUGGING: Retrieved " + candidatures.size() + " candidatures from service");
+            
+            // Clear our observable list
+            candidaturesList.clear();
+            
+            // Manually add each candidature to ensure they're properly loaded
+            for (Candidature c : candidatures) {
+                candidaturesList.add(c);
+                System.out.println("Added to list: User ID " + c.getUser_id() + " - Domain " + c.getDomaine());
+            }
+            
+            // Force the TableView to refresh with the new data
+            candidaturesTable.refresh();
+            
+            if (searchField != null) {
+                // Set the filtered list as the TableView's items source
+                filteredCandidatures = new FilteredList<>(candidaturesList, p -> true);
+                
+                // IMPORTANT - explicitly set items
+                candidaturesTable.setItems(null); // Clear first
+                candidaturesTable.setItems(filteredCandidatures);
+            } else {
+                candidaturesTable.setItems(null); // Clear first
+                candidaturesTable.setItems(candidaturesList);
+            }
+            
+            // Debug output - print TableView contents
+            System.out.println("DEBUGGING TABLE: Item count: " + candidaturesTable.getItems().size());
         } catch (Exception e) {
+            e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger les candidatures", e.getMessage());
         }
     }
@@ -83,36 +217,6 @@ public class RecupererCondituresController implements Initializable {
     @FXML
     private void handleRefreshButton() {
         loadCandidatures();
-    }
-    
-    @FXML
-    private void handleSupprimerButton() {
-        Candidature selectedCandidature = candidaturesTable.getSelectionModel().getSelectedItem();
-        
-        if (selectedCandidature == null) {
-            showAlert(Alert.AlertType.WARNING, "Aucune Sélection", "Aucune candidature sélectionnée", 
-                    "Veuillez sélectionner une candidature à supprimer.");
-            return;
-        }
-        
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setTitle("Confirmation de Suppression");
-        confirmAlert.setHeaderText("Supprimer la candidature");
-        confirmAlert.setContentText("Êtes-vous sûr de vouloir supprimer cette candidature?");
-        
-        Optional<ButtonType> result = confirmAlert.showAndWait();
-        
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            try {
-                candidatureService.deleteCandidature(selectedCandidature.getId_c());
-                candidaturesList.remove(selectedCandidature);
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Candidature supprimée", 
-                        "La candidature a été supprimée avec succès.");
-            } catch (Exception e) {
-                showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la suppression", 
-                        "Impossible de supprimer la candidature: " + e.getMessage());
-            }
-        }
     }
     
     @FXML

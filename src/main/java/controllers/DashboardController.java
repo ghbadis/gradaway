@@ -91,15 +91,6 @@ public class DashboardController implements Initializable {
     }
     
     @FXML
-    private void handleSuiviCandidatures() {
-        try {
-            openWindow("suivicandidatures.fxml", "Suivi des Candidatures");
-        } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la fenêtre", e.getMessage());
-        }
-    }
-    
-    @FXML
     private void handleQuitButton() {
         System.exit(0);
     }
