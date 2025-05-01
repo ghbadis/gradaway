@@ -72,20 +72,16 @@ public class AdminConditatureController {
     @FXML
     void handleLogoutButton(ActionEvent event) {
         try {
-            // Close the current window
-            Stage stage = (Stage) logoutButton.getScene().getWindow();
-            stage.close();
-            
-            // Create a new primary stage (this mimics logging out and starting fresh)
-            Stage primaryStage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            // Navigate back to the dashboard
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard.fxml"));
             Parent root = loader.load();
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
             Scene scene = new Scene(root);
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("Gradaway - Administration");
-            primaryStage.show();
+            stage.setScene(scene);
+            stage.setTitle("Gradaway - Dashboard");
+            stage.show();
         } catch (IOException e) {
-            showAlert("Erreur", "Impossible de se déconnecter.", e.getMessage());
+            showAlert("Erreur", "Impossible de retourner au dashboard.", e.getMessage());
             e.printStackTrace();
         }
     }
