@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.AdminConditatureController"
+            prefHeight="700.0" prefWidth="800.0"
+            style="-fx-background-color: #0A2463;">
+
+    <VBox spacing="30" alignment="CENTER" AnchorPane.topAnchor="50.0" AnchorPane.leftAnchor="50.0" 
+          AnchorPane.rightAnchor="50.0" AnchorPane.bottomAnchor="50.0">
+        
+        <Label text="Administration des Candidatures" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="28.0"/>
+            </font>
+        </Label>
+        
+        <GridPane hgap="30" vgap="30" alignment="CENTER">
+            <padding>
+                <Insets top="40" right="20" bottom="40" left="20"/>
+            </padding>
+            
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="300"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="300"/>
+            </columnConstraints>
+            
+            <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES" minHeight="150" prefHeight="150"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="150" prefHeight="150"/>
+            </rowConstraints>
+            
+            <!-- Ajouter button -->
+            <VBox alignment="CENTER" spacing="15" style="-fx-background-color: #1A3473; -fx-background-radius: 10;" 
+                  GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <Label text="Ajouter une Candidature" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="18.0"/>
+                    </font>
+                </Label>
+                <Label text="Parcourir les universités et soumettre une candidature" 
+                       textFill="WHITE" wrapText="true" textAlignment="CENTER"/>
+                <Button fx:id="ajouterButton" text="Ajouter" onAction="#handleAjouterButton" 
+                        prefWidth="200" prefHeight="40"
+                        style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
+            </VBox>
+            
+            <!-- Afficher button -->
+            <VBox alignment="CENTER" spacing="15" style="-fx-background-color: #1A3473; -fx-background-radius: 10;" 
+                  GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <Label text="Afficher une Candidature" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="18.0"/>
+                    </font>
+                </Label>
+                <Label text="Voir les détails d'une candidature spécifique" 
+                       textFill="WHITE" wrapText="true" textAlignment="CENTER"/>
+                <Button fx:id="afficherButton" text="Afficher" onAction="#handleAfficherButton" 
+                        prefWidth="200" prefHeight="40"
+                        style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
+            </VBox>
+            
+            <!-- Supprimer button -->
+            <VBox alignment="CENTER" spacing="15" style="-fx-background-color: #1A3473; -fx-background-radius: 10;" 
+                  GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <Label text="Supprimer une Candidature" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="18.0"/>
+                    </font>
+                </Label>
+                <Label text="Supprimer une candidature de la base de données" 
+                       textFill="WHITE" wrapText="true" textAlignment="CENTER"/>
+                <Button fx:id="supprimerButton" text="Supprimer" onAction="#handleSupprimerButton" 
+                        prefWidth="200" prefHeight="40"
+                        style="-fx-background-color: #D8315B; -fx-text-fill: white;"/>
+            </VBox>
+        </GridPane>
+        
+        <Button fx:id="logoutButton" text="Déconnexion" onAction="#handleLogoutButton" 
+                prefWidth="150" prefHeight="40"
+                style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
+    </VBox>
+
+</AnchorPane> 

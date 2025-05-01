@@ -50,6 +50,9 @@ import java.util.List;
             String req = "SELECT * FROM universite";
             Statement st = this.con.createStatement();
             ResultSet rs = st.executeQuery(req);
+            
+            System.out.println("Retrieving universities from database...");
+            int count = 0;
 
             while(rs.next()) {
                 int id = rs.getInt("id_universite");
@@ -61,8 +64,15 @@ import java.util.List;
 
                 Universite u = new Universite(id, nom, ville, adresse, domaine, frais);
                 universites.add(u);
+                
+                // Debug info
+                System.out.println("Loaded university: ID=" + id + ", Nom=" + nom + 
+                                  ", Ville=" + ville + ", Adresse=" + adresse + 
+                                  ", Domaine=" + domaine + ", Frais=" + frais);
+                count++;
             }
-
+            
+            System.out.println("Retrieved " + count + " universities from database");
             return universites;
         }
     }

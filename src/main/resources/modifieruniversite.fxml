@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.ModifierUniversiteController"
+            prefHeight="700.0" prefWidth="800.0"
+            style="-fx-background-color: #0A2463;">
+
+    <VBox spacing="20" alignment="CENTER" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" 
+          AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
+        
+        <Label text="Modifier Université" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="24.0"/>
+            </font>
+        </Label>
+        
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <TextField fx:id="searchFieldTable" promptText="Rechercher par nom ou domaine" prefWidth="300"/>
+            <Button fx:id="searchTableButton" text="Rechercher" 
+                    onAction="#handleSearchTableButton"
+                    style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
+            <Button fx:id="refreshTableButton" text="Actualiser" 
+                    onAction="#handleRefreshTableButton"
+                    style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
+        </HBox>
+        
+        <TableView fx:id="universiteTable" VBox.vgrow="ALWAYS" prefHeight="250">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="nomColumn" text="Nom" prefWidth="150"/>
+                <TableColumn fx:id="villeColumn" text="Ville" prefWidth="100"/>
+                <TableColumn fx:id="adresseColumn" text="Adresse" prefWidth="200"/>
+                <TableColumn fx:id="domaineColumn" text="Domaine" prefWidth="150"/>
+                <TableColumn fx:id="fraisColumn" text="Frais" prefWidth="100"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+            <VBox.margin>
+                <Insets top="10" bottom="10"/>
+            </VBox.margin>
+        </TableView>
+        
+        <Label text="Détails de l'université" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="18.0"/>
+            </font>
+        </Label>
+        
+        <GridPane hgap="10" vgap="15">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="150"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="300"/>
+            </columnConstraints>
+
+            <!-- ID field -->
+            <Label text="ID:" textFill="WHITE" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="idField" promptText="ID de l'université" editable="false"
+                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            
+            <!-- Nom field -->
+            <Label text="Nom:" textFill="WHITE" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="nomField" promptText="Nom de l'université" 
+                       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            
+            <!-- Ville field -->
+            <Label text="Ville:" textFill="WHITE" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="villeField" promptText="Ville" 
+                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            
+            <!-- Adresse field -->
+            <Label text="Adresse:" textFill="WHITE" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextField fx:id="adresseField" promptText="Adresse de l'université" 
+                       GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            
+            <!-- Domaine field -->
+            <Label text="Domaine:" textFill="WHITE" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="domaineField" promptText="Domaine d'étude" 
+                       GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            
+            <!-- Frais field -->
+            <Label text="Frais:" textFill="WHITE" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="fraisField" promptText="Frais d'inscription" 
+                       GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        </GridPane>
+        
+        <HBox spacing="20" alignment="CENTER">                  
+            <Button fx:id="modifierButton" text="Modifier Université" 
+                    onAction="#handleModifierButton"
+                    prefWidth="200" prefHeight="40"
+                    style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
+                    
+            <Button fx:id="cancelButton" text="Annuler" 
+                    onAction="#handleCancelButton"
+                    prefWidth="100" prefHeight="40"
+                    style="-fx-background-color: #D8315B; -fx-text-fill: white;"/>
+        </HBox>
+    </VBox>
+
+</AnchorPane>

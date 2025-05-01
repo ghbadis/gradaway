@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #0A2463;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UniversiteCardsController">
+
+    <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+        
+        <Label text="Liste des Universités Disponibles" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="28.0" />
+            </font>
+        </Label>
+        
+        <HBox alignment="CENTER" spacing="10">
+            <TextField fx:id="searchField" prefWidth="400" promptText="Rechercher par nom ou domaine d'étude" />
+            <Button fx:id="searchButton" onAction="#handleSearchButton" style="-fx-background-color: #3E92CC; -fx-text-fill: white;" text="Rechercher" />
+        </HBox>
+        
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <content>
+                <FlowPane fx:id="universityCardsPane" alignment="CENTER" hgap="30" style="-fx-background-color: transparent;" vgap="30">
+                    <padding>
+                        <Insets bottom="20" left="20" right="20" top="20" />
+                    </padding>
+                </FlowPane>
+            </content>
+            <VBox.margin>
+                <Insets bottom="10" top="10" />
+            </VBox.margin>
+        </ScrollPane>
+        
+        <HBox alignment="CENTER" spacing="20">
+            <Button fx:id="refreshButton" onAction="#handleRefreshButton" prefHeight="40" prefWidth="150" style="-fx-background-color: #3E92CC; -fx-text-fill: white;" text="Actualiser" />
+                    
+            <Button fx:id="closeButton" onAction="#handleCloseButton" prefHeight="40" prefWidth="150" style="-fx-background-color: #D8315B; -fx-text-fill: white;" text="Retour" />
+        </HBox>
+    </VBox>
+
+</AnchorPane>

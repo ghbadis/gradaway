@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import java.net.URL?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.SupprimerUniversiteController"
+            prefHeight="600.0" prefWidth="800.0"
+            style="-fx-background-color: #0A2463;">
+
+    <VBox spacing="20" alignment="CENTER" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" 
+          AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
+        
+        <Label text="Supprimer une Université" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="24.0"/>
+            </font>
+        </Label>
+        
+        <Label textFill="WHITE" text="Sélectionnez une université et cliquez sur 'Supprimer'">
+            <font>
+                <Font size="14.0"/>
+            </font>
+        </Label>
+        
+        <TableView fx:id="universiteTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="nomColumn" text="Nom" prefWidth="150"/>
+                <TableColumn fx:id="villeColumn" text="Ville" prefWidth="100"/>
+                <TableColumn fx:id="adresseColumn" text="Adresse" prefWidth="200"/>
+                <TableColumn fx:id="domaineColumn" text="Domaine" prefWidth="150"/>
+                <TableColumn fx:id="fraisColumn" text="Frais" prefWidth="100"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+            <VBox.margin>
+                <Insets top="10" bottom="10"/>
+            </VBox.margin>
+        </TableView>
+        
+        <VBox fx:id="detailsBox" style="-fx-background-color: #1A3473; -fx-padding: 15;" visible="false">
+            <Label fx:id="selectedUniversiteLabel" text="Université sélectionnée:" textFill="WHITE">
+                <font>
+                    <Font name="System Bold" size="14.0"/>
+                </font>
+            </Label>
+            <Label fx:id="universiteInfoLabel" textFill="WHITE" wrapText="true">
+                <VBox.margin>
+                    <Insets top="5" bottom="5"/>
+                </VBox.margin>
+            </Label>
+        </VBox>
+        
+        <HBox spacing="20" alignment="CENTER">
+            <Button fx:id="supprimerButton" text="Supprimer" 
+                    onAction="#handleSupprimerButton"
+                    prefWidth="150" prefHeight="40"
+                    style="-fx-background-color: #D8315B; -fx-text-fill: white;"
+                    disable="true"/>
+                    
+            <Button fx:id="refreshButton" text="Actualiser" 
+                    onAction="#handleRefreshButton"
+                    prefWidth="150" prefHeight="40"
+                    style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
+                    
+            <Button fx:id="closeButton" text="Fermer" 
+                    onAction="#handleCloseButton"
+                    prefWidth="100" prefHeight="40"
+                    style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
+        </HBox>
+    </VBox>
+
+</AnchorPane>
