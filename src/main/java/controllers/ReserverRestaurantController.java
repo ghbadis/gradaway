@@ -14,14 +14,10 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
-import javafx.util.StringConverter;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class ReserverRestaurantController {
 
@@ -50,20 +46,6 @@ public class ReserverRestaurantController {
         // Configuration du spinner pour le nombre de personnes (1-20 par défaut)
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 2);
         personnesSpinner.setValueFactory(valueFactory);
-    }
-    
-    /**
-     * Configure la ComboBox des heures disponibles
-     */
-    private void setupTimeComboBox() {
-        // Cette méthode n'est plus utilisée
-    }
-    
-    /**
-     * Met à jour les heures disponibles en fonction du restaurant sélectionné
-     */
-    private void updateAvailableHours() {
-        // Cette méthode n'est plus utilisée
     }
     
     /**
@@ -136,12 +118,6 @@ public class ReserverRestaurantController {
             reservation.setEmailClient(emailField.getText().trim());
             reservation.setNombrePersonnes(personnesSpinner.getValue());
             reservation.setStatut("En attente"); // Statut par défaut
-            
-            // Valeurs par défaut pour les champs supprimés
-            reservation.setTelephoneClient("");
-            reservation.setDateReservation(LocalDate.now().toString());
-            reservation.setHeureReservation("12:00");
-            reservation.setCommentaires("");
             
             // Enregistrer la réservation
             serviceReservation.ajouter(reservation);
