@@ -78,14 +78,23 @@ public class AjouterFoyerControllers {
             alert.setContentText("Foyer ajouté avec succès !");
             alert.showAndWait();
 
-            // Vider les champs
-            tf_nom.clear();
-            tf_adresse.clear();
-            tf_ville.clear();
-            tf_pays.clear();
-            tf_nombre_de_chambre.clear();
-            tf_capacite.clear();
-            imageUploaded.setImage(new Image("@placeholder/placeholder.png")); // Reset to placeholder
+            // Rediriger vers la liste des restaurants après l'ajout
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/ListRestaurant.fxml"));
+                Scene scene = new Scene(root);
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                
+                // Transition de fondu
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                
+                stage.setScene(scene);
+                fadeIn.play();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Erreur", "Erreur lors de la redirection: " + e.getMessage(), Alert.AlertType.ERROR);
+            }
 
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);

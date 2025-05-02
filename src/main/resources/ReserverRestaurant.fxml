@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: linear-gradient(to bottom right, #f5f7fa, #e9ebee);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReserverRestaurantController">
+   <children>
+      <!-- Header Section -->
+      <HBox alignment="CENTER" layoutX="0.0" layoutY="0.0" prefHeight="100.0" prefWidth="800.0" style="-fx-background-color: #2196F3; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 3);">
+         <children>
+            <Label fx:id="headerLabel" text="Réserver un Restaurant" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="28.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      
+      <!-- Main Content -->
+      <HBox layoutX="0.0" layoutY="100.0" prefHeight="500.0" prefWidth="800.0">
+         <!-- Restaurant Info Section -->
+         <VBox prefHeight="500.0" prefWidth="350.0" spacing="15.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);">
+            <padding>
+               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <children>
+               <Label text="Informations du Restaurant" textFill="#2196f3">
+                  <font>
+                     <Font name="System Bold" size="18.0" />
+                  </font>
+               </Label>
+               
+               <ImageView fx:id="restaurantImage" fitHeight="150.0" fitWidth="310.0" pickOnBounds="true" preserveRatio="true" />
+               
+               <HBox alignment="CENTER_LEFT" spacing="10.0">
+                  <children>
+                     <Label text="Nom:" textFill="#333333">
+                        <font>
+                           <Font name="System Bold" size="14.0" />
+                        </font>
+                     </Label>
+                     <Label fx:id="nomLabel" text="Nom du restaurant" textFill="#333333">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </HBox>
+               
+               <HBox alignment="CENTER_LEFT" spacing="10.0">
+                  <children>
+                     <Label text="Adresse:" textFill="#333333">
+                        <font>
+                           <Font name="System Bold" size="14.0" />
+                        </font>
+                     </Label>
+                     <Label fx:id="adresseLabel" text="Adresse du restaurant" textFill="#333333">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </HBox>
+               
+               <HBox alignment="CENTER_LEFT" spacing="10.0">
+                  <children>
+                     <Label text="Ville:" textFill="#333333">
+                        <font>
+                           <Font name="System Bold" size="14.0" />
+                        </font>
+                     </Label>
+                     <Label fx:id="villeLabel" text="Ville" textFill="#333333">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </HBox>
+               
+               <HBox alignment="CENTER_LEFT" spacing="10.0">
+                  <children>
+                     <Label text="Capacité:" textFill="#333333">
+                        <font>
+                           <Font name="System Bold" size="14.0" />
+                        </font>
+                     </Label>
+                     <Label fx:id="capaciteLabel" text="Capacité" textFill="#333333">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </HBox>
+               
+               <HBox alignment="CENTER_LEFT" spacing="10.0">
+                  <children>
+                     <Label text="Horaires:" textFill="#333333">
+                        <font>
+                           <Font name="System Bold" size="14.0" />
+                        </font>
+                     </Label>
+                     <Label fx:id="horairesLabel" text="Horaires d'ouverture" textFill="#333333">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                     </Label>
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+         
+         <!-- Reservation Form Section -->
+         <VBox prefHeight="500.0" prefWidth="450.0" spacing="15.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);">
+            <padding>
+               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <children>
+               <Label text="Formulaire de Réservation" textFill="#2196f3">
+                  <font>
+                     <Font name="System Bold" size="18.0" />
+                  </font>
+               </Label>
+               
+               <VBox spacing="5.0">
+                  <children>
+                     <Label text="Nom" textFill="#333333">
+                        <font>
+                           <Font name="System Bold" size="14.0" />
+                        </font>
+                     </Label>
+                     <TextField fx:id="nomClientField" promptText="Votre nom" style="-fx-background-radius: 5px; -fx-border-radius: 5px; -fx-border-color: #e0e0e0; -fx-padding: 8px;" />
+                  </children>
+               </VBox>
+               
+               <VBox spacing="5.0">
+                  <children>
+                     <Label text="Email" textFill="#333333">
+                        <font>
+                           <Font name="System Bold" size="14.0" />
+                        </font>
+                     </Label>
+                     <TextField fx:id="emailField" promptText="Votre email" style="-fx-background-radius: 5px; -fx-border-radius: 5px; -fx-border-color: #e0e0e0; -fx-padding: 8px;" />
+                  </children>
+               </VBox>
+               
+               <VBox spacing="5.0">
+                  <children>
+                     <Label text="Nombre de personnes" textFill="#333333">
+                        <font>
+                           <Font name="System Bold" size="14.0" />
+                        </font>
+                     </Label>
+                     <Spinner fx:id="personnesSpinner" prefWidth="200.0" style="-fx-background-radius: 5px; -fx-border-radius: 5px; -fx-border-color: #e0e0e0; -fx-padding: 8px;" />
+                  </children>
+               </VBox>
+               
+               <HBox alignment="CENTER" spacing="15.0">
+                  <children>
+                     <Button fx:id="reserverButton" onAction="#reserverRestaurant" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20px;" text="Réserver" />
+                     <Button fx:id="annulerButton" onAction="#annulerReservation" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20px;" text="Annuler" />
+                  </children>
+                  <VBox.margin>
+                     <Insets top="10.0" />
+                  </VBox.margin>
+               </HBox>
+            </children>
+         </VBox>
+      </HBox>
+   </children>
+</AnchorPane>

@@ -253,7 +253,7 @@ public class AjouterRestaurantControllers {
     }
     
     /**
-     * Valide que l'horaire de fermeture est après l'horaire d'ouverture
+     * Vérifie que l'horaire de fermeture est après l'horaire d'ouverture
      */
     private void validateHoraires() {
         if (cb_horaireOuverture.getValue() != null && cb_horaireFermeture.getValue() != null) {
@@ -269,6 +269,14 @@ public class AjouterRestaurantControllers {
         }
     }
     
+    /**
+     * Vérifie si l'email est valide
+     */
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+
     /**
      * Met à jour le style d'un champ selon sa validité
      */
@@ -289,14 +297,6 @@ public class AjouterRestaurantControllers {
         } else {
             comboBox.setStyle("-fx-background-radius: 5px; -fx-border-radius: 5px; -fx-border-color: #e53935; -fx-padding: 5px; -fx-focus-color: #e53935; -fx-faint-focus-color: #e5393522; -fx-background-color: #ffebee;");
         }
-    }
-
-    /**
-     * Vérifie si l'email est valide
-     */
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        return email.matches(emailRegex);
     }
 
     @FXML
@@ -360,36 +360,10 @@ public class AjouterRestaurantControllers {
             // Afficher un message de succès stylisé
             showSuccessAlert("Restaurant ajouté avec succès!");
             
-            // Rediriger vers la liste des restaurants après un court délai
-            new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        javafx.application.Platform.runLater(() -> {
-                            try {
-                                // Charger la vue de liste des restaurants
-                                Parent root = FXMLLoader.load(getClass().getResource("/ListRestaurant.fxml"));
-                                Scene scene = new Scene(root);
-                                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                                
-                                // Transition de fondu
-                                FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-                                fadeIn.setFromValue(0.0);
-                                fadeIn.setToValue(1.0);
-                                
-                                stage.setScene(scene);
-                                fadeIn.play();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                showErrorAlert("Erreur lors de la redirection: " + e.getMessage());
-                            }
-                        });
-                    }
-                },
-                1500
-            );
-            
+            // Supprimer la redirection automatique vers la liste des restaurants
+            // Nettoyer les champs pour permettre l'ajout d'un autre restaurant
             clearFields();
+            
         } catch (NumberFormatException ex) {
             showErrorAlert("La capacité doit être un nombre valide");
         } catch (SQLException ex) {
@@ -400,12 +374,6 @@ public class AjouterRestaurantControllers {
             ex.printStackTrace();
         }
         // --- End of logic --- 
-
-        /* Remove the setOnFinished handler that caused the issue
-        scaleTransition.setOnFinished(e -> {
-            // ... previous logic was here ...
-        });
-        */
     }
 
     /**

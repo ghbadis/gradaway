@@ -89,8 +89,42 @@ public class ModifierRestaurantController {
             tf_ville.setText(restaurant.getVille());
             tf_pays.setText(restaurant.getPays());
             tf_capaciteTotale.setText(String.valueOf(restaurant.getCapaciteTotale()));
-            cb_horaireOuverture.setValue(restaurant.getHoraireOuverture());
-            cb_horaireFermeture.setValue(restaurant.getHoraireFermeture());
+            
+            // Vérifier et formater les heures correctement
+            String horaireOuverture = restaurant.getHoraireOuverture();
+            String horaireFermeture = restaurant.getHoraireFermeture();
+            
+            // S'assurer que les heures sont dans le format correct avant de les définir
+            try {
+                // Vérifier si les heures sont au bon format
+                if (horaireOuverture != null && !horaireOuverture.isEmpty()) {
+                    if (horaireOuverture.matches("\\d{2}:\\d{2}")) {
+                        cb_horaireOuverture.setValue(horaireOuverture);
+                    } else {
+                        // Si le format n'est pas correct, utiliser une valeur par défaut
+                        cb_horaireOuverture.setValue("08:00");
+                    }
+                } else {
+                    cb_horaireOuverture.setValue("08:00");
+                }
+                
+                if (horaireFermeture != null && !horaireFermeture.isEmpty()) {
+                    if (horaireFermeture.matches("\\d{2}:\\d{2}")) {
+                        cb_horaireFermeture.setValue(horaireFermeture);
+                    } else {
+                        // Si le format n'est pas correct, utiliser une valeur par défaut
+                        cb_horaireFermeture.setValue("18:00");
+                    }
+                } else {
+                    cb_horaireFermeture.setValue("18:00");
+                }
+            } catch (Exception e) {
+                System.err.println("Erreur lors du formatage des heures: " + e.getMessage());
+                // Utiliser des valeurs par défaut en cas d'erreur
+                cb_horaireOuverture.setValue("08:00");
+                cb_horaireFermeture.setValue("18:00");
+            }
+            
             tf_telephone.setText(restaurant.getTelephone());
             tf_email.setText(restaurant.getEmail());
             
@@ -283,15 +317,25 @@ public class ModifierRestaurantController {
 
         // Validation des horaires
         try {
-            LocalTime ouverture = LocalTime.parse(cb_horaireOuverture.getValue(), DateTimeFormatter.ofPattern("HH:mm"));
-            LocalTime fermeture = LocalTime.parse(cb_horaireFermeture.getValue(), DateTimeFormatter.ofPattern("HH:mm"));
+            String ouvertureStr = cb_horaireOuverture.getValue();
+            String fermetureStr = cb_horaireFermeture.getValue();
+            
+            // Assurez-vous que les formats d'heure sont corrects (HH:mm)
+            if (!ouvertureStr.matches("\\d{2}:\\d{2}") || !fermetureStr.matches("\\d{2}:\\d{2}")) {
+                showAlert("Erreur", "Format d'heure invalide. Utilisez le format HH:mm", Alert.AlertType.ERROR);
+                return false;
+            }
+            
+            LocalTime ouverture = LocalTime.parse(ouvertureStr, DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime fermeture = LocalTime.parse(fermetureStr, DateTimeFormatter.ofPattern("HH:mm"));
             
             if (!fermeture.isAfter(ouverture)) {
                 showAlert("Erreur", "L'heure de fermeture doit être après l'heure d'ouverture", Alert.AlertType.ERROR);
                 return false;
             }
         } catch (Exception e) {
-            showAlert("Erreur", "Format d'heure invalide", Alert.AlertType.ERROR);
+            e.printStackTrace();
+            showAlert("Erreur", "Format d'heure invalide: " + e.getMessage(), Alert.AlertType.ERROR);
             return false;
         }
 
