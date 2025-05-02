@@ -9,11 +9,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import Services.ServiceReservationEvenement;
+import javafx.geometry.Insets;
+import Services.ServiceEvenement;
+import entities.Evenement;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -21,19 +25,7 @@ import java.util.List;
 
 public class ListeReservationController {
     @FXML
-    private TableView<ReservationEvenement> reservation_tableview;
-    @FXML
-    private TableColumn<ReservationEvenement, Integer> id_reservation_col;
-    @FXML
-    private TableColumn<ReservationEvenement, Integer> id_evenement_col;
-    @FXML
-    private TableColumn<ReservationEvenement, String> email_col;
-    @FXML
-    private TableColumn<ReservationEvenement, String> nom_col;
-    @FXML
-    private TableColumn<ReservationEvenement, String> prenom_col;
-    @FXML
-    private TableColumn<ReservationEvenement, String> date_col;
+    private VBox reservations_container;
     @FXML
     private Button supprimer_button;
     @FXML
@@ -41,19 +33,13 @@ public class ListeReservationController {
 
     private ServiceReservationEvenement serviceReservation;
     private ObservableList<ReservationEvenement> reservationsList;
+    private ServiceEvenement serviceEvenement = new ServiceEvenement();
+    private ReservationEvenement selectedReservation = null;
 
     @FXML
     public void initialize() {
         serviceReservation = new ServiceReservationEvenement();
         reservationsList = FXCollections.observableArrayList();
-
-        // Initialiser les colonnes du TableView
-        id_reservation_col.setCellValueFactory(new PropertyValueFactory<>("id_reservation"));
-        id_evenement_col.setCellValueFactory(new PropertyValueFactory<>("id_evenement"));
-        email_col.setCellValueFactory(new PropertyValueFactory<>("email"));
-        nom_col.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        prenom_col.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        date_col.setCellValueFactory(new PropertyValueFactory<>("date"));
 
         // Charger les données
         loadData();
@@ -70,23 +56,70 @@ public class ListeReservationController {
     private void loadData() {
         try {
             List<ReservationEvenement> reservations = serviceReservation.recuperer();
-            reservationsList.clear();
-            reservationsList.addAll(reservations);
-            reservation_tableview.setItems(reservationsList);
+            afficherReservations(reservations);
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors du chargement des réservations", e.getMessage());
         }
     }
 
+    private void afficherReservations(List<ReservationEvenement> reservations) {
+        reservations_container.getChildren().clear();
+        for (ReservationEvenement reservation : reservations) {
+            VBox card = new VBox(5);
+            card.getStyleClass().add("white-bg");
+            card.setPadding(new Insets(10));
+
+            // Récupérer l'événement associé (image)
+            Evenement evenement = null;
+            try {
+                for (Evenement ev : serviceEvenement.recuperer()) {
+                    if (ev.getId_evenement() == reservation.getId_evenement()) {
+                        evenement = ev;
+                        break;
+                    }
+                }
+            } catch (Exception e) {}
+            if (evenement != null && evenement.getImage() != null && !evenement.getImage().isEmpty()) {
+                try {
+                    ImageView imageView = new ImageView(new Image(evenement.getImage()));
+                    imageView.setFitWidth(100);
+                    imageView.setFitHeight(100);
+                    imageView.setPreserveRatio(true);
+                    card.getChildren().add(imageView);
+                } catch (Exception e) {}
+            }
+
+            Label nomLabel = new Label("Nom : " + reservation.getNom());
+            Label prenomLabel = new Label("Prénom : " + reservation.getPrenom());
+            Label emailLabel = new Label("Email : " + reservation.getEmail());
+            Label dateLabel = new Label("Date : " + reservation.getDate());
+            card.getChildren().addAll(nomLabel, prenomLabel, emailLabel, dateLabel);
+
+            // Style de sélection
+            if (reservation == selectedReservation) {
+                card.setStyle("-fx-border-color: #0078D7; -fx-border-width: 2px;");
+            } else {
+                card.setStyle("");
+            }
+
+            // Gestion du clic pour sélectionner
+            card.setOnMouseClicked(event -> {
+                selectedReservation = reservation;
+                afficherReservations(reservations); // Rafraîchir pour mettre à jour le style
+            });
+
+            reservations_container.getChildren().add(card);
+        }
+    }
+
     private void supprimerReservation() {
-        ReservationEvenement selectedReservation = reservation_tableview.getSelectionModel().getSelectedItem();
         if (selectedReservation == null) {
             showAlert("Erreur", "Aucune réservation sélectionnée", "Veuillez sélectionner une réservation à supprimer");
             return;
         }
-
         try {
             serviceReservation.supprimer(selectedReservation);
+            selectedReservation = null;
             loadData();
             showAlert("Succès", "Réservation supprimée", "La réservation a été supprimée avec succès");
         } catch (SQLException e) {
@@ -95,23 +128,16 @@ public class ListeReservationController {
     }
 
     private void modifierReservation() {
-        ReservationEvenement selectedReservation = reservation_tableview.getSelectionModel().getSelectedItem();
         if (selectedReservation == null) {
             showAlert("Erreur", "Aucune réservation sélectionnée", "Veuillez sélectionner une réservation à modifier");
             return;
         }
-
         try {
-            // Charger la fenêtre de modification
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("modifier_reservation.fxml"));
             Parent root = loader.load();
-
-            // Configurer le contrôleur
             ModifierReservationController controller = loader.getController();
             controller.setReservation(selectedReservation);
             controller.setParentController(this);
-
-            // Créer et afficher la fenêtre
             Stage stage = new Stage();
             stage.setTitle("Modifier la réservation");
             stage.setScene(new Scene(root));

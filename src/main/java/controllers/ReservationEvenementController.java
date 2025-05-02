@@ -91,8 +91,9 @@ public class ReservationEvenementController {
             stage.setTitle("Mes Réservations");
             stage.setScene(new Scene(root));
             stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture de la liste des réservations", e.getMessage());
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace(); // Affiche le stacktrace dans la console
+            showAlert("Erreur", "Erreur lors de l'ouverture de la liste des réservations", e.toString() + "\n" + (e.getCause() != null ? e.getCause().toString() : ""));
         }
     }
 
