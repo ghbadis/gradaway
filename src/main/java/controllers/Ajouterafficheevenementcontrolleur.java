@@ -168,8 +168,9 @@ public class Ajouterafficheevenementcontrolleur {
             stage.setTitle("Réservation - " + evenement.getNom());
             stage.setScene(new Scene(root));
             stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture de la fenêtre de réservation", e.getMessage());
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace(); // Affiche le stacktrace dans la console
+            showAlert("Erreur", "Erreur lors de l'ouverture de la fenêtre de réservation", e.toString() + "\n" + (e.getCause() != null ? e.getCause().toString() : ""));
         }
     }
 

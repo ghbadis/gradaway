@@ -18,6 +18,8 @@ import Services.ServiceEvenement;
 import entities.Evenement;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.geometry.Pos;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -65,11 +67,12 @@ public class ListeReservationController {
     private void afficherReservations(List<ReservationEvenement> reservations) {
         reservations_container.getChildren().clear();
         for (ReservationEvenement reservation : reservations) {
-            VBox card = new VBox(5);
-            card.getStyleClass().add("white-bg");
-            card.setPadding(new Insets(10));
+            HBox card = new HBox(15);
+            card.getStyleClass().addAll("white-bg", "shadow", "card");
+            card.setPadding(new Insets(16));
+            card.setAlignment(Pos.CENTER_LEFT);
 
-            // Récupérer l'événement associé (image)
+            // Image de l'événement
             Evenement evenement = null;
             try {
                 for (Evenement ev : serviceEvenement.recuperer()) {
@@ -79,33 +82,42 @@ public class ListeReservationController {
                     }
                 }
             } catch (Exception e) {}
+
+            ImageView imageView = new ImageView();
             if (evenement != null && evenement.getImage() != null && !evenement.getImage().isEmpty()) {
                 try {
-                    ImageView imageView = new ImageView(new Image(evenement.getImage()));
-                    imageView.setFitWidth(100);
-                    imageView.setFitHeight(100);
-                    imageView.setPreserveRatio(true);
-                    card.getChildren().add(imageView);
+                    imageView.setImage(new Image(evenement.getImage()));
                 } catch (Exception e) {}
             }
+            imageView.setFitWidth(80);
+            imageView.setFitHeight(80);
+            imageView.setPreserveRatio(true);
+            imageView.setSmooth(true);
+            imageView.setStyle("-fx-background-radius: 10px; -fx-border-radius: 10px;");
 
+            VBox infoBox = new VBox(5);
             Label nomLabel = new Label("Nom : " + reservation.getNom());
+            nomLabel.getStyleClass().add("form-label");
             Label prenomLabel = new Label("Prénom : " + reservation.getPrenom());
+            prenomLabel.getStyleClass().add("form-label");
             Label emailLabel = new Label("Email : " + reservation.getEmail());
+            emailLabel.setStyle("-fx-text-fill: #666;");
             Label dateLabel = new Label("Date : " + reservation.getDate());
-            card.getChildren().addAll(nomLabel, prenomLabel, emailLabel, dateLabel);
+            dateLabel.setStyle("-fx-text-fill: #666;");
+            infoBox.getChildren().addAll(nomLabel, prenomLabel, emailLabel, dateLabel);
+
+            card.getChildren().addAll(imageView, infoBox);
 
             // Style de sélection
             if (reservation == selectedReservation) {
-                card.setStyle("-fx-border-color: #0078D7; -fx-border-width: 2px;");
+                card.setStyle("-fx-border-color: #1976D2; -fx-border-width: 2px; -fx-background-radius: 15px;");
             } else {
-                card.setStyle("");
+                card.setStyle("-fx-background-radius: 15px;");
             }
 
-            // Gestion du clic pour sélectionner
             card.setOnMouseClicked(event -> {
                 selectedReservation = reservation;
-                afficherReservations(reservations); // Rafraîchir pour mettre à jour le style
+                afficherReservations(reservations);
             });
 
             reservations_container.getChildren().add(card);

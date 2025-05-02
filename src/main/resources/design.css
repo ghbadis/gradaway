@@ -181,3 +181,9 @@
     -fx-translate-y: -2px;
     -fx-effect: dropshadow(gaussian, #1976D2, 10, 0.2, 0, 4);
 }
+
+.form-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1976D2;
+    -fx-font-size: 15px;
+}
