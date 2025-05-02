@@ -22,6 +22,7 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <TextField fx:id="chercher_txtf" promptText="Chercher" styleClass="search"/>
         <Button fx:id="ajouter_evenement_button" text="Ajouter un événement" styleClass="add-btn"/>
+        <Button fx:id="user_button" text="User" styleClass="add-btn"/>
     </HBox>
 
     <VBox fx:id="formulaire_container" spacing="10" visible="false" managed="false">

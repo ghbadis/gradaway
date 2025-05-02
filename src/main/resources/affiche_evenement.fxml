@@ -11,6 +11,8 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="627.0" prefWidth="907.0" styleClass="white-bg" stylesheets="@design.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Ajouterafficheevenementcontrolleur">
@@ -18,9 +20,13 @@
       <TextField fx:id="chercher_txtf" layoutX="80.0" layoutY="35.0" promptText="Chercher un événement" />
       <Button fx:id="chercher_button" layoutX="257.0" layoutY="35.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" styleClass="add-btn" stylesheets="@design.css" text="Chercher" />
       <ComboBox fx:id="domaine_comb" layoutX="463.0" layoutY="35.0" prefWidth="150.0" promptText="Domaine" styleClass="add-btn" stylesheets="@design.css" />
-      
-      <GridPane fx:id="affiche_even_grid" layoutX="57.0" layoutY="104.0" prefHeight="500.0" prefWidth="800.0" hgap="20" vgap="20">
-         <!-- Les éléments seront ajoutés dynamiquement -->
-      </GridPane>
+
+      <ScrollPane layoutX="57.0" layoutY="104.0" prefHeight="500.0" prefWidth="800.0" fitToWidth="true" fitToHeight="true">
+         <content>
+            <GridPane fx:id="affiche_even_grid" hgap="20" vgap="20">
+               <!-- Les éléments seront ajoutés dynamiquement -->
+            </GridPane>
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

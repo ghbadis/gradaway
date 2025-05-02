@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.io.IOException;
 
 public class Ajoutergestionevenementcontrolleur {
     @FXML
@@ -46,6 +47,8 @@ public class Ajoutergestionevenementcontrolleur {
     private Button valider_button;
     @FXML
     private Button annuler_button;
+    @FXML
+    private Button user_button;
 
     private ServiceEvenement serviceEvenement;
     private ObservableList<Evenement> evenementsList;
@@ -65,6 +68,7 @@ public class Ajoutergestionevenementcontrolleur {
         ajouter_evenement_button.setOnAction(event -> showFormAjout());
         valider_button.setOnAction(event -> validerFormulaire());
         annuler_button.setOnAction(event -> hideFormulaire());
+        user_button.setOnAction(event -> ouvrirInterfaceUser());
         
         // Ajouter un listener pour la recherche
         chercher_txtf.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -287,5 +291,19 @@ public class Ajoutergestionevenementcontrolleur {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    private void ouvrirInterfaceUser() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Affichage des Événements");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException | RuntimeException e) {
+            e.printStackTrace(); // Affiche le stacktrace dans la console
+            showAlert("Erreur", "Impossible d'ouvrir l'interface utilisateur", e.toString() + "\n" + (e.getCause() != null ? e.getCause().toString() : ""));
+        }
     }
 }
