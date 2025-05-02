@@ -49,6 +49,10 @@ public class Ajoutergestionevenementcontrolleur {
     private Button annuler_button;
     @FXML
     private Button user_button;
+    @FXML
+    private TextField image_txtf;
+    @FXML
+    private Button choisir_image_button;
 
     private ServiceEvenement serviceEvenement;
     private ObservableList<Evenement> evenementsList;
@@ -69,7 +73,9 @@ public class Ajoutergestionevenementcontrolleur {
         valider_button.setOnAction(event -> validerFormulaire());
         annuler_button.setOnAction(event -> hideFormulaire());
         user_button.setOnAction(event -> ouvrirInterfaceUser());
-        
+        if (choisir_image_button != null) {
+            choisir_image_button.setOnAction(event -> choisirImage());
+        }
         // Ajouter un listener pour la recherche
         chercher_txtf.textProperty().addListener((observable, oldValue, newValue) -> {
             filterEvenements(newValue);
@@ -214,8 +220,9 @@ public class Ajoutergestionevenementcontrolleur {
             String lieu = lieu_txtf.getText();
             String domaine = domaine_txtf.getText();
             int placesDisponibles = Integer.parseInt(place_disponible_txtf.getText());
+            String image = image_txtf != null ? image_txtf.getText() : null;
 
-            Evenement evenement = new Evenement(nom, description, date, lieu, domaine, placesDisponibles, null);
+            Evenement evenement = new Evenement(nom, description, date, lieu, domaine, placesDisponibles, image);
             serviceEvenement.ajouter(evenement);
             
             loadData();
@@ -273,6 +280,7 @@ public class Ajoutergestionevenementcontrolleur {
         lieu_txtf.setText(evenement.getLieu());
         domaine_txtf.setText(evenement.getDomaine());
         place_disponible_txtf.setText(String.valueOf(evenement.getPlaces_disponibles()));
+        if (image_txtf != null) image_txtf.setText(evenement.getImage());
     }
 
     private void clearFields() {
@@ -282,6 +290,7 @@ public class Ajoutergestionevenementcontrolleur {
         lieu_txtf.clear();
         domaine_txtf.clear();
         place_disponible_txtf.clear();
+        if (image_txtf != null) image_txtf.clear();
         selectedEvenement = null;
     }
 
@@ -304,6 +313,18 @@ public class Ajoutergestionevenementcontrolleur {
         } catch (IOException | RuntimeException e) {
             e.printStackTrace(); // Affiche le stacktrace dans la console
             showAlert("Erreur", "Impossible d'ouvrir l'interface utilisateur", e.toString() + "\n" + (e.getCause() != null ? e.getCause().toString() : ""));
+        }
+    }
+
+    private void choisirImage() {
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("Choisir une image");
+        fileChooser.getExtensionFilters().addAll(
+            new javafx.stage.FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+        java.io.File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            image_txtf.setText(selectedFile.toURI().toString());
         }
     }
 }

@@ -71,6 +71,16 @@
             <TextField fx:id="place_disponible_txtf" styleClass="textfield"/>
         </HBox>
 
+        <HBox spacing="10">
+            <Label text="Image :">
+                <font>
+                    <Font name="Tahoma" size="14.0"/>
+                </font>
+            </Label>
+            <TextField fx:id="image_txtf" styleClass="textfield" editable="false"/>
+            <Button fx:id="choisir_image_button" text="Choisir une image"/>
+        </HBox>
+
         <HBox spacing="10" alignment="CENTER_RIGHT">
             <Button fx:id="valider_button" text="Valider" styleClass="add-btn"/>
             <Button fx:id="annuler_button" text="Annuler" styleClass="clear-btn"/>
