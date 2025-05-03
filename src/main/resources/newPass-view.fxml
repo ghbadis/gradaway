@@ -24,12 +24,12 @@
                   <children>
                      <ImageView fitHeight="336.0" fitWidth="269.0" layoutX="57.0" layoutY="-17.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                           <Image url="@../../../../../gradawayprojet/images/logo.png" />
+                           <Image url="@images/logo.png" />
                         </image>
                      </ImageView>
                      <ImageView fitHeight="307.0" fitWidth="232.0" layoutX="42.0" layoutY="240.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                           <Image url="@../../../../../gradawayprojet/images/photo.png" />
+                           <Image url="@images/photo.png" />
                         </image>
                      </ImageView>
                   </children>
@@ -54,7 +54,7 @@
                      </Text>
                      <ImageView fitHeight="26.0" fitWidth="24.0" layoutY="0.94921875" pickOnBounds="true" preserveRatio="true">
                         <image>
-                           <Image url="@../../../../../gradawayprojet/images/back.png" />
+                           <Image url="@images/back.png" />
                         </image>
                      </ImageView>
                   </children>
