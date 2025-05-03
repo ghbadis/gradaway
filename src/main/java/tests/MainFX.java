@@ -12,7 +12,7 @@ public class MainFX extends Application {
     public void start(Stage primaryStage) {
         try {
             // Charger le fichier FXML de la première vue
-            Parent root = FXMLLoader.load(getClass().getResource("/dashboard.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("login-view.fxml"));
             Scene scene = new Scene(root);
             
             // Configurer la fenêtre principale

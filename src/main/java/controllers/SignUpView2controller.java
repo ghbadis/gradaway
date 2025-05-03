@@ -53,7 +53,7 @@ public class SignUpView2controller {
 
     @FXML
     public void initialize() {
-        // Ajouter les âges de 18 à 100 ans dans la ComboBox
+        //  âges de 18 à 100 ans
         for (int i = 18; i <= 100; i++) {
             tfage.getItems().add(i);
         }

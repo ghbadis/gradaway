@@ -58,6 +58,12 @@
                     </image>
                 </ImageView>
                 <Button fx:id="signUpButton" layoutX="90.0" layoutY="470.0" mnemonicParsing="false" onAction="#handleSignUp" prefHeight="49.0" prefWidth="500.0" text="SignUp" />
+            <ImageView fx:id="togglePasswordIcon" fitHeight="20.0" fitWidth="30.0" layoutX="563.0" layoutY="290.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/EYE.png" />
+               </image>
+            </ImageView>
+            <Text fx:id="forgotPass" layoutX="494.0" layoutY="352.0" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Forgot password" onMouseClicked="#handleForgotPassword" />
             </children>
         </Pane>
     </HBox>

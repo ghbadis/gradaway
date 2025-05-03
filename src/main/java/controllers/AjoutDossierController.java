@@ -81,37 +81,30 @@ public class AjoutDossierController {
     @FXML
     public void initialize() {
         dateDepotPicker.setValue(LocalDate.now());
-        serviceDossier = new ServiceDossier(); // Instantiate the service
-        // Disable submit button initially until a valid ID is set
-        // This depends on whether setEtudiantId is called before or after initialize
-        // If setEtudiantId can be called later, we might need to enable it there.
-        submitButton.setDisable(true); // Start disabled
+        serviceDossier = new ServiceDossier();
+
+        submitButton.setDisable(true);
         viewDossierButton.setDisable(true);
     }
 
-    // Generic handler for file chooser
+
     private void handleFileUpload(ActionEvent event, TextField pathField) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir un fichier");
-        // You can add extension filters if needed
-        // fileChooser.getExtensionFilters().addAll(
-        //     new FileChooser.ExtensionFilter("PDF Files", "*.pdf"),
-        //     new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-        // );
 
-        // Get the stage from the event source
+
+
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
             pathField.setText(selectedFile.getAbsolutePath());
         } else {
-            // Optional: handle case where no file was selected
-            // pathField.setText(""); // Clear if previously set
+
         }
     }
 
-    // Specific handlers calling the generic one
+
     @FXML void handleUploadCin(ActionEvent event) { handleFileUpload(event, cinPathField); }
     @FXML void handleUploadPhoto(ActionEvent event) { handleFileUpload(event, photoPathField); }
     @FXML void handleUploadDiplomeBac(ActionEvent event) { handleFileUpload(event, diplomeBacPathField); }
@@ -123,12 +116,12 @@ public class AjoutDossierController {
 
     @FXML
     void handleSubmit(ActionEvent event) {
-        // Basic Validation
+
         if (currentEtudiantId <= 0) {
             showAlert(Alert.AlertType.ERROR, "Erreur de Soumission", "ID de l'étudiant non défini ou invalide.");
             return;
         }
-        // Double check dossier doesn't exist just before submitting (optional but safer)
+
         try {
              if (serviceDossier.recupererParEtudiantId(currentEtudiantId) != null) {
                  showAlert(Alert.AlertType.ERROR, "Erreur de Soumission", "Un dossier existe déjà pour cet étudiant.");
@@ -152,7 +145,7 @@ public class AjoutDossierController {
         }
 
         try {
-            // Create Dossier object
+
             Dossier newDossier = new Dossier(
                     currentEtudiantId,
                     cinPathField.getText(),
@@ -187,7 +180,7 @@ public class AjoutDossierController {
         }
     }
 
-    // Action handler for the new button
+
     @FXML
     void handleViewDossier(ActionEvent event) {
         if (currentEtudiantId <= 0) {
@@ -213,9 +206,7 @@ public class AjoutDossierController {
             stage.centerOnScreen();
             stage.show();
 
-            // Optionally close the current AjoutDossier window
-            // Stage currentStage = (Stage) viewDossierButton.getScene().getWindow();
-            // currentStage.close();
+
 
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur Chargement FXML", "Impossible de charger la vue 'Afficher Dossier'.");
@@ -230,9 +221,9 @@ public class AjoutDossierController {
 
     @FXML
     void handleCancel(ActionEvent event) {
-        // Optional: Confirm before clearing or closing
+
         clearForm();
-        // Optionally close the window
+
          Stage stage = (Stage) cancelButton.getScene().getWindow();
          stage.close();
         System.out.println("Ajout annulé.");
@@ -247,15 +238,15 @@ public class AjoutDossierController {
         lettreMotivationPathField.clear();
         dossierSantePathField.clear();
         cvPathField.clear();
-        dateDepotPicker.setValue(LocalDate.now()); // Reset date to today
+        dateDepotPicker.setValue(LocalDate.now());
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
-        alert.setHeaderText(null); // No header text
+        alert.setHeaderText(null);
         alert.setContentText(message);
-        // Check if rootPane and its scene are initialized before setting owner
+
         if (rootPane != null && rootPane.getScene() != null && rootPane.getScene().getWindow() != null) {
             alert.initOwner(rootPane.getScene().getWindow());
         } else {

@@ -1,0 +1,77 @@
+package controllers;
+
+import javafx.event.Event;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import utils.MyDatabase;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class OptViewcontroller {
+    @FXML
+    private Group back;
+    @FXML
+    private TextField tfemailpassword;
+
+    private Connection connection;
+
+    public OptViewcontroller() {
+        try {
+            connection = MyDatabase.getInstance().getCnx();
+        } catch (Exception e) {
+            System.err.println("Error establishing database connection: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void back(Event event) {
+
+    }
+
+    @FXML
+    public void toEnterOTP() {
+        String email = tfemailpassword.getText();
+        if (email.isEmpty()) {
+            showAlert("Erreur", "Veuillez entrer votre email");
+            return;
+        }
+
+        try {
+            // Verify if email exists in database
+            String query = "SELECT id FROM user WHERE email = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                // Email exists in database
+                // TODO: Implement OTP sending logic here
+                showAlert("Succès", "Un code OTP a été envoyé à votre email");
+            } else {
+                // Email doesn't exist in database
+                showAlert("Erreur", "Votre email n'est pas valide");
+            }
+        } catch (SQLException e) {
+            System.err.println("Database error during email verification: " + e.getMessage());
+            showAlert("Erreur", "Erreur lors de la vérification de l'email");
+        }
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+}

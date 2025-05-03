@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane prefHeight="600.0" prefWidth="1000.0" stylesheets="styleskossay.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esprit.controllers.EnterOPTView">
+<StackPane prefHeight="600.0" prefWidth="1000.0" stylesheets="stylesbadiss.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EnterOPTViewcontroller">
     <HBox />
    <StackPane stylesheets="stylesbadis.css">
       <children>
@@ -19,21 +19,21 @@
             <children>
                <Pane prefHeight="400.0" prefWidth="450.0" style="-fx-background-color: #ffff;">
                   <children>
-                     <ImageView fitHeight="273.0" fitWidth="231.0" layoutX="123.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                     <ImageView fitHeight="321.0" fitWidth="252.0" layoutX="77.0" layoutY="-9.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                           <Image url="@../../../../../gradawayprojet/images/logo.png" />
+                           <Image url="@images/logo.png" />
                         </image>
                      </ImageView>
                      <ImageView fitHeight="307.0" fitWidth="232.0" layoutX="80.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                           <Image url="@../../../../../gradawayprojet/images/photo.png" />
+                           <Image url="@images/photo.png" />
                         </image>
                      </ImageView>
                   </children>
                </Pane>
                <Pane prefHeight="600.0" prefWidth="639.0" style="-fx-background-color: #e5e5e5;">
                   <children>
-                     <Button layoutX="54.0" layoutY="398.0" mnemonicParsing="false" onAction="#check" prefHeight="42.0" prefWidth="500.0" text="Verify">
+                     <Button layoutX="54.0" layoutY="398.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="500.0" text="Verify">
                         <font>
                            <Font name="System Bold" size="12.0" />
                         </font>
@@ -58,7 +58,7 @@
                            </Text>
                            <ImageView fitHeight="26.0" fitWidth="24.0" layoutY="0.94921875" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                 <Image url="@../../../../../gradawayprojet/images/back.png" />
+                                 <Image url="@images/back.png" />
                               </image>
                            </ImageView>
                         </children>

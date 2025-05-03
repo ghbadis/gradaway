@@ -30,19 +30,19 @@ public class AfficherDossierController {
     @FXML private Label dossierSanteLabel;
     @FXML private Label cvLabel;
     @FXML private Label dateDepotLabel;
-    @FXML private Label statusLabel; // To show messages like "Dossier non trouvé"
-    @FXML private Button modifierButton; // Injected button
+    @FXML private Label statusLabel;
+    @FXML private Button modifierButton;
 
     private ServiceDossier serviceDossier;
     private int currentEtudiantId = -1;
-    private Dossier displayedDossier; // Store the currently displayed dossier
+    private Dossier displayedDossier;
 
     @FXML
     public void initialize() {
         serviceDossier = new ServiceDossier();
-        statusLabel.setText(""); // Clear status initially
-        modifierButton.setVisible(false); // Hide button initially
-        // Data loading is triggered by setEtudiantId
+        statusLabel.setText("");
+        modifierButton.setVisible(false);
+
     }
 
     public void setEtudiantId(int id) {
@@ -63,14 +63,14 @@ public class AfficherDossierController {
             displayedDossier = serviceDossier.recupererParEtudiantId(currentEtudiantId);
 
             if (displayedDossier != null) {
-                statusLabel.setText(""); // Clear status if found
+                statusLabel.setText("");
                 populateFields(displayedDossier);
-                modifierButton.setVisible(true); // Show button if dossier found
+                modifierButton.setVisible(true);
             } else {
                 statusLabel.setText("Aucun dossier trouvé pour cet étudiant.");
-                // Optionally clear fields or leave them as "-"
+
                 clearFields();
-                modifierButton.setVisible(false); // Hide button if no dossier found
+                modifierButton.setVisible(false);
                 displayedDossier = null;
             }
         } catch (SQLException e) {
@@ -83,7 +83,7 @@ public class AfficherDossierController {
         }
     }
 
-    // Handler for the Modifier button
+
     @FXML
     void handleModifierDossier(ActionEvent event) {
         if (displayedDossier == null) {
@@ -97,7 +97,7 @@ public class AfficherDossierController {
             Parent root = loader.load();
 
             ModifierDossierController modifierController = loader.getController();
-            modifierController.loadDossierData(displayedDossier); // Pass the current dossier
+            modifierController.loadDossierData(displayedDossier);
 
             Stage stage = new Stage();
             Scene scene = new Scene(root);
@@ -108,13 +108,11 @@ public class AfficherDossierController {
             stage.setResizable(true);
             stage.centerOnScreen();
 
-            // Optional: Close the AfficherDossier window when opening ModifierDossier
-            // Stage currentStage = (Stage) modifierButton.getScene().getWindow();
-            // currentStage.close();
 
-            stage.showAndWait(); // Use showAndWait if you want to wait for modification before refreshing
 
-            // After the modification window is closed, refresh the data in this view
+            stage.showAndWait();
+
+
             System.out.println("AfficherDossierController: Refreshing data after modification window closed.");
             loadDossierData();
 
@@ -162,7 +160,7 @@ public class AfficherDossierController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        // Ensure rootPane is not null before getting the window
+
         if (rootPane != null && rootPane.getScene() != null && rootPane.getScene().getWindow() != null) {
              alert.initOwner(rootPane.getScene().getWindow());
         }

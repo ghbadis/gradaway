@@ -32,6 +32,12 @@ public class LoginViewcontroller {
     private Text welcome;
     @FXML
     private Button signUpButton;
+    @FXML
+    private javafx.scene.image.ImageView togglePasswordIcon;
+    @FXML
+    private Text forgotPass;
+
+    private boolean isPasswordVisible = false;
 
     public LoginViewcontroller() {
         System.out.println("LoginViewcontroller constructor called");
@@ -59,6 +65,26 @@ public class LoginViewcontroller {
         if (loginPasswd == null) {
             System.err.println("loginPasswd is null - FXML injection failed");
         }
+
+        // Initialize password visibility toggle
+        if (togglePasswordIcon != null) {
+            togglePasswordIcon.setOnMouseClicked(event -> togglePasswordVisibility());
+        }
+    }
+
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            // Hide password
+            loginPasswd.setText(VloginPasswd.getText());
+            loginPasswd.setVisible(true);
+            VloginPasswd.setVisible(false);
+        } else {
+            // Show password
+            VloginPasswd.setText(loginPasswd.getText());
+            VloginPasswd.setVisible(true);
+            loginPasswd.setVisible(false);
+        }
+        isPasswordVisible = !isPasswordVisible;
     }
 
     @FXML
@@ -191,6 +217,29 @@ public class LoginViewcontroller {
         } catch (IOException e) {
             System.err.println("LoginViewcontroller: Error loading SignUpView1.fxml: " + e.getMessage());
             showAlert("Erreur", "Erreur lors de l'ouverture de la page d'inscription.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleForgotPassword() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/otp-view.fxml"));
+            Parent root = loader.load();
+            
+            Stage currentStage = (Stage) forgotPass.getScene().getWindow();
+            currentStage.close();
+            
+            Stage otpStage = new Stage();
+            Scene scene = new Scene(root);
+            otpStage.setScene(scene);
+            otpStage.setTitle("Reset Password - GradAway");
+            otpStage.setResizable(true);
+            otpStage.centerOnScreen();
+            otpStage.show();
+        } catch (IOException e) {
+            System.err.println("LoginViewcontroller: Error loading OTP view: " + e.getMessage());
+            showAlert("Erreur", "Erreur lors de l'ouverture de la page de réinitialisation du mot de passe.");
             e.printStackTrace();
         }
     }

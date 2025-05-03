@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -19,7 +20,7 @@ public class SignUpView1controller {
     @FXML
     private TextField tfprenom;
     @FXML
-    private TextField tfmdp;
+    private PasswordField tfmdp;
     @FXML
     private TextField tfnom;
     @FXML
@@ -28,9 +29,38 @@ public class SignUpView1controller {
     private Group back;
     @FXML
     private Text login;
+    @FXML
+    private javafx.scene.image.ImageView togglePasswordIcon;
+    @FXML
+    private TextField visiblePasswordField;
+
+    private boolean isPasswordVisible = false;
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+
+    @FXML
+    public void initialize() {
+        // Initialize password visibility toggle
+        if (togglePasswordIcon != null) {
+            togglePasswordIcon.setOnMouseClicked(event -> togglePasswordVisibility());
+        }
+    }
+
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            // Hide password
+            tfmdp.setText(visiblePasswordField.getText());
+            tfmdp.setVisible(true);
+            visiblePasswordField.setVisible(false);
+        } else {
+            // Show password
+            visiblePasswordField.setText(tfmdp.getText());
+            visiblePasswordField.setVisible(true);
+            tfmdp.setVisible(false);
+        }
+        isPasswordVisible = !isPasswordVisible;
+    }
 
     @FXML
     public void back(Event event) {
@@ -53,9 +83,6 @@ public class SignUpView1controller {
             showAlert("Erreur", "Impossible de charger la page de connexion");
         }
     }
-
-
-
 
     @FXML
     public void continuer(ActionEvent actionEvent) {
