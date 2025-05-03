@@ -55,7 +55,21 @@ public class OptViewcontroller {
 
             if (resultSet.next()) {
                 // Email exists in database
-                // TODO: Implement OTP sending logic here
+                // Open the enterOPT-view.fxml interface
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/enterOPT-view.fxml"));
+                Parent root = loader.load();
+                
+                Stage currentStage = (Stage) tfemailpassword.getScene().getWindow();
+                currentStage.close();
+                
+                Stage otpStage = new Stage();
+                Scene scene = new Scene(root);
+                otpStage.setScene(scene);
+                otpStage.setTitle("Enter OTP - GradAway");
+                otpStage.setResizable(true);
+                otpStage.centerOnScreen();
+                otpStage.show();
+                
                 showAlert("Succès", "Un code OTP a été envoyé à votre email");
             } else {
                 // Email doesn't exist in database
@@ -64,6 +78,9 @@ public class OptViewcontroller {
         } catch (SQLException e) {
             System.err.println("Database error during email verification: " + e.getMessage());
             showAlert("Erreur", "Erreur lors de la vérification de l'email");
+        } catch (IOException e) {
+            System.err.println("Error loading enterOPT view: " + e.getMessage());
+            showAlert("Erreur", "Erreur lors de l'ouverture de la page OTP");
         }
     }
 
