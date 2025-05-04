@@ -12,6 +12,8 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import Services.ServiceReservationEvenement;
+import utils.EmailUtil;
+import Services.ServiceEvenement;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -75,7 +77,17 @@ public class ReservationEvenementController {
             );
 
             serviceReservation.ajouter(reservation);
-            showAlert("Succès", "Réservation effectuée", "Votre réservation a été enregistrée avec succès");
+            
+            // Envoyer l'email de confirmation
+            EmailUtil.sendConfirmationEmail(
+                email_txtf.getText(),
+                nom_txtf.getText(),
+                prenom_txtf.getText(),
+                evenement.getNom(),
+                date
+            );
+            
+            showAlert("Succès", "Réservation effectuée", "Votre réservation a été enregistrée avec succès. Un email de confirmation vous a été envoyé.");
             fermerFenetre();
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors de la réservation", e.getMessage());
