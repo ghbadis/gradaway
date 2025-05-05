@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -22,106 +23,102 @@
                         <Font name="System Bold" size="32.0" />
                     </font>
                 </Label>
-                <GridPane hgap="10.0" prefHeight="428.0" prefWidth="619.0" style="-fx-background-color: #ffffff; -fx-padding: 25; -fx-border-color: #b0bec5; -fx-border-radius: 5; -fx-background-radius: 5;" vgap="15.0" VBox.vgrow="ALWAYS">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="180.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="550.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="428.0" prefWidth="619.0" VBox.vgrow="ALWAYS">
+                    <content>
+                        <GridPane hgap="20.0" prefHeight="451.0" prefWidth="1003.0" vgap="20.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="250.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="250.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            <children>
+                                <!-- CIN -->
+                                <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                                    <children>
+                                        <ImageView fx:id="cinPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
+                                        <Label text="CIN" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                    </children>
+                                </VBox>
+
+                                <!-- Photo -->
+                                <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="1">
+                                    <children>
+                                        <ImageView fx:id="photoPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
+                                        <Label text="Photo" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                    </children>
+                                </VBox>
+
+                                <!-- Diplôme Baccalauréat -->
+                                <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="2">
+                                    <children>
+                                        <ImageView fx:id="diplomeBacPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
+                                        <Label text="Diplôme Baccalauréat" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                    </children>
+                                </VBox>
+
+                                <!-- Relevé de Notes -->
+                                <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="3">
+                                    <children>
+                                        <ImageView fx:id="releveNotePreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
+                                        <Label text="Relevé de Notes" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                    </children>
+                                </VBox>
+
+                                <!-- Diplômes Obtenus -->
+                                <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.rowIndex="1">
+                                    <children>
+                                        <ImageView fx:id="diplomeObtenuPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
+                                        <Label text="Diplômes Obtenus" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                    </children>
+                                </VBox>
+
+                                <!-- Lettre de Motivations -->
+                                <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <children>
+                                        <ImageView fx:id="lettreMotivationPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
+                                        <Label text="Lettre de Motivations" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                    </children>
+                                </VBox>
+
+                                <!-- Dossier Santé -->
+                                <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                    <children>
+                                        <ImageView fx:id="dossierSantePreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
+                                        <Label text="Dossier Santé" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                    </children>
+                                </VBox>
+
+                                <!-- CV -->
+                                <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                    <children>
+                                        <ImageView fx:id="cvPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
+                                        <Label text="CV" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                    </children>
+                                </VBox>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                            </padding>
+                        </GridPane>
+                    </content>
+                </ScrollPane>
+
+                <!-- Date de Dépôt -->
+                <VBox alignment="CENTER" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
                     <children>
-                        <Label prefHeight="20.0" prefWidth="106.0" text="Chemin CIN:" textFill="#37474f" GridPane.rowIndex="0">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="cinLabel" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                           <font>
-                              <Font size="14.0" />
-                           </font></Label>
-                        <Label text="Chemin Photo:" textFill="#37474f" GridPane.rowIndex="1">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="photoLabel" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                           <font>
-                              <Font size="14.0" />
-                           </font></Label>
-                        <Label text="Chemin Diplôme Bac:" textFill="#37474f" GridPane.rowIndex="2">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="diplomeBacLabel" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                           <font>
-                              <Font size="14.0" />
-                           </font></Label>
-                        <Label text="Chemin Relevé Notes:" textFill="#37474f" GridPane.rowIndex="3">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="releveNoteLabel" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                           <font>
-                              <Font size="14.0" />
-                           </font></Label>
-                        <Label text="Chemin Diplômes Obtenus:" textFill="#37474f" GridPane.rowIndex="4">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="diplomeObtenuLabel" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                           <font>
-                              <Font size="14.0" />
-                           </font></Label>
-                        <Label text="Chemin Lettre Motivations:" textFill="#37474f" GridPane.rowIndex="5">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lettreMotivationLabel" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                           <font>
-                              <Font size="14.0" />
-                           </font></Label>
-                        <Label text="Chemin Dossier Santé:" textFill="#37474f" GridPane.rowIndex="6">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="dossierSanteLabel" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                           <font>
-                              <Font size="14.0" />
-                           </font></Label>
-                        <Label text="Chemin CV:" textFill="#37474f" GridPane.rowIndex="7">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="cvLabel" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="7">
-                           <font>
-                              <Font size="14.0" />
-                           </font></Label>
-                        <Label text="Date Dépôt:" textFill="#37474f" GridPane.rowIndex="8">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="dateDepotLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="8">
-                           <font>
-                              <Font size="14.0" />
-                           </font></Label>
+                        <Label text="Date de Dépôt" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                        <Label fx:id="dateDepotLabel" text="-" style="-fx-font-size: 14px;" />
                     </children>
-                </GridPane>
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                </VBox>
+
                 <Label fx:id="statusLabel" textFill="RED" />
                 <Button fx:id="modifierButton" mnemonicParsing="false" onAction="#handleModifierDossier" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #ff9800; -fx-text-fill: white;" text="Modifier Dossier" visible="false">
                     <font>
