@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import utils.MyDatabase;
+import utils.EmailService;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -24,6 +25,8 @@ public class OptViewcontroller {
     private TextField tfemailpassword;
 
     private Connection connection;
+    private static String currentOTP;
+    private static String currentEmail;
 
     public OptViewcontroller() {
         try {
@@ -35,7 +38,14 @@ public class OptViewcontroller {
 
     @FXML
     public void back(Event event) {
-
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) back.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -54,7 +64,11 @@ public class OptViewcontroller {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                // Email exists in database
+                // Generate and send OTP
+                currentOTP = EmailService.generateOTP();
+                currentEmail = email;
+                EmailService.sendOTPEmail(email, currentOTP);
+
                 // Open the enterOPT-view.fxml interface
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/enterOPT-view.fxml"));
                 Parent root = loader.load();
@@ -90,5 +104,13 @@ public class OptViewcontroller {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    public static String getCurrentOTP() {
+        return currentOTP;
+    }
+
+    public static String getCurrentEmail() {
+        return currentEmail;
     }
 }

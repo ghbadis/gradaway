@@ -1,273 +1,182 @@
 package controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.event.ActionEvent;
-import Services.ServiceUser;
-import entities.User;
-import java.util.List;
-import javafx.scene.control.Button;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import Services.ServiceDossier;
-import entities.Dossier;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.ButtonType;
-import javafx.scene.layout.GridPane;
-import javafx.scene.control.Label;
-import javafx.util.Pair;
-import javafx.geometry.Insets;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import java.io.IOException;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.geometry.Insets;
+import javafx.scene.paint.Color;
+import entities.User;
+import Services.ServiceUser;
+
+import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.DatePicker;
 
 public class AdminUsercontroller implements Initializable {
-    @FXML
-    private TableView<User> TvUser;
 
     @FXML
-    private TableColumn<User, Integer> colId;
-    @FXML
-    private TableColumn<User, String> colNom;
-    @FXML
-    private TableColumn<User, String> colPrenom;
-    @FXML
-    private TableColumn<User, String> colEmail;
-    @FXML
-    private TableColumn<User, Integer> colTelephone;
-    @FXML
-    private TableColumn<User, Integer> colCin;
-    @FXML
-    private TableColumn<User, Integer> colAge;
-    @FXML
-    private TableColumn<User, java.time.LocalDate> colDateNaissance;
-    @FXML
-    private TableColumn<User, String> colNationalite;
-    @FXML
-    private TableColumn<User, String> colDomaineEtude;
-    @FXML
-    private TableColumn<User, String> colUniversiteOrigine;
-    @FXML
-    private TableColumn<User, String> colRole;
-    @FXML
-    private TableColumn<User, Integer> colMoyennes;
-    @FXML
-    private TableColumn<User, Integer> colAnneeObtentionDiplome;
-    @FXML
-    private TableColumn<User, String> colImage;
+    private ListView<HBox> userListView;
 
-    @FXML
-    private Button deleteButton;
-
-    @FXML
-    private Button modifyButton;
-
-    private ServiceUser serviceUser = new ServiceUser();
-    private ServiceDossier serviceDossier = new ServiceDossier();
+    private ServiceUser serviceUser;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Set up the table columns
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colTelephone.setCellValueFactory(new PropertyValueFactory<>("telephone"));
-        colCin.setCellValueFactory(new PropertyValueFactory<>("cin"));
-        colAge.setCellValueFactory(new PropertyValueFactory<>("age"));
-        colDateNaissance.setCellValueFactory(new PropertyValueFactory<>("dateNaissance"));
-        colDateNaissance.setCellFactory(column -> new TableCell<User, java.time.LocalDate>() {
-            @Override
-            protected void updateItem(java.time.LocalDate item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.toString());
-                }
-            }
-        });
-        colNationalite.setCellValueFactory(new PropertyValueFactory<>("nationalite"));
-        colDomaineEtude.setCellValueFactory(new PropertyValueFactory<>("domaine_etude"));
-        colUniversiteOrigine.setCellValueFactory(new PropertyValueFactory<>("universite_origine"));
-        colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
-        colMoyennes.setCellValueFactory(new PropertyValueFactory<>("moyennes"));
-        colAnneeObtentionDiplome.setCellValueFactory(new PropertyValueFactory<>("annee_obtention_diplome"));
-        colImage.setCellValueFactory(new PropertyValueFactory<>("image"));
-
-        // Load and display users
+        serviceUser = new ServiceUser();
         loadUsers();
     }
 
     private void loadUsers() {
         try {
             List<User> users = serviceUser.recuperer();
-            TvUser.getItems().setAll(users);
+            userListView.getItems().clear();
+
+            for (User user : users) {
+                HBox userBox = createUserBox(user);
+                userListView.getItems().add(userBox);
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText(null);
-            alert.setContentText("Erreur lors du chargement des utilisateurs.");
-            alert.showAndWait();
         }
     }
 
-    @FXML
-    public void onDeleteButtonClick(ActionEvent actionEvent) {
-        User selectedUser = TvUser.getSelectionModel().getSelectedItem();
-        if (selectedUser == null) {
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("Avertissement");
-            alert.setHeaderText(null);
-            alert.setContentText("Veuillez sélectionner un utilisateur à supprimer.");
-            alert.showAndWait();
-            return;
-        }
+    private HBox createUserBox(User user) {
+        // Main container
+        HBox mainBox = new HBox(20);
+        mainBox.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-background-radius: 10; " +
+                "-fx-border-color: #e0e0e0; -fx-border-radius: 10; -fx-border-width: 1; " +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 10);");
+        mainBox.setPadding(new Insets(15));
+
+        // Left section with photo
+        VBox photoBox = new VBox(10);
+        photoBox.setAlignment(javafx.geometry.Pos.CENTER);
+
+        ImageView photoView = new ImageView();
         try {
-            // First, delete related dossiers
-            Dossier dossier = serviceDossier.recupererParEtudiantId(selectedUser.getId());
-            if (dossier != null) {
-                serviceDossier.supprimer(dossier);
+            if (user.getImage() != null && !user.getImage().isEmpty()) {
+                File imageFile = new File(user.getImage());
+                if (imageFile.exists()) {
+                    Image image = new Image(imageFile.toURI().toString());
+                    photoView.setImage(image);
+                } else {
+                    loadDefaultImage(photoView);
+                }
+            } else {
+                loadDefaultImage(photoView);
             }
-            // Then delete the user
-            serviceUser.supprimer(selectedUser);
-            TvUser.getItems().remove(selectedUser);
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Succès");
-            alert.setHeaderText(null);
-            alert.setContentText("L'utilisateur a été supprimé avec succès.");
-            alert.showAndWait();
         } catch (Exception e) {
-            e.printStackTrace();
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText(null);
-            alert.setContentText("Erreur lors de la suppression de l'utilisateur.");
-            alert.showAndWait();
+            loadDefaultImage(photoView);
         }
+
+        photoView.setFitHeight(120);
+        photoView.setFitWidth(120);
+        photoView.setPreserveRatio(true);
+        photoView.setStyle("-fx-background-color: #f5f5f5; -fx-background-radius: 60; " +
+                "-fx-border-color: #e0e0e0; -fx-border-radius: 60; -fx-border-width: 2;");
+
+        // Add user name under photo
+        Text nameText = new Text(user.getNom() + " " + user.getPrenom());
+        nameText.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+        photoBox.getChildren().addAll(photoView, nameText);
+
+        // Middle section with user info
+        GridPane infoGrid = new GridPane();
+        infoGrid.setHgap(15);
+        infoGrid.setVgap(8);
+        infoGrid.setPadding(new Insets(10));
+
+        // Personal Information Section
+        VBox personalInfoBox = createInfoSection("Informations Personnelles");
+        GridPane personalGrid = new GridPane();
+        personalGrid.setHgap(10);
+        personalGrid.setVgap(5);
+
+        addInfoRow(personalGrid, 0, "Email:", user.getEmail());
+        addInfoRow(personalGrid, 1, "Téléphone:", String.valueOf(user.getTelephone()));
+        addInfoRow(personalGrid, 2, "CIN:", String.valueOf(user.getCin()));
+        addInfoRow(personalGrid, 3, "Âge:", String.valueOf(user.getAge()));
+        addInfoRow(personalGrid, 4, "Nationalité:", user.getNationalite());
+        addInfoRow(personalGrid, 5, "Date de naissance:", user.getDateNaissance().toString());
+
+        personalInfoBox.getChildren().add(personalGrid);
+
+        // Academic Information Section
+        VBox academicInfoBox = createInfoSection("Informations Académiques");
+        GridPane academicGrid = new GridPane();
+        academicGrid.setHgap(10);
+        academicGrid.setVgap(5);
+
+        addInfoRow(academicGrid, 0, "Domaine d'étude:", user.getDomaine_etude());
+        addInfoRow(academicGrid, 1, "Université d'origine:", user.getUniversite_origine());
+        addInfoRow(academicGrid, 2, "Moyenne:", String.valueOf(user.getMoyennes()));
+        addInfoRow(academicGrid, 3, "Année d'obtention:", String.valueOf(user.getAnnee_obtention_diplome()));
+        addInfoRow(academicGrid, 4, "Rôle:", user.getRole());
+
+        academicInfoBox.getChildren().add(academicGrid);
+
+        // Right section with action buttons
+        VBox actionBox = new VBox(10);
+        actionBox.setAlignment(javafx.geometry.Pos.CENTER);
+        actionBox.setPadding(new Insets(10));
+
+        Button editButton = createActionButton("Modifier", "#4CAF50");
+        Button deleteButton = createActionButton("Supprimer", "#f44336");
+
+        actionBox.getChildren().addAll(editButton, deleteButton);
+
+        // Add all sections to main box
+        mainBox.getChildren().addAll(photoBox, personalInfoBox, academicInfoBox, actionBox);
+        return mainBox;
     }
 
-    @FXML
-    public void onModifyButtonClick(ActionEvent actionEvent) {
-        User selectedUser = TvUser.getSelectionModel().getSelectedItem();
-        if (selectedUser == null) {
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("Avertissement");
-            alert.setHeaderText(null);
-            alert.setContentText("Veuillez sélectionner un utilisateur à modifier.");
-            alert.showAndWait();
-            return;
+    private VBox createInfoSection(String title) {
+        VBox section = new VBox(10);
+        section.setPadding(new Insets(10));
+        section.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 5; " +
+                "-fx-border-color: #e0e0e0; -fx-border-radius: 5; -fx-border-width: 1;");
+
+        Text titleText = new Text(title);
+        titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-fill: #333333;");
+
+        section.getChildren().add(titleText);
+        return section;
+    }
+
+    private Button createActionButton(String text, String color) {
+        Button button = new Button(text);
+        button.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white; " +
+                "-fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;");
+        button.setMinWidth(100);
+        return button;
+    }
+
+    private void addInfoRow(GridPane grid, int row, String label, String value) {
+        Text labelText = new Text(label);
+        labelText.setStyle("-fx-font-weight: bold; -fx-fill: #666666;");
+
+        Text valueText = new Text(value);
+        valueText.setStyle("-fx-fill: #333333;");
+
+        grid.add(labelText, 0, row);
+        grid.add(valueText, 1, row);
+    }
+
+    private void loadDefaultImage(ImageView imageView) {
+        try {
+            URL defaultImageUrl = getClass().getResource("/images/default-user.png");
+            if (defaultImageUrl != null) {
+                imageView.setImage(new Image(defaultImageUrl.toString()));
+            } else {
+                System.err.println("Image par défaut non trouvée");
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement de l'image par défaut: " + e.getMessage());
         }
-
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
-        dialog.setTitle("Modifier l'utilisateur");
-        dialog.setHeaderText("Modifier les informations de l'utilisateur");
-
-        ButtonType saveButtonType = new ButtonType("Sauvegarder", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField nomField = new TextField(selectedUser.getNom());
-        TextField prenomField = new TextField(selectedUser.getPrenom());
-        TextField emailField = new TextField(selectedUser.getEmail());
-        TextField telephoneField = new TextField(String.valueOf(selectedUser.getTelephone()));
-        TextField cinField = new TextField(String.valueOf(selectedUser.getCin()));
-        TextField ageField = new TextField(String.valueOf(selectedUser.getAge()));
-        DatePicker dateNaissanceField = new DatePicker(selectedUser.getDateNaissance());
-        TextField nationaliteField = new TextField(selectedUser.getNationalite());
-        TextField domaineEtudeField = new TextField(selectedUser.getDomaine_etude());
-        TextField universiteOrigineField = new TextField(selectedUser.getUniversite_origine());
-        TextField roleField = new TextField(selectedUser.getRole());
-        TextField moyennesField = new TextField(String.valueOf(selectedUser.getMoyennes()));
-        TextField anneeObtentionDiplomeField = new TextField(String.valueOf(selectedUser.getAnnee_obtention_diplome()));
-        TextField imageField = new TextField(selectedUser.getImage());
-
-        grid.add(new Label("Nom:"), 0, 0);
-        grid.add(nomField, 1, 0);
-        grid.add(new Label("Prenom:"), 0, 1);
-        grid.add(prenomField, 1, 1);
-        grid.add(new Label("Email:"), 0, 2);
-        grid.add(emailField, 1, 2);
-        grid.add(new Label("Telephone:"), 0, 3);
-        grid.add(telephoneField, 1, 3);
-        grid.add(new Label("CIN:"), 0, 4);
-        grid.add(cinField, 1, 4);
-        grid.add(new Label("Age:"), 0, 5);
-        grid.add(ageField, 1, 5);
-        grid.add(new Label("Date de Naissance:"), 0, 6);
-        grid.add(dateNaissanceField, 1, 6);
-        grid.add(new Label("Nationalite:"), 0, 7);
-        grid.add(nationaliteField, 1, 7);
-        grid.add(new Label("Domaine Etude:"), 0, 8);
-        grid.add(domaineEtudeField, 1, 8);
-        grid.add(new Label("Universite Origine:"), 0, 9);
-        grid.add(universiteOrigineField, 1, 9);
-        grid.add(new Label("Role:"), 0, 10);
-        grid.add(roleField, 1, 10);
-        grid.add(new Label("Moyennes:"), 0, 11);
-        grid.add(moyennesField, 1, 11);
-        grid.add(new Label("Annee Obtention Diplome:"), 0, 12);
-        grid.add(anneeObtentionDiplomeField, 1, 12);
-        grid.add(new Label("Image:"), 0, 13);
-        grid.add(imageField, 1, 13);
-
-        dialog.getDialogPane().setContent(grid);
-
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == saveButtonType) {
-                return new Pair<>(nomField.getText(), prenomField.getText());
-            }
-            return null;
-        });
-
-        dialog.showAndWait().ifPresent(result -> {
-            try {
-                selectedUser.setNom(nomField.getText());
-                selectedUser.setPrenom(prenomField.getText());
-                selectedUser.setEmail(emailField.getText());
-                selectedUser.setTelephone(Integer.parseInt(telephoneField.getText()));
-                selectedUser.setCin(Integer.parseInt(cinField.getText()));
-                selectedUser.setAge(Integer.parseInt(ageField.getText()));
-                selectedUser.setDateNaissance(dateNaissanceField.getValue());
-                selectedUser.setNationalite(nationaliteField.getText());
-                selectedUser.setDomaine_etude(domaineEtudeField.getText());
-                selectedUser.setUniversite_origine(universiteOrigineField.getText());
-                selectedUser.setRole(roleField.getText());
-                selectedUser.setMoyennes(Integer.parseInt(moyennesField.getText()));
-                selectedUser.setAnnee_obtention_diplome(Integer.parseInt(anneeObtentionDiplomeField.getText()));
-                selectedUser.setImage(imageField.getText());
-
-                serviceUser.modifier(selectedUser);
-                TvUser.refresh();
-                Alert alert = new Alert(AlertType.INFORMATION);
-                alert.setTitle("Succès");
-                alert.setHeaderText(null);
-                alert.setContentText("L'utilisateur a été modifié avec succès.");
-                alert.showAndWait();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Erreur");
-                alert.setHeaderText(null);
-                alert.setContentText("Erreur lors de la modification de l'utilisateur.");
-                alert.showAndWait();
-            }
-        });
     }
 }

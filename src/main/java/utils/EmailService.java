@@ -6,13 +6,11 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import java.util.Random;
 
-public class EmailUtil {
-    private static final String FROM_EMAIL = "ghaouibadis10@gmail.com";
-    private static final String PASSWORD = "nyuq zhft kfxy sqhi"; // You'll need to set this
+public class EmailService {
+    private static final String EMAIL = "awaygrad@gmail.com"; // Remplacez par votre email
+    private static final String PASSWORD = "dmzq fnaw uglm glyn"; // Remplacez par votre mot de passe d'application Gmail
     private static final String HOST = "smtp.gmail.com";
     private static final String PORT = "587";
-    private static final String APP_NAME = "GRADAWAY";
-    private static final String USERNAME = " ghaouibadis10@gmail.com";
 
     public static String generateOTP() {
         Random random = new Random();
@@ -23,7 +21,7 @@ public class EmailUtil {
         return otp.toString();
     }
 
-    public static void sendOTP(String toEmail, String otp) {
+    public static void sendOTPEmail(String toEmail, String otp) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -33,20 +31,21 @@ public class EmailUtil {
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(FROM_EMAIL, PASSWORD);
+                return new PasswordAuthentication(EMAIL, PASSWORD);
             }
         });
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(FROM_EMAIL));
+            message.setFrom(new InternetAddress(EMAIL));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            message.setSubject("Password Recovery OTP");
-            message.setText("Your OTP for password recovery is: " + otp);
+            message.setSubject("Code de réinitialisation de mot de passe");
+            message.setText("Votre code de réinitialisation de mot de passe est : " + otp);
 
             Transport.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
+            throw new RuntimeException("Erreur lors de l'envoi de l'email");
         }
     }
 } 
