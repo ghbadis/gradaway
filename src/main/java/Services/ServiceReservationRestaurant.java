@@ -17,6 +17,14 @@ public class ServiceReservationRestaurant implements IService<ReservationRestaur
     public ServiceReservationRestaurant() {
         con = MyDatabase.getInstance().getCnx();
     }
+    
+    /**
+     * Retourne la connexion à la base de données
+     * @return Connexion à la base de données
+     */
+    public Connection getCon() {
+        return con;
+    }
 
     @Override
     public void ajouter(ReservationRestaurant reservation) throws SQLException {

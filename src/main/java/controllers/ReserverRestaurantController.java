@@ -17,7 +17,10 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 
 public class ReserverRestaurantController {
@@ -112,9 +115,25 @@ public class ReserverRestaurantController {
         }
         
         try {
-            // Créer une nouvelle réservation avec les valeurs minimales requises
+            // Récupérer l'email saisi
+            String email = emailField.getText().trim();
+            
+            // Vérifier si l'utilisateur existe dans la base de données
+            int idEtudiantValue = getUserIdByEmail(email);
+            
+            // Si l'utilisateur n'existe pas, créer un nouvel utilisateur
+            if (idEtudiantValue == -1) {
+                idEtudiantValue = createNewUser(nomClientField.getText().trim(), email);
+                
+                // Si la création a échoué, afficher une erreur et arrêter
+                if (idEtudiantValue == -1) {
+                    showAlert("Erreur", "Impossible de créer un compte utilisateur. Veuillez réessayer.", Alert.AlertType.ERROR);
+                    return;
+                }
+            }
+            
+            // Créer une nouvelle réservation avec les valeurs
             int idRestaurantValue = restaurant.getIdRestaurant();
-            int idEtudiantValue = 1; // Utiliser une valeur par défaut
             LocalDate dateReservationValue = LocalDate.now();
             int nombrePersonnesValue = personnesSpinner.getValue();
             
@@ -129,10 +148,14 @@ public class ReserverRestaurantController {
             // Enregistrer la réservation
             serviceReservation.ajouter(reservation);
             
+            // Envoyer un email de confirmation
+            sendConfirmationEmail(email, restaurant.getNom(), dateReservationValue, nombrePersonnesValue);
+            
             // Afficher un message de succès
             showAlert("Réservation confirmée", 
                      "Votre réservation chez " + restaurant.getNom() + " a été enregistrée avec succès.\n" +
-                     "Nombre de personnes: " + nombrePersonnesValue,
+                     "Nombre de personnes: " + nombrePersonnesValue + "\n\n" +
+                     "Un email de confirmation a été envoyé à " + email,
                      Alert.AlertType.INFORMATION);
             
             // Retourner à la liste des restaurants
@@ -218,5 +241,129 @@ public class ReserverRestaurantController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    
+    /**
+     * Récupère l'ID d'un utilisateur à partir de son email
+     * @param email Email de l'utilisateur
+     * @return ID de l'utilisateur ou -1 si non trouvé
+     */
+    private int getUserIdByEmail(String email) {
+        try {
+            String query = "SELECT id FROM user WHERE email = ?";
+            PreparedStatement ps = serviceReservation.getCon().prepareStatement(query);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Utilisateur non trouvé
+    }
+    
+    /**
+     * Crée un nouvel utilisateur dans la base de données
+     * @param nom Nom de l'utilisateur
+     * @param email Email de l'utilisateur
+     * @return ID du nouvel utilisateur ou -1 en cas d'échec
+     */
+    private int createNewUser(String nom, String email) {
+        try {
+            // Générer un mot de passe temporaire (à remplacer par un système plus sécurisé)
+            String tempPassword = "temp" + System.currentTimeMillis() % 10000;
+            
+            // Insérer le nouvel utilisateur
+            String query = "INSERT INTO user (nom, email, password, role) VALUES (?, ?, ?, 'ETUDIANT')";
+            PreparedStatement ps = serviceReservation.getCon().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, nom);
+            ps.setString(2, email);
+            ps.setString(3, tempPassword);
+            ps.executeUpdate();
+            
+            // Récupérer l'ID généré
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Échec de la création
+    }
+    
+    /**
+     * Envoie un email de confirmation de réservation
+     * @param email Email du destinataire
+     * @param nomRestaurant Nom du restaurant
+     * @param dateReservation Date de la réservation
+     * @param nombrePersonnes Nombre de personnes
+     */
+    private void sendConfirmationEmail(String email, String nomRestaurant, LocalDate dateReservation, int nombrePersonnes) {
+        try {
+            // Formater la date pour l'affichage
+            String dateFormatted = dateReservation.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            
+            // Générer le contenu HTML de l'email
+            String htmlContent = generateReservationConfirmationEmail(nomRestaurant, dateFormatted, nombrePersonnes);
+            
+            // Envoyer l'email
+            utils.EmailSender.sendEmail(
+                email, 
+                "Confirmation de réservation - " + nomRestaurant, 
+                htmlContent
+            );
+            
+            System.out.println("Email de confirmation envoyé à " + email);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'envoi de l'email: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Génère le contenu HTML pour l'email de confirmation de réservation
+     */
+    private String generateReservationConfirmationEmail(String nomRestaurant, String dateReservation, int nombrePersonnes) {
+        return "<!DOCTYPE html>" +
+             "<html>" +
+             "<head>" +
+             "    <meta charset='UTF-8'>" +
+             "    <style>" +
+             "        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }" +
+             "        .container { max-width: 600px; margin: 0 auto; padding: 20px; }" +
+             "        .header { background-color: #4CAF50; color: white; padding: 10px; text-align: center; }" +
+             "        .content { padding: 20px; border: 1px solid #ddd; }" +
+             "        .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #777; }" +
+             "        table { width: 100%; border-collapse: collapse; margin: 20px 0; }" +
+             "        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }" +
+             "        th { background-color: #f2f2f2; }" +
+             "    </style>" +
+             "</head>" +
+             "<body>" +
+             "    <div class='container'>" +
+             "        <div class='header'>" +
+             "            <h1>Confirmation de Réservation</h1>" +
+             "        </div>" +
+             "        <div class='content'>" +
+             "            <p>Cher(e) client(e),</p>" +
+             "            <p>Nous sommes heureux de vous confirmer que votre réservation au restaurant a été confirmée.</p>" +
+             "            <h2>Détails de la réservation :</h2>" +
+             "            <table>" +
+             "                <tr><th>Restaurant</th><td>" + nomRestaurant + "</td></tr>" +
+             "                <tr><th>Date</th><td>" + dateReservation + "</td></tr>" +
+             "                <tr><th>Nombre de personnes</th><td>" + nombrePersonnes + "</td></tr>" +
+             "            </table>" +
+             "            <p>Nous vous remercions pour votre réservation et sommes impatients de vous accueillir.</p>" +
+             "            <p>Cordialement,<br>L'équipe du restaurant</p>" +
+             "        </div>" +
+             "        <div class='footer'>" +
+             "            <p>Ceci est un email automatique, merci de ne pas y répondre.</p>" +
+             "        </div>" +
+             "    </div>" +
+             "</body>" +
+             "</html>";
     }
 }

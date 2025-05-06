@@ -17,14 +17,14 @@ import Services.ServiceReservationFoyer;
 import Services.ServiceFoyer;
 import entities.ReservationFoyer;
 import entities.Foyer;
-import utils.SimpleEmailSender;
+import utils.EmailSender;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 
 public class ReserverFoyerControllers {
 
-    @FXML private TextField tf_id;
     @FXML private TextField tf_gmail;
     @FXML private DatePicker dp_date_debut;
     @FXML private DatePicker dp_date_fin;
@@ -125,7 +125,6 @@ public class ReserverFoyerControllers {
                 "-fx-background-radius: 5; " +
                 "-fx-padding: 8;";
 
-        tf_id.setStyle(textFieldStyle);
         tf_gmail.setStyle(textFieldStyle);
 
         String datePickerStyle = "-fx-background-color: #f8f9fa; " +
@@ -137,17 +136,12 @@ public class ReserverFoyerControllers {
         dp_date_fin.setStyle(datePickerStyle);
         dp_date_reserver.setStyle(datePickerStyle);
 
-        tf_id.setPrefWidth(250);
         tf_gmail.setPrefWidth(250);
         dp_date_debut.setPrefWidth(250);
         dp_date_fin.setPrefWidth(250);
         dp_date_reserver.setPrefWidth(250);
 
         String focusStyle = "-fx-border-color: #2196F3; -fx-border-width: 2px;";
-        tf_id.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            tf_id.setStyle(newVal ? textFieldStyle + focusStyle : textFieldStyle);
-        });
-
         tf_gmail.focusedProperty().addListener((obs, oldVal, newVal) -> {
             tf_gmail.setStyle(newVal ? textFieldStyle + focusStyle : textFieldStyle);
         });
@@ -189,14 +183,9 @@ public class ReserverFoyerControllers {
         }
 
         try {
-            // Récupérer l'ID étudiant depuis le champ de texte
-            int idEtudiant;
-            try {
-                idEtudiant = Integer.parseInt(tf_id.getText().trim());
-            } catch (NumberFormatException e) {
-                showAlert("Erreur", "L'ID doit être un nombre entier valide.", Alert.AlertType.ERROR);
-                return;
-            }
+            // Générer un ID étudiant aléatoire (entre 1000 et 9999)
+            Random random = new Random();
+            int idEtudiant = 1000 + random.nextInt(9000);
             
             // Récupérer l'email
             String email = tf_gmail.getText().trim();
@@ -215,12 +204,6 @@ public class ReserverFoyerControllers {
             // Créer une instance du service de réservation
             ServiceReservationFoyer serviceReservation = new ServiceReservationFoyer();
             
-            // Vérifier si l'étudiant existe
-            if (!serviceReservation.studentExists(idEtudiant)) {
-                showAlert("Erreur", "L'ID étudiant " + idEtudiant + " n'existe pas dans la base de données.", Alert.AlertType.ERROR);
-                return;
-            }
-            
             // Créer une nouvelle réservation
             ReservationFoyer reservation = new ReservationFoyer();
             reservation.setIdEtudiant(idEtudiant);
@@ -236,43 +219,26 @@ public class ReserverFoyerControllers {
             // Ajouter la réservation à la base de données
             serviceReservation.ajouter(reservation);
             
-            // Formater les dates pour l'email
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            String dateDebut = dp_date_debut.getValue().format(formatter);
-            String dateFin = dp_date_fin.getValue().format(formatter);
-            String dateReservation = dp_date_reserver.getValue().format(formatter);
+            // Envoyer un email de confirmation
+            sendConfirmationEmail(email, selectedFoyer, reservation);
             
-            // Préparer et envoyer l'email de confirmation
-            String nomFoyer = selectedFoyer.getNom();
-            String emailContent = SimpleEmailSender.generateReservationConfirmationEmail(
-                nomFoyer, dateDebut, dateFin, dateReservation);
+            // Afficher un message de confirmation avec l'ID étudiant généré
+            showAlert("Succès", "Réservation confirmée avec succès!\n\nVotre numéro de réservation est : " + idEtudiant + "\nVeuillez conserver ce numéro pour toute référence future.\n\nUn email de confirmation a été envoyé à " + email, Alert.AlertType.INFORMATION);
             
-            // Envoyer l'email (cette méthode est synchrone mais très rapide car elle simule l'envoi)
-            boolean emailSent = SimpleEmailSender.sendEmail(
-                email,
-                "Confirmation de réservation - Foyer " + nomFoyer,
-                emailContent
-            );
-            
-            // Afficher un message de succès
-            if (emailSent) {
-                showAlert("Succès", "Votre réservation a été enregistrée avec succès pour le foyer " + selectedFoyer.getNom() + "!\nUn email de confirmation a été envoyé à " + email, Alert.AlertType.INFORMATION);
-            } else {
-                showAlert("Succès avec avertissement", "Votre réservation a été enregistrée avec succès pour le foyer " + selectedFoyer.getNom() + "!\nCependant, l'envoi de l'email de confirmation a échoué.", Alert.AlertType.WARNING);
-            }
-            
-            // Réinitialiser les champs après la confirmation
+            // Réinitialiser les champs après la réservation
             resetFields();
             
+            // Retourner à la liste des foyers
+            navigateToListFoyerClient();
+            
         } catch (SQLException e) {
-            showAlert("Erreur", "Erreur lors de la réservation: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la réservation: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
     // Méthode pour réinitialiser les champs après une réservation réussie
     private void resetFields() {
-        tf_id.clear();
         tf_gmail.clear();
         
         // Réinitialiser les dates à aujourd'hui
@@ -289,10 +255,6 @@ public class ReserverFoyerControllers {
 
     private boolean validateFields() {
         StringBuilder errors = new StringBuilder();
-
-        if (tf_id.getText().trim().isEmpty()) {
-            errors.append("L'ID est requis\n");
-        }
 
         if (tf_gmail.getText().trim().isEmpty() || !isValidEmail(tf_gmail.getText())) {
             errors.append("Email invalide\n");
@@ -351,16 +313,16 @@ public class ReserverFoyerControllers {
             }
             
             Parent root = loader.load();
-
-            Stage stage = (Stage) tf_id.getScene().getWindow();
+            Stage stage = (Stage) tf_gmail.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-
+            
+            // Ajouter une transition de fondu
             FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
             fadeIn.play();
-
+            
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -370,20 +332,37 @@ public class ReserverFoyerControllers {
     private void navigateToListFoyerClient() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            if (loader.getLocation() == null) {
+                // Si le fichier n'est pas trouvé, essayez un autre chemin
+                loader = new FXMLLoader(getClass().getResource("/main/resources/ListFoyerClient.fxml"));
+                
+                // Si toujours null, essayez sans le slash
+                if (loader.getLocation() == null) {
+                    loader = new FXMLLoader(getClass().getResource("ListFoyerClient.fxml"));
+                }
+            }
+            
+            if (loader.getLocation() == null) {
+                // Si ListFoyerClient.fxml n'est pas trouvé, essayez avec ListFoyer.fxml
+                navigateToListFoyer();
+                return;
+            }
+            
             Parent root = loader.load();
-
-            Stage stage = (Stage) tf_id.getScene().getWindow();
+            Stage stage = (Stage) tf_gmail.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-
+            
+            // Ajouter une transition de fondu
             FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
             fadeIn.play();
-
+            
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
+            // En cas d'erreur, essayez de naviguer vers ListFoyer.fxml
+            navigateToListFoyer();
         }
     }
 
@@ -394,5 +373,46 @@ public class ReserverFoyerControllers {
         alert.setContentText(message);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
+    }
+    
+    /**
+     * Envoie un email de confirmation de réservation
+     * 
+     * @param email Adresse email du destinataire
+     * @param foyer Foyer réservé
+     * @param reservation Détails de la réservation
+     */
+    private void sendConfirmationEmail(String email, Foyer foyer, ReservationFoyer reservation) {
+        try {
+            // Formater les dates pour l'affichage
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String dateDebut = reservation.getDateDebut().format(formatter);
+            String dateFin = reservation.getDateFin().format(formatter);
+            String dateReservation = reservation.getDateReservation().format(formatter);
+            
+            // Générer le contenu HTML de l'email
+            String emailContent = EmailSender.generateReservationConfirmationEmail(
+                foyer.getNom(), 
+                dateDebut, 
+                dateFin, 
+                dateReservation
+            );
+            
+            // Envoyer l'email
+            boolean sent = EmailSender.sendEmail(
+                email, 
+                "Confirmation de réservation - " + foyer.getNom(), 
+                emailContent
+            );
+            
+            if (!sent) {
+                System.err.println("Échec de l'envoi de l'email à " + email);
+            } else {
+                System.out.println("Email de confirmation envoyé avec succès à " + email);
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'envoi de l'email: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

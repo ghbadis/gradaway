@@ -41,6 +41,12 @@
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
         </dependency>
+        <!-- SendGrid pour l'envoi d'emails -->
+        <dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>4.9.3</version>
+        </dependency>
         <!-- Dépendances pour les requêtes HTTP et JSON -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
