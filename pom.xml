@@ -21,23 +21,36 @@
             <version>8.0.33</version>
         </dependency>
         <dependency>
-
             <groupId>org.openjfx</groupId>
-
             <artifactId>javafx-fxml</artifactId>
-
             <version>21.0.2</version>
-
         </dependency>
-
         <dependency>
-
             <groupId>org.openjfx</groupId>
-
             <artifactId>javafx-controls</artifactId>
-
             <version>21.0.2</version>
-
+        </dependency>
+        <!-- Dépendances pour l'envoi d'emails -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <!-- Dépendances pour les requêtes HTTP et JSON -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20230227</version>
         </dependency>
     </dependencies>
 

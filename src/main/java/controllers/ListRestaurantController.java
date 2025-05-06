@@ -2,225 +2,234 @@ package controllers;
 
 import Services.ServiceRestaurant;
 import entities.Restaurant;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 public class ListRestaurantController {
 
-    @FXML private TableView<Restaurant> restaurantTable;
-    @FXML private TableColumn<Restaurant, Integer> idColumn;
-    @FXML private TableColumn<Restaurant, String> nomColumn;
-    @FXML private TableColumn<Restaurant, String> adresseColumn;
-    @FXML private TableColumn<Restaurant, String> villeColumn;
-    @FXML private TableColumn<Restaurant, String> paysColumn;
-    @FXML private TableColumn<Restaurant, Integer> capaciteColumn;
-    @FXML private TableColumn<Restaurant, String> ouvertureColumn;
-    @FXML private TableColumn<Restaurant, String> fermetureColumn;
-    @FXML private TableColumn<Restaurant, String> telephoneColumn;
-    @FXML private TableColumn<Restaurant, Void> actionColumn;
-    
-    @FXML private TextField searchField;
     @FXML private Button refreshBtn;
-    @FXML private Button addBtn;
+    @FXML private GridPane restaurantGrid;
+    @FXML private TextField searchField;
+    @FXML private MenuButton locationMenu;
+    @FXML private Button btnListeReservation;
     
-    private ServiceRestaurant serviceRestaurant;
-    private ObservableList<Restaurant> restaurantList;
-    private FilteredList<Restaurant> filteredRestaurants;
-    
+    private final ServiceRestaurant serviceRestaurant = new ServiceRestaurant();
+
     @FXML
-    void initialize() {
-        serviceRestaurant = new ServiceRestaurant();
-        
-        // Initialize table columns
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("idRestaurant"));
-        nomColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        adresseColumn.setCellValueFactory(new PropertyValueFactory<>("adresse"));
-        villeColumn.setCellValueFactory(new PropertyValueFactory<>("ville"));
-        paysColumn.setCellValueFactory(new PropertyValueFactory<>("pays"));
-        capaciteColumn.setCellValueFactory(new PropertyValueFactory<>("capaciteTotale"));
-        ouvertureColumn.setCellValueFactory(new PropertyValueFactory<>("horaireOuverture"));
-        fermetureColumn.setCellValueFactory(new PropertyValueFactory<>("horaireFermeture"));
-        telephoneColumn.setCellValueFactory(new PropertyValueFactory<>("telephone"));
-        
-        // Set up action column with buttons
-        setupActionColumn();
-        
-        // Load data
-        loadRestaurants();
-        
-        // Set up search functionality
-        setupSearch();
-    }
-    
-    /**
-     * Configure the action column with edit and delete buttons
-     */
-    private void setupActionColumn() {
-        Callback<TableColumn<Restaurant, Void>, TableCell<Restaurant, Void>> cellFactory = new Callback<>() {
-            @Override
-            public TableCell<Restaurant, Void> call(final TableColumn<Restaurant, Void> param) {
-                return new TableCell<>() {
-                    private final Button editBtn = new Button("Modifier");
-                    private final Button deleteBtn = new Button("Supprimer");
-                    private final HBox pane = new HBox(5, editBtn, deleteBtn);
-                    
-                    {
-                        // Style buttons
-                        editBtn.setStyle("-fx-background-color: #FFC107; -fx-text-fill: white; -fx-background-radius: 15px;");
-                        deleteBtn.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-background-radius: 15px;");
-                        pane.setPadding(new Insets(2));
-                        
-                        // Set event handlers
-                        editBtn.setOnAction(event -> {
-                            Restaurant restaurant = getTableView().getItems().get(getIndex());
-                            navigateToEdit(restaurant);
-                        });
-                        
-                        deleteBtn.setOnAction(event -> {
-                            Restaurant restaurant = getTableView().getItems().get(getIndex());
-                            confirmDelete(restaurant);
-                        });
-                    }
-                    
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setGraphic(empty ? null : pane);
-                    }
-                };
-            }
-        };
-        
-        actionColumn.setCellFactory(cellFactory);
-    }
-    
-    /**
-     * Load restaurants from the database
-     */
-    private void loadRestaurants() {
+    public void initialize() {
         try {
-            List<Restaurant> restaurants = serviceRestaurant.recuperer();
-            restaurantList = FXCollections.observableArrayList(restaurants);
-            filteredRestaurants = new FilteredList<>(restaurantList);
-            restaurantTable.setItems(filteredRestaurants);
+            // Setup search field listener
+            searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+                try {
+                    searchRestaurants(newVal);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    showAlert("Erreur", "Erreur lors de la recherche: " + e.getMessage(), Alert.AlertType.ERROR);
+                }
+            });
+            
+            // Initial display
+            displayRestaurants(serviceRestaurant.recuperer());
         } catch (SQLException e) {
-            showAlert("Erreur", "Erreur lors du chargement des restaurants: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'initialisation: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void displayRestaurants(List<Restaurant> restaurants) {
+        restaurantGrid.getChildren().clear();
+        int column = 0;
+        int row = 0;
+
+        for (Restaurant restaurant : restaurants) {
+            VBox restaurantCard = createRestaurantCard(restaurant);
+            
+            // Add click handler
+            restaurantCard.setOnMouseClicked(e -> openModifierRestaurant(restaurant));
+            
+            // Add hover effect
+            restaurantCard.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 5;");
+            restaurantCard.setOnMouseEntered(e -> restaurantCard.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-border-color: #999999; -fx-border-radius: 5;"));
+            restaurantCard.setOnMouseExited(e -> restaurantCard.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: #cccccc; -fx-border-radius: 5;"));
+
+            restaurantGrid.add(restaurantCard, column, row);
+
+            column++;
+            if (column == 3) {
+                column = 0;
+                row++;
+            }
+        }
+    }
+
+    private VBox createRestaurantCard(Restaurant restaurant) {
+        VBox card = new VBox(10);
+        card.setPrefWidth(250);
+        card.setPrefHeight(300);
+        
+        ImageView imageView = new ImageView();
+        imageView.setFitWidth(200);
+        imageView.setFitHeight(150);
+        imageView.setPreserveRatio(true);
+        
+        // Gérer l'image de manière plus robuste
+        boolean imageLoaded = false;
+        if (restaurant.getImage() != null && !restaurant.getImage().isEmpty()) {
+            try {
+                String imagePath = "src/main/resources/" + restaurant.getImage();
+                java.io.File file = new java.io.File(imagePath);
+                if (file.exists()) {
+                    Image image = new Image(file.toURI().toString());
+                    imageView.setImage(image);
+                    imageLoaded = true;
+                }
+            } catch (Exception e) {
+                System.out.println("Erreur lors du chargement de l'image: " + e.getMessage());
+                // L'image n'a pas pu être chargée, on utilisera l'image par défaut
+            }
+        }
+        
+        // Si l'image n'a pas été chargée, utiliser une couleur de fond au lieu d'une image par défaut
+        if (!imageLoaded) {
+            // Créer un rectangle coloré comme placeholder
+            imageView.setStyle("-fx-background-color: #e0e0e0;");
+            // On peut aussi définir une image par défaut si elle existe
+            try {
+                // Essayer plusieurs chemins possibles pour l'image par défaut
+                java.io.InputStream is = getClass().getResourceAsStream("/images/placeholder-restaurant.png");
+                if (is == null) {
+                    is = getClass().getResourceAsStream("/placeholder/placeholder.png");
+                }
+                if (is == null) {
+                    is = getClass().getResourceAsStream("/images/restaurant-default.png");
+                }
+                
+                if (is != null) {
+                    Image defaultImage = new Image(is);
+                    imageView.setImage(defaultImage);
+                }
+            } catch (Exception e) {
+                System.out.println("Impossible de charger l'image par défaut: " + e.getMessage());
+            }
+        }
+
+        Label nameLabel = new Label(restaurant.getNom());
+        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+        
+        Label locationLabel = new Label(restaurant.getVille() + ", " + restaurant.getPays());
+        Label hoursLabel = new Label("Horaires: " + restaurant.getHoraireOuverture() + " - " + restaurant.getHoraireFermeture());
+
+        card.getChildren().addAll(imageView, nameLabel, locationLabel, hoursLabel);
+        return card;
+    }
+
+    @FXML
+    void search(ActionEvent event) {
+        try {
+            searchRestaurants(searchField.getText());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la recherche: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void searchRestaurants(String searchText) throws SQLException {
+        List<Restaurant> restaurants = serviceRestaurant.recuperer();
+        restaurants.removeIf(restaurant -> 
+            !restaurant.getNom().toLowerCase().contains(searchText.toLowerCase()) &&
+            !restaurant.getVille().toLowerCase().contains(searchText.toLowerCase()) &&
+            !restaurant.getPays().toLowerCase().contains(searchText.toLowerCase())
+        );
+        displayRestaurants(restaurants);
+    }
+
+    @FXML
+    void filterByLocation(ActionEvent event) {
+        try {
+            MenuItem menuItem = (MenuItem) event.getSource();
+            String location = menuItem.getText();
+            
+            List<Restaurant> restaurants = serviceRestaurant.recuperer();
+            restaurants.removeIf(restaurant -> !restaurant.getPays().equalsIgnoreCase(location));
+            displayRestaurants(restaurants);
+            
+            // Mettre à jour le texte du MenuButton
+            locationMenu.setText(location);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors du filtrage: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
-    /**
-     * Set up search functionality
-     */
-    private void setupSearch() {
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredRestaurants.setPredicate(createPredicate(newValue));
-        });
+    @FXML
+    void resetFilter(ActionEvent event) {
+        try {
+            displayRestaurants(serviceRestaurant.recuperer());
+            locationMenu.setText("Pays");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la réinitialisation du filtre: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
     
-    /**
-     * Create a predicate for searching restaurants
-     */
-    private Predicate<Restaurant> createPredicate(String searchText) {
-        return restaurant -> {
-            if (searchText == null || searchText.isEmpty()) {
-                return true;
-            }
-            
-            String lowerCaseFilter = searchText.toLowerCase();
-            
-            return restaurant.getNom().toLowerCase().contains(lowerCaseFilter) ||
-                   restaurant.getVille().toLowerCase().contains(lowerCaseFilter) ||
-                   restaurant.getPays().toLowerCase().contains(lowerCaseFilter) ||
-                   restaurant.getAdresse().toLowerCase().contains(lowerCaseFilter);
-        };
+    @FXML
+    void refreshTable(ActionEvent event) {
+        try {
+            displayRestaurants(serviceRestaurant.recuperer());
+            locationMenu.setText("Pays");
+            searchField.clear();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'actualisation: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
-    
-    /**
-     * Navigate to the edit restaurant view
-     */
-    private void navigateToEdit(Restaurant restaurant) {
+
+    private void openModifierRestaurant(Restaurant restaurant) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierRestaurant.fxml"));
             Parent root = loader.load();
             
-            // Get the controller and set the restaurant
             ModifierRestaurantController controller = loader.getController();
             controller.setRestaurant(restaurant);
             
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) restaurantTable.getScene().getWindow();
+            Stage stage = new Stage();
+            stage.setTitle("Modifier Restaurant");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL); // Make it modal
+            stage.show();
             
-            // Transition de fondu
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            
-            stage.setScene(scene);
-            fadeIn.play();
+            // Add a listener to refresh the list when the window closes
+            stage.setOnHidden(e -> {
+                try {
+                    displayRestaurants(serviceRestaurant.recuperer());
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    showAlert("Erreur", "Erreur lors du rafraîchissement: " + ex.getMessage(), Alert.AlertType.ERROR);
+                }
+            });
         } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors du chargement de la vue: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture de la fenêtre de modification: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-    
-    /**
-     * Confirm and delete a restaurant
-     */
-    private void confirmDelete(Restaurant restaurant) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation de suppression");
-        alert.setHeaderText("Supprimer le restaurant " + restaurant.getNom());
-        alert.setContentText("Êtes-vous sûr de vouloir supprimer ce restaurant ?");
-        
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            try {
-                serviceRestaurant.supprimer(restaurant);
-                loadRestaurants(); // Refresh the table
-                showAlert("Succès", "Restaurant supprimé avec succès !", Alert.AlertType.INFORMATION);
-            } catch (SQLException e) {
-                showAlert("Erreur", "Erreur lors de la suppression: " + e.getMessage(), Alert.AlertType.ERROR);
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    /**
-     * Refresh the restaurant table
-     */
-    @FXML
-    void refreshTable(ActionEvent event) {
-        loadRestaurants();
-    }
-    
-    /**
-     * Navigate to the add restaurant view
-     */
+
     @FXML
     void navigateToAdd(ActionEvent event) {
         try {
@@ -236,14 +245,31 @@ public class ListRestaurantController {
             stage.setScene(scene);
             fadeIn.play();
         } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors du chargement de la vue: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
+            showAlert("Erreur", "Erreur lors du chargement de la vue: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
-    /**
-     * Show an alert dialog
-     */
+    @FXML
+    void navigateToListeReservation() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/ListeReservationRestaurant.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) restaurantGrid.getScene().getWindow();
+            
+            // Transition de fondu
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            
+            stage.setScene(scene);
+            fadeIn.play();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors du chargement de la vue: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -251,4 +277,4 @@ public class ListRestaurantController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-} 
+}

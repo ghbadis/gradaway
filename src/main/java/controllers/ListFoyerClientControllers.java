@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class ListFoyerClientControllers {
 
-    @FXML private VBox foyerContainer;
+    @FXML private TilePane foyerContainer;
     @FXML private TextField searchField;
     @FXML private Button btnSearch;
     @FXML private MenuButton locationMenu;
@@ -54,13 +54,21 @@ public class ListFoyerClientControllers {
     }
 
     private HBox createFoyerCard(Foyer foyer) {
-        HBox card = new HBox(20);
-        card.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-border-color: #e0e0e0; -fx-border-radius: 5;");
+        // Créer une carte avec une largeur fixe pour un affichage en grille
+        HBox card = new HBox(10);
+        card.setPrefWidth(320); // Largeur fixe pour chaque carte
+        card.setPrefHeight(300); // Hauteur fixe pour chaque carte
+        card.setMaxWidth(320);
+        card.setStyle("-fx-background-color: white; -fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
 
+        // Créer un VBox pour contenir tous les éléments verticalement
+        VBox cardContent = new VBox(10);
+        cardContent.setAlignment(javafx.geometry.Pos.CENTER);
+        
         // Image avec gestion améliorée
         ImageView imageView = new ImageView();
-        imageView.setFitWidth(200);
-        imageView.setFitHeight(150);
+        imageView.setFitWidth(300);
+        imageView.setFitHeight(120);
         imageView.setPreserveRatio(true);
         
         // Gérer l'image de manière plus robuste
@@ -102,29 +110,42 @@ public class ListFoyerClientControllers {
         }
 
         // Info VBox
-        VBox infoBox = new VBox(10);
+        VBox infoBox = new VBox(5);
+        infoBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        infoBox.setPrefWidth(300);
+        
         // Foyer name with bigger, bolder styling
         Label nameLabel = new Label(foyer.getNom());
-        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: #2196F3;");
+        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #2196F3;");
+        nameLabel.setWrapText(true);
 
         Label locationLabel = new Label("📍 " + foyer.getVille() + ", " + foyer.getPays());
-        locationLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666666;");
+        locationLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
+        locationLabel.setWrapText(true);
 
-        Label capacityLabel = new Label("👥 Capacité: " + foyer.getCapacite() + " personnes");
-        capacityLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666666;");
-
-        Label roomsLabel = new Label("🛏 Chambres: " + foyer.getNombreDeChambre());
-        roomsLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666666;");
-
-        // Add address
+        // Add address with wrapping
         Label addressLabel = new Label("🏠 " + foyer.getAdresse());
-        addressLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666666;");
+        addressLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
+        addressLabel.setWrapText(true);
+
+        // Créer un HBox pour les informations de capacité et chambres
+        HBox detailsBox = new HBox(10);
+        detailsBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        
+        Label capacityLabel = new Label("👥 " + foyer.getCapacite());
+        capacityLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
+
+        Label roomsLabel = new Label("🛏 " + foyer.getNombreDeChambre());
+        roomsLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
+        
+        detailsBox.getChildren().addAll(capacityLabel, roomsLabel);
 
         // Réserver button - s'assurer qu'il est bien configuré
         Button reserverButton = new Button("Réserver");
-        reserverButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;");
-        reserverButton.setOnMouseEntered(e -> reserverButton.setStyle("-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"));
-        reserverButton.setOnMouseExited(e -> reserverButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"));
+        reserverButton.setPrefWidth(280);
+        reserverButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;");
+        reserverButton.setOnMouseEntered(e -> reserverButton.setStyle("-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;"));
+        reserverButton.setOnMouseExited(e -> reserverButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;"));
         
         // Configurer l'action du bouton pour naviguer vers la page de réservation avec le foyer sélectionné
         reserverButton.setOnAction(e -> {
@@ -136,8 +157,9 @@ public class ListFoyerClientControllers {
             }
         });
 
-        infoBox.getChildren().addAll(nameLabel, locationLabel, addressLabel, capacityLabel, roomsLabel, reserverButton);
-        card.getChildren().addAll(imageView, infoBox);
+        infoBox.getChildren().addAll(nameLabel, locationLabel, addressLabel, detailsBox);
+        cardContent.getChildren().addAll(imageView, infoBox, reserverButton);
+        card.getChildren().add(cardContent);
 
         return card;
     }
@@ -287,6 +309,10 @@ public class ListFoyerClientControllers {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ReserverFoyer.fxml"));
             Parent root = loader.load();
+            
+            // Récupérer le contrôleur et lui passer le foyer sélectionné
+            ReserverFoyerControllers controller = loader.getController();
+            controller.setSelectedFoyer(foyer);
 
             Stage stage = (Stage) foyerContainer.getScene().getWindow();
             Scene scene = new Scene(root);

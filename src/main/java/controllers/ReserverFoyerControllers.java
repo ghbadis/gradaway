@@ -9,8 +9,18 @@ import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
 import javafx.scene.layout.Region;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
+import Services.ServiceReservationFoyer;
+import Services.ServiceFoyer;
+import entities.ReservationFoyer;
+import entities.Foyer;
+import utils.SimpleEmailSender;
+import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class ReserverFoyerControllers {
 
@@ -19,11 +29,93 @@ public class ReserverFoyerControllers {
     @FXML private DatePicker dp_date_debut;
     @FXML private DatePicker dp_date_fin;
     @FXML private DatePicker dp_date_reserver;
+    @FXML private ComboBox<Foyer> cb_foyer;
+    
+    private ServiceFoyer serviceFoyer = new ServiceFoyer();
+
+    // Variable pour stocker le foyer sélectionné
+    private Foyer selectedFoyer;
+    
+    /**
+     * Méthode appelée par ListFoyerClientControllers pour définir le foyer sélectionné
+     * @param foyer Le foyer sélectionné dans l'interface ListFoyerClient
+     */
+    public void setSelectedFoyer(Foyer foyer) {
+        this.selectedFoyer = foyer;
+        
+        // Si l'interface est déjà initialisée, mettre à jour le ComboBox
+        if (cb_foyer != null && foyer != null) {
+            // Chercher le foyer correspondant dans la liste du ComboBox
+            for (Foyer f : cb_foyer.getItems()) {
+                if (f.getIdFoyer() == foyer.getIdFoyer()) {
+                    cb_foyer.setValue(f);
+                    break;
+                }
+            }
+        }
+    }
 
     @FXML
     public void initialize() {
         setupStyles();
         setupDatePickers();
+        loadFoyers();
+    }
+    
+    private void loadFoyers() {
+        try {
+            // Récupérer tous les foyers disponibles
+            List<Foyer> foyers = serviceFoyer.recuperer();
+            ObservableList<Foyer> foyerList = FXCollections.observableArrayList(foyers);
+            cb_foyer.setItems(foyerList);
+            
+            // Définir comment afficher les foyers dans le ComboBox
+            cb_foyer.setCellFactory(param -> new ListCell<Foyer>() {
+                @Override
+                protected void updateItem(Foyer foyer, boolean empty) {
+                    super.updateItem(foyer, empty);
+                    if (empty || foyer == null) {
+                        setText(null);
+                    } else {
+                        setText(foyer.getNom() + " (" + foyer.getVille() + ")");
+                    }
+                }
+            });
+            
+            // Définir comment afficher le foyer sélectionné
+            cb_foyer.setButtonCell(new ListCell<Foyer>() {
+                @Override
+                protected void updateItem(Foyer foyer, boolean empty) {
+                    super.updateItem(foyer, empty);
+                    if (empty || foyer == null) {
+                        setText(null);
+                    } else {
+                        setText(foyer.getNom() + " (" + foyer.getVille() + ")");
+                    }
+                }
+            });
+            
+            // Si un foyer a été présélectionné, l'utiliser
+            if (selectedFoyer != null) {
+                // Chercher le foyer correspondant dans la liste
+                for (Foyer f : foyerList) {
+                    if (f.getIdFoyer() == selectedFoyer.getIdFoyer()) {
+                        cb_foyer.setValue(f);
+                        break;
+                    }
+                }
+            } 
+            // Sinon, sélectionner le premier foyer par défaut s'il y en a
+            else if (!foyerList.isEmpty()) {
+                cb_foyer.setValue(foyerList.get(0));
+            }
+            
+            System.out.println("Foyers chargés: " + foyers.size());
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger la liste des foyers: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void setupStyles() {
@@ -96,9 +188,98 @@ public class ReserverFoyerControllers {
             return;
         }
 
-        // TODO: Add reservation to database
-        showAlert("Succès", "Votre réservation a été enregistrée avec succès!", Alert.AlertType.INFORMATION);
-        navigateToListFoyer();
+        try {
+            // Récupérer l'ID étudiant depuis le champ de texte
+            int idEtudiant;
+            try {
+                idEtudiant = Integer.parseInt(tf_id.getText().trim());
+            } catch (NumberFormatException e) {
+                showAlert("Erreur", "L'ID doit être un nombre entier valide.", Alert.AlertType.ERROR);
+                return;
+            }
+            
+            // Récupérer l'email
+            String email = tf_gmail.getText().trim();
+            if (!isValidEmail(email)) {
+                showAlert("Erreur", "Veuillez fournir une adresse email valide.", Alert.AlertType.ERROR);
+                return;
+            }
+            
+            // Vérifier si un foyer est sélectionné
+            Foyer selectedFoyer = cb_foyer.getValue();
+            if (selectedFoyer == null) {
+                showAlert("Erreur", "Veuillez sélectionner un foyer.", Alert.AlertType.ERROR);
+                return;
+            }
+            
+            // Créer une instance du service de réservation
+            ServiceReservationFoyer serviceReservation = new ServiceReservationFoyer();
+            
+            // Vérifier si l'étudiant existe
+            if (!serviceReservation.studentExists(idEtudiant)) {
+                showAlert("Erreur", "L'ID étudiant " + idEtudiant + " n'existe pas dans la base de données.", Alert.AlertType.ERROR);
+                return;
+            }
+            
+            // Créer une nouvelle réservation
+            ReservationFoyer reservation = new ReservationFoyer();
+            reservation.setIdEtudiant(idEtudiant);
+            
+            // Utiliser l'ID du foyer sélectionné
+            reservation.setFoyerId(selectedFoyer.getIdFoyer());
+            
+            // Définir les dates
+            reservation.setDateDebut(dp_date_debut.getValue());
+            reservation.setDateFin(dp_date_fin.getValue());
+            reservation.setDateReservation(dp_date_reserver.getValue());
+            
+            // Ajouter la réservation à la base de données
+            serviceReservation.ajouter(reservation);
+            
+            // Formater les dates pour l'email
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String dateDebut = dp_date_debut.getValue().format(formatter);
+            String dateFin = dp_date_fin.getValue().format(formatter);
+            String dateReservation = dp_date_reserver.getValue().format(formatter);
+            
+            // Préparer et envoyer l'email de confirmation
+            String nomFoyer = selectedFoyer.getNom();
+            String emailContent = SimpleEmailSender.generateReservationConfirmationEmail(
+                nomFoyer, dateDebut, dateFin, dateReservation);
+            
+            // Envoyer l'email (cette méthode est synchrone mais très rapide car elle simule l'envoi)
+            boolean emailSent = SimpleEmailSender.sendEmail(
+                email,
+                "Confirmation de réservation - Foyer " + nomFoyer,
+                emailContent
+            );
+            
+            // Afficher un message de succès
+            if (emailSent) {
+                showAlert("Succès", "Votre réservation a été enregistrée avec succès pour le foyer " + selectedFoyer.getNom() + "!\nUn email de confirmation a été envoyé à " + email, Alert.AlertType.INFORMATION);
+            } else {
+                showAlert("Succès avec avertissement", "Votre réservation a été enregistrée avec succès pour le foyer " + selectedFoyer.getNom() + "!\nCependant, l'envoi de l'email de confirmation a échoué.", Alert.AlertType.WARNING);
+            }
+            
+            // Réinitialiser les champs après la confirmation
+            resetFields();
+            
+        } catch (SQLException e) {
+            showAlert("Erreur", "Erreur lors de la réservation: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+    
+    // Méthode pour réinitialiser les champs après une réservation réussie
+    private void resetFields() {
+        tf_id.clear();
+        tf_gmail.clear();
+        
+        // Réinitialiser les dates à aujourd'hui
+        java.time.LocalDate today = java.time.LocalDate.now();
+        dp_date_debut.setValue(today);
+        dp_date_fin.setValue(today);
+        dp_date_reserver.setValue(today);
     }
 
     @FXML
@@ -128,6 +309,10 @@ public class ReserverFoyerControllers {
         if (dp_date_reserver.getValue() == null) {
             errors.append("La date de réservation est requise\n");
         }
+        
+        if (cb_foyer.getValue() == null) {
+            errors.append("Veuillez sélectionner un foyer\n");
+        }
 
         if (dp_date_debut.getValue() != null && dp_date_fin.getValue() != null &&
                 dp_date_fin.getValue().isBefore(dp_date_debut.getValue())) {
@@ -149,7 +334,22 @@ public class ReserverFoyerControllers {
 
     private void navigateToListFoyer() {
         try {
+            // Assurez-vous que le chemin est correct et commence par un slash
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyer.fxml"));
+            if (loader.getLocation() == null) {
+                // Si le fichier n'est pas trouvé, essayez un autre chemin
+                loader = new FXMLLoader(getClass().getResource("/main/resources/ListFoyer.fxml"));
+                
+                // Si toujours null, essayez sans le slash
+                if (loader.getLocation() == null) {
+                    loader = new FXMLLoader(getClass().getResource("ListFoyer.fxml"));
+                }
+            }
+            
+            if (loader.getLocation() == null) {
+                throw new IOException("Impossible de trouver le fichier FXML ListFoyer.fxml");
+            }
+            
             Parent root = loader.load();
 
             Stage stage = (Stage) tf_id.getScene().getWindow();

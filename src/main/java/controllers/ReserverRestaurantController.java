@@ -1,7 +1,7 @@
 package controllers;
 
-import Services.ServiceReservation;
-import entities.Reservation;
+import Services.ServiceReservationRestaurant;
+import entities.ReservationRestaurant;
 import entities.Restaurant;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +18,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class ReserverRestaurantController {
 
@@ -37,11 +38,11 @@ public class ReserverRestaurantController {
     @FXML private Button annulerButton;
     
     private Restaurant restaurant;
-    private ServiceReservation serviceReservation;
+    private ServiceReservationRestaurant serviceReservation;
     
     @FXML
     public void initialize() {
-        serviceReservation = new ServiceReservation();
+        serviceReservation = new ServiceReservationRestaurant();
         
         // Configuration du spinner pour le nombre de personnes (1-20 par défaut)
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 2);
@@ -111,13 +112,19 @@ public class ReserverRestaurantController {
         }
         
         try {
-            // Créer une nouvelle réservation
-            Reservation reservation = new Reservation();
-            reservation.setIdRestaurant(restaurant.getIdRestaurant());
-            reservation.setNomClient(nomClientField.getText().trim());
-            reservation.setEmailClient(emailField.getText().trim());
-            reservation.setNombrePersonnes(personnesSpinner.getValue());
-            reservation.setStatut("En attente"); // Statut par défaut
+            // Créer une nouvelle réservation avec les valeurs minimales requises
+            int idRestaurantValue = restaurant.getIdRestaurant();
+            int idEtudiantValue = 1; // Utiliser une valeur par défaut
+            LocalDate dateReservationValue = LocalDate.now();
+            int nombrePersonnesValue = personnesSpinner.getValue();
+            
+            // Créer l'objet ReservationRestaurant avec le constructeur approprié
+            ReservationRestaurant reservation = new ReservationRestaurant(
+                idRestaurantValue, 
+                idEtudiantValue, 
+                dateReservationValue, 
+                nombrePersonnesValue
+            );
             
             // Enregistrer la réservation
             serviceReservation.ajouter(reservation);
@@ -125,7 +132,7 @@ public class ReserverRestaurantController {
             // Afficher un message de succès
             showAlert("Réservation confirmée", 
                      "Votre réservation chez " + restaurant.getNom() + " a été enregistrée avec succès.\n" +
-                     "Nombre de personnes: " + personnesSpinner.getValue(),
+                     "Nombre de personnes: " + nombrePersonnesValue,
                      Alert.AlertType.INFORMATION);
             
             // Retourner à la liste des restaurants

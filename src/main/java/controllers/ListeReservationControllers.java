@@ -265,16 +265,37 @@ public class ListeReservationControllers {
     
     private void declineReservation(ReservationFoyer reservation) {
         try {
-            // Update status in our map (in a real app, you would update this in the database)
-            reservationStatusMap.put(reservation.getIdReservation(), "Refusée");
+            // Afficher une confirmation avant de supprimer
+            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmAlert.setTitle("Confirmation");
+            confirmAlert.setHeaderText(null);
+            confirmAlert.setContentText("Êtes-vous sûr de vouloir refuser et supprimer définitivement la réservation #" + reservation.getIdReservation() + " ?");
             
-            // Refresh table to show updated status
-            reservationTable.refresh();
-            
-            showAlert("Succès", "Réservation #" + reservation.getIdReservation() + " refusée", Alert.AlertType.INFORMATION);
+            if (confirmAlert.showAndWait().get() == ButtonType.OK) {
+                // Supprimer la réservation de la base de données
+                boolean deleted = serviceReservation.supprimer(reservation);
+                
+                if (deleted) {
+                    // Supprimer de la map de statuts
+                    reservationStatusMap.remove(reservation.getIdReservation());
+                    
+                    // Supprimer de la liste observable
+                    allReservations.remove(reservation);
+                    
+                    // Rafraîchir la table
+                    reservationTable.refresh();
+                    
+                    showAlert("Succès", "Réservation #" + reservation.getIdReservation() + " refusée et supprimée définitivement", Alert.AlertType.INFORMATION);
+                } else {
+                    showAlert("Erreur", "Impossible de supprimer la réservation de la base de données", Alert.AlertType.ERROR);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la suppression de la réservation: " + e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Erreur", "Erreur lors du refus de la réservation: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Erreur", "Erreur inattendue: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     

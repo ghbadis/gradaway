@@ -13,7 +13,7 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ReserverRestaurant.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/ListeReservation.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setTitle("Ajouter un Foyer");
             primaryStage.setScene(scene);
