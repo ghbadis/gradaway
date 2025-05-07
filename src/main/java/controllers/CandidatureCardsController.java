@@ -11,6 +11,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -21,6 +23,7 @@ import models.Candidature;
 import Services.CandidatureService;
 import Services.ServiceUniversite;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
@@ -165,7 +168,7 @@ public class CandidatureCardsController implements Initializable {
         // Main card container
         VBox card = new VBox(10);
         card.setPrefWidth(280);
-        card.setPrefHeight(300);
+        card.setPrefHeight(350);
         card.setStyle("-fx-background-color: #1A3473; -fx-background-radius: 10px;");
         card.setPadding(new Insets(15));
         
@@ -203,12 +206,76 @@ public class CandidatureCardsController implements Initializable {
         Label dateLabel = new Label("Date de soumission: " + formattedDate);
         dateLabel.setTextFill(Color.WHITE);
         
-        // Status label - this is a placeholder, you can implement actual status logic
-        Label statusLabel = new Label("Status: En attente");
-        statusLabel.setTextFill(Color.YELLOW);
-        statusLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+        // Add a label for the university image
+        Label imageLabel = new Label("Logo de l'université:");
+        imageLabel.setTextFill(Color.WHITE);
+        imageLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+        imageLabel.setAlignment(Pos.CENTER);
         
-        infoBox.getChildren().addAll(studentLabel, universityLabel, dateLabel, statusLabel);
+        // Add university image instead of status
+        ImageView universityImageView = new ImageView();
+        universityImageView.setFitHeight(80);
+        universityImageView.setFitWidth(100);
+        universityImageView.setPreserveRatio(true);
+        
+        // Load university image
+        try {
+            // Get the university info from service
+            entities.Universite universite = universiteService.recuperer(candidature.getId_universite());
+            
+            if (universite != null && universite.getPhotoPath() != null && !universite.getPhotoPath().isEmpty()) {
+                // Try to load from resources folder
+                String defaultImagePath = "/images/default_university.png";
+                try {
+                    // Try to load from resources
+                    URL photoUrl = getClass().getResource("/" + universite.getPhotoPath());
+                    if (photoUrl != null) {
+                        Image universityImage = new Image(photoUrl.toExternalForm());
+                        universityImageView.setImage(universityImage);
+                    } else {
+                        // Try as a file path
+                        File photoFile = new File("src/main/resources/" + universite.getPhotoPath());
+                        if (photoFile.exists()) {
+                            Image universityImage = new Image(photoFile.toURI().toString());
+                            universityImageView.setImage(universityImage);
+                        } else {
+                            // If file not found, use default image
+                            URL defaultUrl = getClass().getResource(defaultImagePath);
+                            if (defaultUrl != null) {
+                                Image defaultImage = new Image(defaultUrl.toExternalForm());
+                                universityImageView.setImage(defaultImage);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    // Load default image on error
+                    URL defaultUrl = getClass().getResource(defaultImagePath);
+                    if (defaultUrl != null) {
+                        Image defaultImage = new Image(defaultUrl.toExternalForm());
+                        universityImageView.setImage(defaultImage);
+                    }
+                    System.err.println("Error loading image: " + e.getMessage());
+                }
+            } else {
+                // Load default image if no photo path
+                URL defaultUrl = getClass().getResource("/images/default_university.png");
+                if (defaultUrl != null) {
+                    Image defaultImage = new Image(defaultUrl.toExternalForm());
+                    universityImageView.setImage(defaultImage);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        // Center the image
+        HBox imageBox = new HBox();
+        imageBox.setAlignment(Pos.CENTER);
+        imageBox.setPadding(new Insets(5));
+        imageBox.setStyle("-fx-background-color: white; -fx-background-radius: 5px; -fx-border-color: #3E92CC; -fx-border-radius: 5px;");
+        imageBox.getChildren().add(universityImageView);
+        
+        infoBox.getChildren().addAll(studentLabel, universityLabel, dateLabel, imageLabel, imageBox);
         
         // Action buttons
         HBox buttonBox = new HBox(10);

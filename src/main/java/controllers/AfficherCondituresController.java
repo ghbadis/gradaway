@@ -10,10 +10,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import models.Candidature;
+import entities.Universite;
 import Services.CandidatureService;
+import Services.ServiceUniversite;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
@@ -42,6 +47,9 @@ public class AfficherCondituresController implements Initializable {
     
     @FXML
     private TableColumn<Candidature, String> domaineColumn;
+
+    @FXML
+    private TableColumn<Candidature, Integer> universiteImageColumn;
     
     @FXML
     private TextField searchField;
@@ -59,6 +67,7 @@ public class AfficherCondituresController implements Initializable {
     private Button cardsButton;
     
     private CandidatureService candidatureService;
+    private ServiceUniversite serviceUniversite;
     private ObservableList<Candidature> candidatureList = FXCollections.observableArrayList();
     private FilteredList<Candidature> filteredCandidatures;
     
@@ -66,6 +75,7 @@ public class AfficherCondituresController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("Initializing AfficherCondituresController...");
         candidatureService = new CandidatureService();
+        serviceUniversite = new ServiceUniversite();
         
         // Configuration des colonnes du TableView
         nomColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
@@ -74,6 +84,9 @@ public class AfficherCondituresController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date_de_remise_c"));
         universiteColumn.setCellValueFactory(new PropertyValueFactory<>("universite"));
         domaineColumn.setCellValueFactory(new PropertyValueFactory<>("domaine"));
+        
+        // Configure university image column - use id_universite as the cell value
+        universiteImageColumn.setCellValueFactory(new PropertyValueFactory<>("id_universite"));
         
         // Use simplified cell factories without custom styling
         nomColumn.setCellFactory(column -> new TableCell<Candidature, String>() {
@@ -144,6 +157,85 @@ public class AfficherCondituresController implements Initializable {
                     setText(null);
                 } else {
                     setText(item != null ? item : "");
+                }
+            }
+        });
+        
+        // Custom cell factory for the university image column
+        universiteImageColumn.setCellFactory(column -> new TableCell<Candidature, Integer>() {
+            private final ImageView imageView = new ImageView();
+            
+            {
+                // Configure the image view
+                imageView.setFitHeight(80);
+                imageView.setFitWidth(100);
+                imageView.setPreserveRatio(true);
+                
+                // Center the image in the cell
+                setGraphic(imageView);
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                setAlignment(javafx.geometry.Pos.CENTER);
+            }
+            
+            @Override
+            protected void updateItem(Integer universiteId, boolean empty) {
+                super.updateItem(universiteId, empty);
+                
+                if (empty || universiteId == null) {
+                    imageView.setImage(null);
+                    setGraphic(null);
+                } else {
+                    try {
+                        // Get the university info
+                        Universite universite = serviceUniversite.recuperer(universiteId);
+                        
+                        if (universite != null && universite.getPhotoPath() != null && !universite.getPhotoPath().isEmpty()) {
+                            // Try to load from resources folder
+                            String defaultImagePath = "/images/default_university.png";
+                            try {
+                                // Try to load from resources
+                                URL photoUrl = getClass().getResource("/" + universite.getPhotoPath());
+                                if (photoUrl != null) {
+                                    Image universityImage = new Image(photoUrl.toExternalForm());
+                                    imageView.setImage(universityImage);
+                                } else {
+                                    // Try as a file path
+                                    File photoFile = new File("src/main/resources/" + universite.getPhotoPath());
+                                    if (photoFile.exists()) {
+                                        Image universityImage = new Image(photoFile.toURI().toString());
+                                        imageView.setImage(universityImage);
+                                    } else {
+                                        // If file not found, use default image
+                                        URL defaultUrl = getClass().getResource(defaultImagePath);
+                                        if (defaultUrl != null) {
+                                            Image defaultImage = new Image(defaultUrl.toExternalForm());
+                                            imageView.setImage(defaultImage);
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                // Load default image on error
+                                URL defaultUrl = getClass().getResource(defaultImagePath);
+                                if (defaultUrl != null) {
+                                    Image defaultImage = new Image(defaultUrl.toExternalForm());
+                                    imageView.setImage(defaultImage);
+                                }
+                                System.err.println("Error loading image: " + e.getMessage());
+                            }
+                        } else {
+                            // Load default image if no photo path
+                            URL defaultUrl = getClass().getResource("/images/default_university.png");
+                            if (defaultUrl != null) {
+                                Image defaultImage = new Image(defaultUrl.toExternalForm());
+                                imageView.setImage(defaultImage);
+                            }
+                        }
+                        
+                        setGraphic(imageView);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        setGraphic(null);
+                    }
                 }
             }
         });
