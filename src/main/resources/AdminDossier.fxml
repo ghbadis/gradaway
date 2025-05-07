@@ -252,6 +252,8 @@
       <TableView fx:id="dossierTable" layoutX="275.0" layoutY="104.0" prefHeight="581.0" prefWidth="691.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10;">
          <columns>
             <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
+            <TableColumn fx:id="nomColumn" prefWidth="100.0" text="Nom" />
+            <TableColumn fx:id="prenomColumn" prefWidth="100.0" text="Prénom" />
             <TableColumn fx:id="cinColumn" prefWidth="120.0" text="CIN" />
             <TableColumn fx:id="photoColumn" prefWidth="120.0" text="Photo" />
             <TableColumn fx:id="diplomeBacColumn" prefWidth="120.0" text="Diplôme Bac" />
@@ -261,6 +263,7 @@
             <TableColumn fx:id="dossierSanteColumn" prefWidth="120.0" text="Dossier Santé" />
             <TableColumn fx:id="cvColumn" prefWidth="120.0" text="CV" />
             <TableColumn fx:id="dateDepotColumn" prefWidth="120.0" text="Date Dépôt" />
+            <TableColumn fx:id="actionColumn" prefWidth="100.0" text="Action" />
          </columns>
       </TableView>
    </children>
