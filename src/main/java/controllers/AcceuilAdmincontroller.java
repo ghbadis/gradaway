@@ -38,7 +38,16 @@ public class AcceuilAdmincontroller {
 
     @FXML
     public void onevenementAdminButtonClick(ActionEvent actionEvent) {
-
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion_evenement.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion des Événements");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
