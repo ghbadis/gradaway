@@ -239,21 +239,6 @@
             <Label layoutX="46.0" layoutY="111.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="GRADAWAY" />
          </children>
       </AnchorPane>
-      <TableView fx:id="TvDossier" layoutX="263.0" layoutY="320.0" prefHeight="238.0" prefWidth="718.0">
-        <columns>
-          <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID Dossier" />
-          <TableColumn fx:id="idEtudiantColumn" prefWidth="75.0" text="ID Étudiant" />
-          <TableColumn fx:id="cinColumn" prefWidth="75.0" text="CIN" />
-          <TableColumn fx:id="photoColumn" prefWidth="100.0" text="Photo" />
-          <TableColumn fx:id="diplomeBacColumn" prefWidth="100.0" text="Diplôme Bac" />
-          <TableColumn fx:id="releveNoteColumn" prefWidth="100.0" text="Relevé Notes" />
-          <TableColumn fx:id="diplomeObtenusColumn" prefWidth="100.0" text="Diplômes Obtenus" />
-          <TableColumn fx:id="lettreMotivationsColumn" prefWidth="100.0" text="Lettre Motivation" />
-          <TableColumn fx:id="dossierSanteColumn" prefWidth="100.0" text="Dossier Santé" />
-          <TableColumn fx:id="cvColumn" prefWidth="100.0" text="CV" />
-          <TableColumn fx:id="dateDepotColumn" prefWidth="100.0" text="Date de Dépôt" />
-        </columns>
-      </TableView>
       <HBox alignment="CENTER" layoutX="275.0" layoutY="34.0" prefHeight="60.0" prefWidth="691.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10;">
          <children>
             <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="Dossier Users">
@@ -263,10 +248,20 @@
             </Label>
          </children>
       </HBox>
-      <ImageView fitHeight="173.0" fitWidth="192.0" layoutX="560.0" layoutY="116.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@images/Dossierr.png" />
-         </image>
-      </ImageView>
+      
+      <TableView fx:id="dossierTable" layoutX="275.0" layoutY="104.0" prefHeight="581.0" prefWidth="691.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10;">
+         <columns>
+            <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
+            <TableColumn fx:id="cinColumn" prefWidth="120.0" text="CIN" />
+            <TableColumn fx:id="photoColumn" prefWidth="120.0" text="Photo" />
+            <TableColumn fx:id="diplomeBacColumn" prefWidth="120.0" text="Diplôme Bac" />
+            <TableColumn fx:id="releveNoteColumn" prefWidth="120.0" text="Relevé Notes" />
+            <TableColumn fx:id="diplomeObtenusColumn" prefWidth="120.0" text="Diplômes Obtenus" />
+            <TableColumn fx:id="lettreMotivationsColumn" prefWidth="120.0" text="Lettre Motivation" />
+            <TableColumn fx:id="dossierSanteColumn" prefWidth="120.0" text="Dossier Santé" />
+            <TableColumn fx:id="cvColumn" prefWidth="120.0" text="CV" />
+            <TableColumn fx:id="dateDepotColumn" prefWidth="120.0" text="Date Dépôt" />
+         </columns>
+      </TableView>
    </children>
 </AnchorPane>
