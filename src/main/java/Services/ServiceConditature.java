@@ -39,12 +39,13 @@ public class ServiceConditature implements IService<Conditature> {
         System.out.println("Conditature modifiée");
     }
 
-    public void supprimer(Conditature conditature) throws SQLException {
+    public boolean supprimer(Conditature conditature) throws SQLException {
         String req = "DELETE FROM conditature WHERE id_c=?";
         PreparedStatement ps = this.con.prepareStatement(req);
         ps.setInt(1, conditature.getId_c());
         ps.executeUpdate();
         System.out.println("Conditature supprimée");
+        return false;
     }
 
 

@@ -57,13 +57,14 @@ public class ServiceDossier implements IService<Dossier> {
     }
 
     @Override
-    public void supprimer(Dossier dossier) throws SQLException {
+    public boolean supprimer(Dossier dossier) throws SQLException {
         String req = "DELETE FROM dossier WHERE id_dossier=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, dossier.getId_dossier());
         ps.executeUpdate();
         System.out.println("Dossier supprimé");
 
+        return false;
     }
 
     @Override

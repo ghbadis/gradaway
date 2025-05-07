@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="764.0" prefWidth="914.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListFoyerClientControllers">
+   <children>
+      <VBox spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <!-- Search Bar Section -->
+            <HBox alignment="CENTER" spacing="15" style="-fx-background-color: white; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+               <children>
+                  <TextField fx:id="searchField" prefHeight="40" prefWidth="300" promptText="Rechercher un foyer..." style="-fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;">
+                    <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+                  
+                  <Button fx:id="btnSearch" mnemonicParsing="false" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20;" text="Search">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10" left="20" right="20" top="10" />
+                     </padding>
+                  </Button>
+                  <MenuButton fx:id="locationMenu" mnemonicParsing="false" style="-fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;" text="📍 Location">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </MenuButton>
+               </children>
+            </HBox>
+            
+            <!-- Foyers List Section - Configuration pour 3 foyers par ligne -->
+            <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+               <content>
+                  <TilePane fx:id="foyerContainer" hgap="15" vgap="15" prefColumns="3" prefHeight="0.0" prefWidth="742.0" style="-fx-padding: 20;">
+                     <padding>
+                        <Insets bottom="20" left="20" right="20" top="20" />
+                     </padding>
+                  </TilePane>
+               </content>
+               <padding>
+                  <Insets bottom="10" left="10" right="10" top="10" />
+               </padding>
+            </ScrollPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
