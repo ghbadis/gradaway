@@ -20,6 +20,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
+import utils.QRCodeGenerator;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -106,7 +107,12 @@ public class ListeReservationController {
             dateLabel.setStyle("-fx-text-fill: #666;");
             infoBox.getChildren().addAll(nomLabel, prenomLabel, emailLabel, dateLabel);
 
-            card.getChildren().addAll(imageView, infoBox);
+            // Bouton Billet
+            Button billetButton = new Button("Billet");
+            billetButton.getStyleClass().add("add-btn");
+            billetButton.setOnAction(event -> afficherQRCode(reservation));
+
+            card.getChildren().addAll(imageView, infoBox, billetButton);
 
             // Style de sélection
             if (reservation == selectedReservation) {
@@ -121,6 +127,44 @@ public class ListeReservationController {
             });
 
             reservations_container.getChildren().add(card);
+        }
+    }
+
+    private void afficherQRCode(ReservationEvenement reservation) {
+        try {
+            // Créer une nouvelle fenêtre pour afficher le QR code
+            Stage qrStage = new Stage();
+            VBox root = new VBox(20);
+            root.setPadding(new Insets(20));
+            root.setAlignment(Pos.CENTER);
+
+            // Générer le contenu du QR code
+            String qrContent = String.format(
+                "Réservation #%d\nÉvénement #%d\nNom: %s %s\nDate: %s",
+                reservation.getId_reservation(),
+                reservation.getId_evenement(),
+                reservation.getNom(),
+                reservation.getPrenom(),
+                reservation.getDate()
+            );
+
+            // Générer et afficher le QR code
+            ImageView qrCode = QRCodeGenerator.generateQRCode(qrContent, 200, 200);
+            if (qrCode != null) {
+                root.getChildren().add(qrCode);
+            }
+
+            // Ajouter un label avec les informations
+            Label infoLabel = new Label("Votre billet d'entrée");
+            infoLabel.getStyleClass().add("title-label");
+            root.getChildren().add(infoLabel);
+
+            Scene scene = new Scene(root);
+            qrStage.setTitle("Billet d'entrée");
+            qrStage.setScene(scene);
+            qrStage.show();
+        } catch (Exception e) {
+            showAlert("Erreur", "Erreur lors de la génération du QR code", e.getMessage());
         }
     }
 
