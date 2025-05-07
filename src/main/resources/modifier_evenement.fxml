@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<VBox spacing="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierEvenementController">
+    <Label text="Modifier l'événement" style="-fx-font-size: 18px;" />
+    <HBox spacing="10">
+        <Label text="Nom :" />
+        <TextField fx:id="nom_txtf" />
+    </HBox>
+    <HBox spacing="10">
+        <Label text="Description :" />
+        <TextField fx:id="description_txtf" />
+    </HBox>
+    <HBox spacing="10">
+        <Label text="Lieu :" />
+        <TextField fx:id="lieu_txtf" />
+    </HBox>
+    <HBox spacing="10">
+        <Label text="Domaine :" />
+        <TextField fx:id="domaine_txtf" />
+    </HBox>
+    <HBox spacing="10">
+        <Label text="Date :" />
+        <DatePicker fx:id="date_picker" />
+    </HBox>
+    <HBox spacing="10">
+        <Label text="Places disponibles :" />
+        <TextField fx:id="place_disponible_txtf" />
+    </HBox>
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="valider_button" text="Valider" />
+        <Button fx:id="annuler_button" text="Annuler" />
+    </HBox>
+</VBox> 

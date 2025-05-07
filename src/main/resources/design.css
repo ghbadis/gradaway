@@ -1,0 +1,197 @@
+/* Fond général */
+.root, .white-bg {
+    -fx-background-color: #F4F6F8;
+}
+
+/* Cartes et blocs */
+.white-bg, .card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(gaussian, #B0BEC5, 10, 0.2, 0, 4);
+    -fx-padding: 16px;
+}
+
+.shadow {
+    -fx-effect: dropshadow(gaussian, #B0BEC5, 10, 0.2, 0, 4);
+}
+
+.label, .event-title {
+    -fx-font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+    -fx-font-size: 15px;
+    -fx-text-fill: #222;
+}
+
+.event-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1976D2;
+}
+
+.button, .add-btn, .update-btn, .delete-btn, .clear-btn {
+    -fx-background-radius: 20px;
+    -fx-font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+    -fx-font-size: 15px;
+    -fx-padding: 8 24 8 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #B0BEC5, 5, 0.1, 0, 2);
+    -fx-border-width: 0;
+}
+
+.add-btn, .update-btn {
+    -fx-background-color: #1976D2;
+    -fx-text-fill: white;
+}
+.add-btn:hover, .update-btn:hover {
+    -fx-background-color: #1565C0;
+}
+
+.delete-btn {
+    -fx-background-color: #E53935;
+    -fx-text-fill: white;
+}
+.delete-btn:hover {
+    -fx-background-color: #B71C1C;
+}
+
+.clear-btn {
+    -fx-background-color: #43A047;
+    -fx-text-fill: white;
+}
+.clear-btn:hover {
+    -fx-background-color: #2E7D32;
+}
+
+.textfield, .search {
+    -fx-background-radius: 15px;
+    -fx-background-color: #F4F6F8;
+    -fx-border-color: #B0BEC5;
+    -fx-border-radius: 15px;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 15px;
+}
+
+.textfield:focused, .search:focused {
+    -fx-border-color: #1976D2;
+}
+
+.scroll-pane {
+    -fx-background: #F4F6F8;
+    -fx-background-color: #F4F6F8;
+    -fx-border-color: transparent;
+}
+
+.card:selected, .selected-card {
+    -fx-border-color: #1976D2;
+    -fx-border-width: 2px;
+}
+
+.title-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1976D2;
+    -fx-padding: 0 0 10 0;
+}
+
+.top-form{
+    -fx-background-color:#fff;
+    -fx-border-color:#000;
+    -fx-border-width:.4px .4px .2px .4px;
+}
+
+.semi-top-form{
+    -fx-background-color:#efefef;
+    -fx-border-color:#000;
+    -fx-border-width:.2px .4px .8px .4px;
+}
+
+.close{
+    -fx-background-color:transparent;
+    -fx-cursor:hand;
+}
+.close:hover{
+    -fx-background-color:#ff3547;
+}
+
+.minimize{
+    -fx-background-color:transparent;
+    -fx-cursor:hand;
+}
+.minimize:hover{
+    -fx-background-color:#ddd;
+}
+
+.nav-form{
+    -fx-background-color:linear-gradient(to bottom right, #272b3f, #256b51);
+}
+
+.nav-btn{
+    -fx-background-color:transparent;
+    -fx-cursor:hand;
+    -fx-font-family:"Arial";
+    -fx-font-size:14px;
+    -fx-text-fill:#fff;
+    -fx-alignment:CENTER-LEFT;
+}
+
+.logout{
+    -fx-background-color:#219a6a;
+    -fx-background-radius:10px;
+    -fx-cursor:hand;
+}
+.logout:hover{
+    -fx-background-color:#18a383;
+}
+
+.table-view{
+    -fx-background-color:transparent;
+    -fx-border-color:linear-gradient(to bottom right, #272b3f, #256b51);
+    -fx-border-radius:8px;
+    -fx-padding:0px;
+}
+.table-view .table-column{
+    -fx-alignment:CENTER;
+}
+.table-view .column-header-background{
+    -fx-background-color:linear-gradient(to bottom right, #272b3f, #256b51);
+    -fx-background-insets: 0 0 0 0;
+    -f-background-radius:8px 8px 0px 0px;
+}
+.table-view .column-header, .filter{
+    -fx-background-color: transparent;
+    -fx-size:40px;
+}
+.table-view .column-header .label{
+    -fx-text-fill:#fff;
+    -fx-font-family:"Arial";
+}
+
+.label-info{
+    -fx-background-color:transparent;
+    -fx-border-color:linear-gradient(to bottom right, #272b3f, #256b51);
+    -fx-border-radius:4px;
+    -fx-padding:0px 0px 0px 8px;
+}
+
+.card:hover, .white-bg:hover {
+    -fx-effect: dropshadow(gaussian, #1976D2, 16, 0.3, 0, 6);
+    -fx-cursor: hand;
+}
+
+.button:hover, .add-btn:hover, .update-btn:hover, .delete-btn:hover, .clear-btn:hover {
+    -fx-translate-y: -2px;
+    -fx-effect: dropshadow(gaussian, #1976D2, 10, 0.2, 0, 4);
+}
+
+.form-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1976D2;
+    -fx-font-size: 15px;
+}
+
+.form-container {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-spacing: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-background-radius: 5px;
+}

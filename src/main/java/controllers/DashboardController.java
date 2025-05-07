@@ -18,7 +18,7 @@ public class DashboardController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Dashboard initialized");
     }
-    
+
     @FXML
     private void handleAdminUniversite() {
         try {
@@ -27,7 +27,7 @@ public class DashboardController implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la fenêtre", e.getMessage());
         }
     }
-    
+
     @FXML
     private void handleAdminConditature() {
         try {
@@ -36,14 +36,14 @@ public class DashboardController implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la fenêtre", e.getMessage());
         }
     }
-    
+
     @FXML
     private void handleQuitButton() {
         System.exit(0);
     }
-    
+
     // Helper Methods
-    
+
     private void openWindow(String fxmlFile, String title) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/" + fxmlFile));
         Parent root = loader.load();
@@ -52,7 +52,7 @@ public class DashboardController implements Initializable {
         stage.setScene(new Scene(root));
         stage.show();
     }
-    
+
     private void showAlert(Alert.AlertType alertType, String title, String header, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -60,4 +60,4 @@ public class DashboardController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
-} 
+}

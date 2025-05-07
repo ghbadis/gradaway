@@ -4,24 +4,27 @@ public class ReservationEvenement {
     private int id_reservation;
     private int id_etudiant;
     private int id_evenement;
-    private String domaine;
-    private String statut;
+    private String email;
+    private String nom;
+    private String prenom;
     private String date;
 
-    public ReservationEvenement(int id_reservation, int id_etudiant, int id_evenement, String domaine, String statut, String date) {
+    public ReservationEvenement(int id_reservation, int id_etudiant, int id_evenement, String email, String nom, String prenom, String date) {
         this.id_reservation = id_reservation;
         this.id_etudiant = id_etudiant;
         this.id_evenement = id_evenement;
-        this.domaine = domaine;
-        this.statut = statut;
+        this.email = email;
+        this.nom = nom;
+        this.prenom = prenom;
         this.date = date;
     }
 
-    public ReservationEvenement(int id_etudiant, int id_evenement, String domaine, String statut, String date) {
+    public ReservationEvenement(int id_etudiant, int id_evenement, String email, String nom, String prenom, String date) {
         this.id_etudiant = id_etudiant;
         this.id_evenement = id_evenement;
-        this.domaine = domaine;
-        this.statut = statut;
+        this.email = email;
+        this.nom = nom;
+        this.prenom = prenom;
         this.date = date;
     }
 
@@ -49,20 +52,28 @@ public class ReservationEvenement {
         this.id_evenement = id_evenement;
     }
 
-    public String getDomaine() {
-        return domaine;
+    public String getEmail() {
+        return email;
     }
 
-    public void setDomaine(String domaine) {
-        this.domaine = domaine;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getStatut() {
-        return statut;
+    public String getNom() {
+        return nom;
     }
 
-    public void setStatut(String statut) {
-        this.statut = statut;
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 
     public String getDate() {
@@ -79,8 +90,9 @@ public class ReservationEvenement {
                 "id_reservation=" + id_reservation +
                 ", id_etudiant=" + id_etudiant +
                 ", id_evenement=" + id_evenement +
-                ", domaine='" + domaine + '\'' +
-                ", statut='" + statut + '\'' +
+                ", email='" + email + '\'' +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
                 ", date='" + date + '\'' +
                 '}';
     }
