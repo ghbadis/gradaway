@@ -1,19 +1,26 @@
 package controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import entities.User;
 import Services.ServiceUser;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -128,6 +135,10 @@ public class AdminUsercontroller implements Initializable {
         Button editButton = createActionButton("Modifier", "#4CAF50");
         Button deleteButton = createActionButton("Supprimer", "#f44336");
 
+        // Add event handlers for buttons
+        editButton.setOnAction(event -> handleEditUser(user));
+        deleteButton.setOnAction(event -> handleDeleteUser(user));
+
         actionBox.getChildren().addAll(editButton, deleteButton);
 
         // Add all sections to main box
@@ -178,5 +189,87 @@ public class AdminUsercontroller implements Initializable {
         } catch (Exception e) {
             System.err.println("Erreur lors du chargement de l'image par défaut: " + e.getMessage());
         }
+    }
+
+    private void handleEditUser(User user) {
+        try {
+            // Load the EditProfile FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditProfile.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller and set the user ID
+            EditProfileController editController = loader.getController();
+            editController.setUserId(user.getId());
+
+            // Create and show the stage
+            Stage stage = new Stage();
+            stage.setTitle("Modifier le profil - " + user.getNom() + " " + user.getPrenom());
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Add listener for when the window is closed to refresh the user list
+            stage.setOnHidden(event -> loadUsers());
+        } catch (IOException e) {
+            showError("Erreur", "Impossible d'ouvrir la fenêtre de modification: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void handleDeleteUser(User user) {
+        try {
+            Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
+            confirmDialog.setTitle("Confirmation de suppression");
+            confirmDialog.setHeaderText("Supprimer l'utilisateur");
+            confirmDialog.setContentText("Êtes-vous sûr de vouloir supprimer l'utilisateur " + user.getNom() + " " + user.getPrenom() + " ?");
+
+            confirmDialog.showAndWait().ifPresent(response -> {
+                if (response == javafx.scene.control.ButtonType.OK) {
+                    try {
+                        // Create a new User object with just the ID
+                        User userToDelete = new User(
+                            user.getId(),  // id
+                            user.getAge(),
+                            user.getCin(),
+                            user.getTelephone(),
+                            user.getMoyennes(),
+                            user.getAnnee_obtention_diplome(),
+                            user.getNom(),
+                            user.getPrenom(),
+                            user.getNationalite(),
+                            user.getEmail(),
+                            user.getDomaine_etude(),
+                            user.getUniversite_origine(),
+                            user.getRole(),
+                            user.getDateNaissance(),
+                            user.getMdp(),
+                            user.getImage()
+                        );
+                        serviceUser.supprimer(userToDelete);
+                        loadUsers(); // Refresh the list
+                        showSuccess("Suppression réussie", "L'utilisateur a été supprimé avec succès.");
+                    } catch (Exception e) {
+                        showError("Erreur lors de la suppression", e.getMessage());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            showError("Erreur", e.getMessage());
+        }
+    }
+
+    private void showError(String title, String content) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Erreur");
+        alert.setHeaderText(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void showSuccess(String title, String content) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setHeaderText(title);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

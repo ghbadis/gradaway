@@ -115,8 +115,22 @@ public class EditProfileController {
                 tfprenomprofil.setText(currentUser.getPrenom());
                 tfemailprofil.setText(currentUser.getEmail());
                 tfmdpprfil.setText(currentUser.getMdp());
-                tfcinprofil.setText(String.valueOf(currentUser.getCin()));
+                tfnationaliteprofil.setText(String.valueOf(currentUser.getCin()));
+                tfcinprofil.setText(currentUser.getNationalite());
                 tftelephoneprofil.setText(String.valueOf(currentUser.getTelephone()));
+                
+                // Load profile image if exists
+                if (currentUser.getImage() != null && !currentUser.getImage().isEmpty()) {
+                    try {
+                        File imageFile = new File(currentUser.getImage());
+                        if (imageFile.exists()) {
+                            Image image = new Image(imageFile.toURI().toString());
+                            ajouterimageprofil.setImage(image);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error loading profile image: " + e.getMessage());
+                    }
+                }
                 
                 // Age and Date of Birth
                 if (tfageprofil != null) {
@@ -127,7 +141,6 @@ public class EditProfileController {
                 }
                 
                 // Additional Information
-                tfnationaliteprofil.setText(currentUser.getNationalite());
                 tfdomaineprofil.setText(currentUser.getDomaine_etude());
                 tfdiplomeprofil.setText(String.valueOf(currentUser.getAnnee_obtention_diplome()));
                 tfuniversiteprofil.setText(currentUser.getUniversite_origine());
@@ -176,11 +189,11 @@ public class EditProfileController {
             currentUser.setPrenom(tfprenomprofil.getText());
             currentUser.setEmail(tfemailprofil.getText());
             currentUser.setMdp(tfmdpprfil.getText());
-            currentUser.setCin(Integer.parseInt(tfcinprofil.getText()));
+            currentUser.setCin(Integer.parseInt(tfnationaliteprofil.getText()));
+            currentUser.setNationalite(tfcinprofil.getText());
             currentUser.setTelephone(Integer.parseInt(tftelephoneprofil.getText()));
             currentUser.setAge(Integer.parseInt(tfageprofil.getValue()));
             currentUser.setDateNaissance(tfdatenaissanceprofil.getValue());
-            currentUser.setNationalite(tfnationaliteprofil.getText());
             currentUser.setDomaine_etude(tfdomaineprofil.getText());
             currentUser.setAnnee_obtention_diplome(Integer.parseInt(tfdiplomeprofil.getText()));
             currentUser.setUniversite_origine(tfuniversiteprofil.getText());
@@ -220,10 +233,34 @@ public class EditProfileController {
                 // Set the image to the ImageView
                 ajouterimageprofil.setImage(image);
                 
-                setMessage("Profile picture updated successfully!");
+                // Save the image path to the database
+                if (currentUser != null) {
+                    // Create a copy of the image in the application's resources directory
+                    String destinationPath = "src/main/resources/images/profiles/" + selectedFile.getName();
+                    File destinationFile = new File(destinationPath);
+                    
+                    // Create directories if they don't exist
+                    destinationFile.getParentFile().mkdirs();
+                    
+                    // Copy the file
+                    java.nio.file.Files.copy(
+                        selectedFile.toPath(),
+                        destinationFile.toPath(),
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                    );
+                    
+                    // Update user with the new image path
+                    currentUser.setImage(destinationPath);
+                    serviceUser.modifier(currentUser);
+                    setMessage("Photo de profil mise à jour avec succès!");
+                    System.out.println("Profile picture updated successfully for user: " + currentUser.getNom());
+                } else {
+                    setMessage("Erreur: Aucun utilisateur connecté");
+                }
             } catch (Exception e) {
-                setMessage("Error loading image: " + e.getMessage());
+                setMessage("Erreur lors du chargement de l'image: " + e.getMessage());
                 System.err.println("Error loading image: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
