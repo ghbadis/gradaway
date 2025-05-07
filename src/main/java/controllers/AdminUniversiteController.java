@@ -18,15 +18,9 @@ public class AdminUniversiteController implements Initializable {
     @FXML
     private Button ajouterButton;
     @FXML
-    private Button modifierButton;
-    @FXML
     private Button afficherButton;
     @FXML
-    private Button supprimerButton;
-    @FXML
     private Button logoutButton;
-    @FXML
-    private Button cardsButton;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -39,46 +33,25 @@ public class AdminUniversiteController implements Initializable {
     }
     
     @FXML
-    private void handleModifierButton() {
-        openWindow("modifieruniversite.fxml", "Modifier une Université");
-    }
-    
-    @FXML
     private void handleAfficherButton() {
         openWindow("recupereruniversite.fxml", "Liste des Universités");
     }
     
     @FXML
-    private void handleSupprimerButton() {
-        openWindow("supprimeruniversite.fxml", "Supprimer une Université");
-    }
-    
-    @FXML
-    private void handleCardsButton() {
-        openWindow("listuniversitecards.fxml", "Universités Disponibles");
-    }
-    
-    @FXML
     private void handleLogoutButton() {
-        // Close the current window
         Stage stage = (Stage) logoutButton.getScene().getWindow();
         stage.close();
-        
-        // You could add code here to return to a login screen if needed
     }
     
     private void openWindow(String fxmlFile, String title) {
         try {
-            // Try different ways to load the FXML
             URL resourceUrl = getClass().getResource("/" + fxmlFile);
             
             if (resourceUrl == null) {
-                // Try without the leading slash
                 resourceUrl = getClass().getResource(fxmlFile);
             }
             
             if (resourceUrl == null) {
-                // Try from the class loader
                 resourceUrl = getClass().getClassLoader().getResource(fxmlFile);
             }
             
@@ -94,13 +67,11 @@ public class AdminUniversiteController implements Initializable {
             stage.setScene(new Scene(root));
             stage.show();
             
-            // Debug output to see where resources are being loaded from
             System.out.println("Successfully loaded: " + resourceUrl.toString());
             
         } catch (IOException e) {
             e.printStackTrace();
             
-            // Show error dialog with details
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Opening Window");
             alert.setHeaderText("Failed to open " + title);

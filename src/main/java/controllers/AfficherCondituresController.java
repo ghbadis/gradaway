@@ -55,6 +55,9 @@ public class AfficherCondituresController implements Initializable {
     @FXML
     private Button retourButton;
     
+    @FXML
+    private Button cardsButton;
+    
     private CandidatureService candidatureService;
     private ObservableList<Candidature> candidatureList = FXCollections.observableArrayList();
     private FilteredList<Candidature> filteredCandidatures;
@@ -241,6 +244,21 @@ public class AfficherCondituresController implements Initializable {
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible de retourner à l'écran précédent", 
                     e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void handleCardsButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listcandidaturecards.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) cardsButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", 
+                    "Impossible de charger la vue en cartes", e.getMessage());
         }
     }
     

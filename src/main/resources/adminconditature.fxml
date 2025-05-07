@@ -34,6 +34,7 @@
             <rowConstraints>
                 <RowConstraints vgrow="SOMETIMES" minHeight="150" prefHeight="150"/>
                 <RowConstraints vgrow="SOMETIMES" minHeight="150" prefHeight="150"/>
+                <RowConstraints vgrow="SOMETIMES" minHeight="150" prefHeight="150"/>
             </rowConstraints>
             
             <!-- Ajouter button -->
@@ -70,24 +71,6 @@
                 <Button fx:id="afficherButton" text="Afficher" onAction="#handleAfficherButton" 
                         prefWidth="200" prefHeight="40"
                         style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
-            </VBox>
-            
-            <!-- Supprimer button -->
-            <VBox alignment="CENTER" spacing="15" style="-fx-background-color: #1A3473; -fx-background-radius: 10;" 
-                  GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
-                <padding>
-                    <Insets top="20" right="20" bottom="20" left="20"/>
-                </padding>
-                <Label text="Supprimer une Candidature" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="18.0"/>
-                    </font>
-                </Label>
-                <Label text="Supprimer une candidature de la base de données" 
-                       textFill="WHITE" wrapText="true" textAlignment="CENTER"/>
-                <Button fx:id="supprimerButton" text="Supprimer" onAction="#handleSupprimerButton" 
-                        prefWidth="200" prefHeight="40"
-                        style="-fx-background-color: #D8315B; -fx-text-fill: white;"/>
             </VBox>
         </GridPane>
         

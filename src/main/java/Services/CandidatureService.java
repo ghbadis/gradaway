@@ -85,11 +85,33 @@ public class CandidatureService {
 
     public boolean addCandidature(Candidature candidature) {
         try {
-            // First check if the foreign keys exist
-            if (!checkForeignKeyExists("user", "id", candidature.getUser_id()) ||
-                !checkForeignKeyExists("dossier", "id_dossier", candidature.getId_dossier()) ||
-                !checkForeignKeyExists("universite", "id_universite", candidature.getId_universite())) {
-                System.out.println("Foreign key constraint violation - one or more referenced IDs don't exist");
+            System.out.println("Attempting to add candidature with:");
+            System.out.println("User ID: " + candidature.getUser_id());
+            System.out.println("Dossier ID: " + candidature.getId_dossier());
+            System.out.println("Universite ID: " + candidature.getId_universite());
+            
+            // Improved error reporting for foreign key validation
+            boolean userExists = checkForeignKeyExists("user", "id", candidature.getUser_id());
+            boolean dossierExists = checkForeignKeyExists("dossier", "id_dossier", candidature.getId_dossier());
+            boolean universiteExists = checkForeignKeyExists("universite", "id_universite", candidature.getId_universite());
+            
+            System.out.println("Validation results:");
+            System.out.println("User exists: " + userExists);
+            System.out.println("Dossier exists: " + dossierExists);
+            System.out.println("Universite exists: " + universiteExists);
+            
+            if (!userExists) {
+                System.out.println("Error: User ID " + candidature.getUser_id() + " does not exist");
+                return false;
+            }
+            
+            if (!dossierExists) {
+                System.out.println("Error: Dossier ID " + candidature.getId_dossier() + " does not exist");
+                return false;
+            }
+            
+            if (!universiteExists) {
+                System.out.println("Error: Universite ID " + candidature.getId_universite() + " does not exist");
                 return false;
             }
             
@@ -115,6 +137,31 @@ public class CandidatureService {
     // Helper method to check if a foreign key exists in its parent table
     private boolean checkForeignKeyExists(String tableName, String idColumnName, int id) {
         try {
+            // First check if the table exists
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet tables = metaData.getTables(null, null, tableName, null);
+            
+            if (!tables.next()) {
+                System.out.println("ERROR: Table '" + tableName + "' does not exist!");
+                return false;
+            }
+            
+            // Check if the column exists
+            ResultSet columns = metaData.getColumns(null, null, tableName, idColumnName);
+            if (!columns.next()) {
+                System.out.println("ERROR: Column '" + idColumnName + "' does not exist in table '" + tableName + "'!");
+                
+                // Show available columns
+                System.out.println("Available columns in '" + tableName + "':");
+                columns = metaData.getColumns(null, null, tableName, null);
+                while (columns.next()) {
+                    System.out.println("- " + columns.getString("COLUMN_NAME"));
+                }
+                
+                return false;
+            }
+            
+            // Check for the ID
             String query = "SELECT 1 FROM " + tableName + " WHERE " + idColumnName + " = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, id);
@@ -124,6 +171,132 @@ public class CandidatureService {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    // New method to get a list of existing user IDs
+    public List<Integer> getExistingUserIds() {
+        List<Integer> userIds = new ArrayList<>();
+        try {
+            // First check if the table exists
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet tables = metaData.getTables(null, null, "user", null);
+            
+            if (!tables.next()) {
+                // Try variations of the table name
+                String[] possibleTableNames = {"user", "users", "utilisateur", "utilisateurs"};
+                String actualTableName = null;
+                
+                for (String tableName : possibleTableNames) {
+                    tables = metaData.getTables(null, null, tableName, null);
+                    if (tables.next()) {
+                        actualTableName = tableName;
+                        System.out.println("Found user table with name: " + actualTableName);
+                        break;
+                    }
+                }
+                
+                if (actualTableName == null) {
+                    System.out.println("ERROR: User table not found!");
+                    return userIds;
+                }
+                
+                // Get ID column name
+                ResultSet columns = metaData.getColumns(null, null, actualTableName, null);
+                String idColumnName = "id"; // default
+                
+                while (columns.next()) {
+                    String colName = columns.getString("COLUMN_NAME");
+                    if (colName.equalsIgnoreCase("id") || colName.contains("id") || 
+                        colName.equalsIgnoreCase("user_id") || colName.equalsIgnoreCase("utilisateur_id")) {
+                        idColumnName = colName;
+                        break;
+                    }
+                }
+                
+                String query = "SELECT " + idColumnName + " FROM " + actualTableName + " LIMIT 10";
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                
+                while (resultSet.next()) {
+                    userIds.add(resultSet.getInt(idColumnName));
+                }
+            } else {
+                // Original code
+                String query = "SELECT id FROM user LIMIT 10";
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                
+                while (resultSet.next()) {
+                    userIds.add(resultSet.getInt("id"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userIds;
+    }
+    
+    // New method to get a list of existing dossier IDs
+    public List<Integer> getExistingDossierIds() {
+        List<Integer> dossierIds = new ArrayList<>();
+        try {
+            // First check if the table exists
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet tables = metaData.getTables(null, null, "dossier", null);
+            
+            if (!tables.next()) {
+                // Try variations of the table name
+                String[] possibleTableNames = {"dossier", "dossiers", "folder", "folders"};
+                String actualTableName = null;
+                
+                for (String tableName : possibleTableNames) {
+                    tables = metaData.getTables(null, null, tableName, null);
+                    if (tables.next()) {
+                        actualTableName = tableName;
+                        System.out.println("Found dossier table with name: " + actualTableName);
+                        break;
+                    }
+                }
+                
+                if (actualTableName == null) {
+                    System.out.println("ERROR: Dossier table not found!");
+                    return dossierIds;
+                }
+                
+                // Get ID column name
+                ResultSet columns = metaData.getColumns(null, null, actualTableName, null);
+                String idColumnName = "id_dossier"; // default
+                
+                while (columns.next()) {
+                    String colName = columns.getString("COLUMN_NAME");
+                    if (colName.equalsIgnoreCase("id_dossier") || colName.contains("dossier") || 
+                        colName.equalsIgnoreCase("id") || colName.contains("_id")) {
+                        idColumnName = colName;
+                        break;
+                    }
+                }
+                
+                String query = "SELECT " + idColumnName + " FROM " + actualTableName + " LIMIT 10";
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                
+                while (resultSet.next()) {
+                    dossierIds.add(resultSet.getInt(idColumnName));
+                }
+            } else {
+                // Original code
+                String query = "SELECT id_dossier FROM dossier LIMIT 10";
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                
+                while (resultSet.next()) {
+                    dossierIds.add(resultSet.getInt("id_dossier"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dossierIds;
     }
 
     public void closeConnection() {

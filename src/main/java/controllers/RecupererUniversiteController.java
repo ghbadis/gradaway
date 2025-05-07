@@ -1,299 +1,295 @@
 package controllers;
 
 import entities.Universite;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.FileChooser;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import Services.ServiceUniversite;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class RecupererUniversiteController implements Initializable {
 
     @FXML
-    private TableView<Universite> universiteTable;
-    @FXML
-    private TableColumn<Universite, Integer> idColumn;
-    @FXML
-    private TableColumn<Universite, String> nomColumn;
-    @FXML
-    private TableColumn<Universite, String> villeColumn;
-    @FXML
-    private TableColumn<Universite, String> adresseColumn;
-    @FXML
-    private TableColumn<Universite, String> domaineColumn;
-    @FXML
-    private TableColumn<Universite, Double> fraisColumn;
-    
-    @FXML
     private TextField searchField;
     @FXML
     private Button searchButton;
     @FXML
+    private FlowPane universiteListView;
+    @FXML
     private Button refreshButton;
     @FXML
-    private Button exportButton;
-    @FXML
     private Button closeButton;
-    
+
     private final ServiceUniversite serviceUniversite = new ServiceUniversite();
-    private ObservableList<Universite> universiteList = FXCollections.observableArrayList();
-    private FilteredList<Universite> filteredUniversites;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("Initializing RecupererUniversiteController...");
-        
+        // Load universities when the view is initialized
+        loadUniversites();
+    }
+
+    @FXML
+    private void handleSearchButton(ActionEvent event) {
+        String searchText = searchField.getText().toLowerCase().trim();
         try {
-            // Configure table columns
-            idColumn.setCellValueFactory(new PropertyValueFactory<>("id_universite"));
-            nomColumn.setCellValueFactory(new PropertyValueFactory<>("Nom"));
-            villeColumn.setCellValueFactory(new PropertyValueFactory<>("Ville"));
-            adresseColumn.setCellValueFactory(new PropertyValueFactory<>("Adresse_universite"));
-            domaineColumn.setCellValueFactory(new PropertyValueFactory<>("Domaine"));
-            fraisColumn.setCellValueFactory(new PropertyValueFactory<>("Frais"));
-            
-            // Use simplified cell factories without custom styling
-            idColumn.setCellFactory(column -> new TableCell<Universite, Integer>() {
-                @Override
-                protected void updateItem(Integer item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                    } else {
-                        setText(item != null ? String.valueOf(item) : "");
-                    }
-                }
-            });
-            
-            nomColumn.setCellFactory(column -> new TableCell<Universite, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                    } else {
-                        setText(item != null ? item : "");
-                    }
-                }
-            });
-            
-            villeColumn.setCellFactory(column -> new TableCell<Universite, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                    } else {
-                        setText(item != null ? item : "");
-                    }
-                }
-            });
-            
-            adresseColumn.setCellFactory(column -> new TableCell<Universite, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                    } else {
-                        setText(item != null ? item : "");
-                    }
-                }
-            });
-            
-            domaineColumn.setCellFactory(column -> new TableCell<Universite, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                    } else {
-                        setText(item != null ? item : "");
-                    }
-                }
-            });
-            
-            fraisColumn.setCellFactory(column -> new TableCell<Universite, Double>() {
-                @Override
-                protected void updateItem(Double item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                    } else {
-                        setText(item != null ? String.valueOf(item) : "");
-                    }
-                }
-            });
-            
-            // Default row factory
-            universiteTable.setRowFactory(tv -> new TableRow<>());
-            
-            // Load data
-            loadUniversites();
-            
-            // Setup the filtered list
-            filteredUniversites = new FilteredList<>(universiteList, p -> true);
-            universiteTable.setItems(filteredUniversites);
-            
-            // Add search text listener
-            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    filteredUniversites.setPredicate(p -> true);
-                }
-            });
-            
-            System.out.println("RecupererUniversiteController initialized successfully.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error in RecupererUniversiteController initialization: " + e.getMessage());
+            List<Universite> universities;
+            if (searchText.isEmpty()) {
+                universities = serviceUniversite.getAllUniversites();
+            } else {
+                universities = serviceUniversite.searchUniversites(searchText);
+            }
+            displayUniversities(universities);
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de recherche", 
+                    "Une erreur est survenue lors de la recherche", e.getMessage());
         }
     }
-    
+
     @FXML
-    private void handleSearchButton() {
-        String searchText = searchField.getText().toLowerCase();
-        
-        if (searchText == null || searchText.isEmpty()) {
-            filteredUniversites.setPredicate(p -> true);
-        } else {
-            filteredUniversites.setPredicate(universite -> 
-                universite.getNom().toLowerCase().contains(searchText) ||
-                universite.getDomaine().toLowerCase().contains(searchText) ||
-                universite.getVille().toLowerCase().contains(searchText)
-            );
-        }
-    }
-    
-    @FXML
-    private void handleRefreshButton() {
+    private void handleRefreshButton(ActionEvent event) {
         searchField.clear();
         loadUniversites();
-        filteredUniversites.setPredicate(p -> true);
     }
-    
+
     @FXML
-    private void handleExportButton() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Exporter la liste des universités");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-        File file = fileChooser.showSaveDialog(exportButton.getScene().getWindow());
-        
-        if (file != null) {
-            exportToCsv(file);
-        }
-    }
-    
-    @FXML
-    private void handleCloseButton() {
+    private void handleCloseButton(ActionEvent event) {
         Stage stage = (Stage) closeButton.getScene().getWindow();
         stage.close();
     }
-    
+
     private void loadUniversites() {
         try {
-            List<Universite> universities = serviceUniversite.recuperer();
-            System.out.println("DEBUGGING: Retrieved " + universities.size() + " universities from service");
-            
-            // Clear our observable list
-            universiteList.clear();
-            
-            // Manually add each university to ensure they're properly loaded
-            for (Universite u : universities) {
-                universiteList.add(u);
-                System.out.println("Added to list: " + u.getId_universite() + " - " + u.getNom());
-            }
-            
-            // Force the TableView to refresh with the new data
-            universiteTable.refresh();
-            
-            // Set the filtered list as the TableView's items source
-            filteredUniversites = new FilteredList<>(universiteList, p -> true);
-            
-            // IMPORTANT - explicitly set items
-            universiteTable.setItems(null); // Clear first
-            universiteTable.setItems(filteredUniversites);
-            
-            // Debug output - print TableView contents
-            System.out.println("DEBUGGING TABLE: Item count: " + universiteTable.getItems().size());
-            
-            // If table is empty, add a test university directly
-            if (universiteTable.getItems().isEmpty() && !universities.isEmpty()) {
-                System.out.println("WARNING: TableView empty despite data in list. Adding test university directly...");
-                // Create a test university
-                Universite testUniv = new Universite(999, "Test University", "Test City", 
-                                      "Test Address", "Test Domain", 1000.0);
-                
-                // Create new list with test university
-                ObservableList<Universite> testList = FXCollections.observableArrayList();
-                testList.add(testUniv);
-                
-                // Set the test list to the TableView
-                universiteTable.setItems(testList);
-                
-                System.out.println("Test university added directly to TableView");
-            }
-            
+            List<Universite> universities = serviceUniversite.getAllUniversites();
+            displayUniversities(universities);
         } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur de base de données", e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur de chargement", 
+                    "Une erreur est survenue lors du chargement des universités", e.getMessage());
+        }
+    }
+
+    private void displayUniversities(List<Universite> universities) {
+        universiteListView.getChildren().clear();
+        
+        if (universities.isEmpty()) {
+            Label noResultsLabel = new Label("Aucune université trouvée");
+            noResultsLabel.setTextFill(Color.WHITE);
+            noResultsLabel.setFont(Font.font("System", FontWeight.BOLD, 18));
+            universiteListView.getChildren().add(noResultsLabel);
+            return;
+        }
+        
+        for (Universite university : universities) {
+            VBox card = createUniversityCard(university);
+            universiteListView.getChildren().add(card);
         }
     }
     
-    private void exportToCsv(File file) {
-        try (FileWriter writer = new FileWriter(file)) {
-            // Write header
-            writer.write("ID,Nom,Ville,Adresse,Domaine,Frais\n");
-            
-            // Write data
-            for (Universite universite : universiteList) {
-                writer.write(String.format("%d,%s,%s,%s,%s,%.2f\n",
-                        universite.getId_universite(),
-                        escapeSpecialCharacters(universite.getNom()),
-                        escapeSpecialCharacters(universite.getVille()),
-                        escapeSpecialCharacters(universite.getAdresse_universite()),
-                        escapeSpecialCharacters(universite.getDomaine()),
-                        universite.getFrais()
-                ));
+    private VBox createUniversityCard(Universite university) {
+        // Main card container
+        VBox card = new VBox(10);
+        card.setPrefWidth(280);
+        card.setPrefHeight(400);
+        card.setStyle("-fx-background-color: #1A3473; -fx-background-radius: 10px;");
+        card.setPadding(new Insets(15));
+        
+        // University photo
+        ImageView imageView = new ImageView();
+        imageView.setFitWidth(250);
+        imageView.setFitHeight(150);
+        imageView.setPreserveRatio(true);
+        
+        // Set default image
+        String defaultImagePath = "/images/default_university.png";
+        
+        // Try to load the university's photo if available
+        if (university.getPhotoPath() != null && !university.getPhotoPath().isEmpty()) {
+            try {
+                // First try to load from the resources folder
+                URL photoUrl = getClass().getResource("/" + university.getPhotoPath());
+                if (photoUrl != null) {
+                    Image universityImage = new Image(photoUrl.toExternalForm());
+                    imageView.setImage(universityImage);
+                } else {
+                    // Try as a file path if not found in resources
+                    File photoFile = new File("src/main/resources/" + university.getPhotoPath());
+                    if (photoFile.exists()) {
+                        Image universityImage = new Image(photoFile.toURI().toString());
+                        imageView.setImage(universityImage);
+                    } else {
+                        // Use default image if photo not found
+                        URL defaultUrl = getClass().getResource(defaultImagePath);
+                        if (defaultUrl != null) {
+                            Image defaultImage = new Image(defaultUrl.toExternalForm());
+                            imageView.setImage(defaultImage);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error loading university photo: " + e.getMessage());
+                // Fallback to default image
+                try {
+                    URL defaultUrl = getClass().getResource(defaultImagePath);
+                    if (defaultUrl != null) {
+                        Image defaultImage = new Image(defaultUrl.toExternalForm());
+                        imageView.setImage(defaultImage);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("Error loading default image: " + ex.getMessage());
+                }
             }
+        } else {
+            // Use default image if no photo path
+            try {
+                URL defaultUrl = getClass().getResource(defaultImagePath);
+                if (defaultUrl != null) {
+                    Image defaultImage = new Image(defaultUrl.toExternalForm());
+                    imageView.setImage(defaultImage);
+                }
+            } catch (Exception e) {
+                System.err.println("Error loading default image: " + e.getMessage());
+            }
+        }
+        
+        // Style the image view
+        imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
+        
+        // University name
+        Label nameLabel = new Label(university.getNom());
+        nameLabel.setTextFill(Color.WHITE);
+        nameLabel.setFont(Font.font("System", FontWeight.BOLD, 18));
+        nameLabel.setWrapText(true);
+        nameLabel.setTextAlignment(TextAlignment.CENTER);
+        nameLabel.setAlignment(Pos.CENTER);
+        nameLabel.setPrefWidth(250);
+        
+        // University info
+        VBox infoBox = new VBox(5);
+        infoBox.setAlignment(Pos.TOP_LEFT);
+        
+        Label locationLabel = new Label("Ville: " + university.getVille());
+        locationLabel.setTextFill(Color.WHITE);
+        
+        Label addressLabel = new Label("Adresse: " + university.getAdresse_universite());
+        addressLabel.setTextFill(Color.WHITE);
+        addressLabel.setWrapText(true);
+        
+        Label fieldLabel = new Label("Domaine: " + university.getDomaine());
+        fieldLabel.setTextFill(Color.WHITE);
+        fieldLabel.setWrapText(true);
+        
+        Label feesLabel = new Label(String.format("Frais: %.2f €", university.getFrais()));
+        feesLabel.setTextFill(Color.WHITE);
+        
+        infoBox.getChildren().addAll(locationLabel, addressLabel, fieldLabel, feesLabel);
+        
+        // Buttons container
+        HBox buttonsBox = new HBox(10);
+        buttonsBox.setAlignment(Pos.CENTER);
+        
+        // Modify button
+        Button modifierButton = new Button("Modifier");
+        modifierButton.setStyle("-fx-background-color: #3E92CC; -fx-text-fill: white;");
+        modifierButton.setPrefWidth(120);
+        modifierButton.setPrefHeight(30);
+        modifierButton.setOnAction(e -> handleModifierUniversite(university));
+        
+        // Delete button
+        Button supprimerButton = new Button("Supprimer");
+        supprimerButton.setStyle("-fx-background-color: #D8315B; -fx-text-fill: white;");
+        supprimerButton.setPrefWidth(120);
+        supprimerButton.setPrefHeight(30);
+        supprimerButton.setOnAction(e -> handleSupprimerUniversite(university));
+        
+        buttonsBox.getChildren().addAll(modifierButton, supprimerButton);
+        
+        // Add some spacing at the bottom
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+        
+        // Assemble the card
+        card.getChildren().addAll(imageView, nameLabel, infoBox, spacer, buttonsBox);
+        
+        return card;
+    }
+    
+    private void handleModifierUniversite(Universite universite) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifieruniversite.fxml"));
+            Parent root = loader.load();
             
-            showAlert(Alert.AlertType.INFORMATION, "Export réussi", 
-                    "Les données ont été exportées avec succès vers: " + file.getAbsolutePath());
+            // Get the controller and pass the university to modify
+            ModifierUniversiteController controller = loader.getController();
+            controller.setUniversite(universite);
+            
+            Stage stage = new Stage();
+            stage.setTitle("Modifier l'Université");
+            stage.setScene(new Scene(root));
+            stage.show();
+            
+            // Refresh the list when the modification window is closed
+            stage.setOnHidden(e -> loadUniversites());
+            
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur d'exportation", e.getMessage());
+                e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", 
+                    "Impossible d'ouvrir la fenêtre de modification", e.getMessage());
         }
     }
     
-    private String escapeSpecialCharacters(String data) {
-        if (data == null) {
-            return "";
+    private void handleSupprimerUniversite(Universite universite) {
+        // Confirm deletion
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirmer la suppression");
+        confirmAlert.setHeaderText(null);
+        confirmAlert.setContentText("Êtes-vous sûr de vouloir supprimer l'université '" + 
+                                  universite.getNom() + "' ?");
+        
+        Optional<ButtonType> result = confirmAlert.showAndWait();
+        
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                // Delete the university
+                serviceUniversite.supprimer(universite);
+                
+                // Refresh the list
+                loadUniversites();
+                
+                showAlert(Alert.AlertType.INFORMATION, "Succès", 
+                        "Université supprimée avec succès", null);
+                
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", 
+                        "Erreur lors de la suppression de l'université", e.getMessage());
+            }
         }
-        String escapedData = data.replaceAll("\\R", " ");
-        if (data.contains(",") || data.contains("\"") || data.contains("'")) {
-            data = data.replace("\"", "\"\"");
-            escapedData = "\"" + data + "\"";
-        }
-        return escapedData;
     }
     
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
+    private void showAlert(Alert.AlertType alertType, String title, String header, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
         alert.showAndWait();
     }
 } 

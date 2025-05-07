@@ -21,6 +21,7 @@ import Services.ServiceUniversite;
 import Services.CandidatureService;
 import models.Candidature;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
@@ -87,7 +88,7 @@ public class UniversiteCardsController implements Initializable {
             loadUniversities();
         } else {
             try {
-                List<Universite> allUniversities = serviceUniversite.recuperer();
+                List<Universite> allUniversities = serviceUniversite.getAllUniversites();
                 List<Universite> filteredUniversities = allUniversities.stream()
                         .filter(u -> u.getNom().toLowerCase().contains(searchText) || 
                                      u.getDomaine().toLowerCase().contains(searchText) || 
@@ -129,7 +130,7 @@ public class UniversiteCardsController implements Initializable {
 
     private void loadUniversities() {
         try {
-            List<Universite> universities = serviceUniversite.recuperer();
+            List<Universite> universities = serviceUniversite.getAllUniversites();
             displayUniversities(universities);
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur de chargement", 
@@ -158,9 +159,70 @@ public class UniversiteCardsController implements Initializable {
         // Main card container
         VBox card = new VBox(10);
         card.setPrefWidth(280);
-        card.setPrefHeight(320);
+        card.setPrefHeight(380); // Increased height to accommodate the image
         card.setStyle("-fx-background-color: #1A3473; -fx-background-radius: 10px;");
         card.setPadding(new Insets(15));
+        
+        // University photo
+        javafx.scene.image.ImageView imageView = new javafx.scene.image.ImageView();
+        imageView.setFitWidth(250);
+        imageView.setFitHeight(150);
+        imageView.setPreserveRatio(true);
+        
+        // Set default image
+        String defaultImagePath = "/images/default_university.png";
+        
+        // Try to load the university's photo if available
+        if (university.getPhotoPath() != null && !university.getPhotoPath().isEmpty()) {
+            try {
+                // First try to load from the resources folder
+                URL photoUrl = getClass().getResource("/" + university.getPhotoPath());
+                if (photoUrl != null) {
+                    javafx.scene.image.Image universityImage = new javafx.scene.image.Image(photoUrl.toExternalForm());
+                    imageView.setImage(universityImage);
+                } else {
+                    // Try as a file path if not found in resources
+                    File photoFile = new File("src/main/resources/" + university.getPhotoPath());
+                    if (photoFile.exists()) {
+                        javafx.scene.image.Image universityImage = new javafx.scene.image.Image(photoFile.toURI().toString());
+                        imageView.setImage(universityImage);
+                    } else {
+                        // Use default image if photo not found
+                        URL defaultUrl = getClass().getResource(defaultImagePath);
+                        if (defaultUrl != null) {
+                            javafx.scene.image.Image defaultImage = new javafx.scene.image.Image(defaultUrl.toExternalForm());
+                            imageView.setImage(defaultImage);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error loading university photo: " + e.getMessage());
+                // Fallback to default image
+                try {
+                    URL defaultUrl = getClass().getResource(defaultImagePath);
+                    if (defaultUrl != null) {
+                        javafx.scene.image.Image defaultImage = new javafx.scene.image.Image(defaultUrl.toExternalForm());
+                        imageView.setImage(defaultImage);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("Error loading default image: " + ex.getMessage());
+                }
+            }
+        } else {
+            // Use default image if no photo path
+            try {
+                URL defaultUrl = getClass().getResource(defaultImagePath);
+                if (defaultUrl != null) {
+                    javafx.scene.image.Image defaultImage = new javafx.scene.image.Image(defaultUrl.toExternalForm());
+                    imageView.setImage(defaultImage);
+                }
+            } catch (Exception e) {
+                System.err.println("Error loading default image: " + e.getMessage());
+            }
+        }
+        
+        // Style the image view
+        imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
         
         // University name
         Label nameLabel = new Label(university.getNom());
@@ -205,7 +267,7 @@ public class UniversiteCardsController implements Initializable {
         VBox.setVgrow(spacer, Priority.ALWAYS);
         
         // Assemble the card
-        card.getChildren().addAll(nameLabel, infoBox, spacer, applyButton);
+        card.getChildren().addAll(imageView, nameLabel, infoBox, spacer, applyButton);
         
         return card;
     }

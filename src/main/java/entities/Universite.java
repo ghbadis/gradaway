@@ -8,6 +8,7 @@ public class Universite {
         private String Adresse_universite;
         private String Domaine;
         private double Frais;
+        private String photoPath; // Path to the university photo
 
         public Universite(int id_universite, String Nom, String Ville, String Adresse_universite, String Domaine, double Frais) {
             this.id_universite = id_universite;
@@ -18,12 +19,31 @@ public class Universite {
             this.Frais = Frais;
         }
 
+        public Universite(int id_universite, String Nom, String Ville, String Adresse_universite, String Domaine, double Frais, String photoPath) {
+            this.id_universite = id_universite;
+            this.Nom = Nom;
+            this.Ville = Ville;
+            this.Adresse_universite = Adresse_universite;
+            this.Domaine = Domaine;
+            this.Frais = Frais;
+            this.photoPath = photoPath;
+        }
+
         public Universite(String Nom, String Ville, String Adresse_universite, String Domaine, double Frais) {
             this.Nom = Nom;
             this.Ville = Ville;
             this.Adresse_universite = Adresse_universite;
             this.Domaine = Domaine;
             this.Frais = Frais;
+        }
+
+        public Universite(String Nom, String Ville, String Adresse_universite, String Domaine, double Frais, String photoPath) {
+            this.Nom = Nom;
+            this.Ville = Ville;
+            this.Adresse_universite = Adresse_universite;
+            this.Domaine = Domaine;
+            this.Frais = Frais;
+            this.photoPath = photoPath;
         }
 
         public int getId_universite() {
@@ -74,6 +94,14 @@ public class Universite {
             this.Frais = Frais;
         }
 
+        public String getPhotoPath() {
+            return this.photoPath;
+        }
+
+        public void setPhotoPath(String photoPath) {
+            this.photoPath = photoPath;
+        }
+
         @Override
         public String toString() {
             return "Universite{" +
@@ -83,6 +111,7 @@ public class Universite {
                     ", Adresse_universite='" + Adresse_universite + '\'' +
                     ", Domaine='" + Domaine + '\'' +
                     ", Frais=" + Frais +
+                    ", photoPath='" + photoPath + '\'' +
                     '}';
         }
     }

@@ -1,19 +1,17 @@
 package controllers;
 
 import entities.Universite;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import Services.ServiceUniversite;
 
+import java.io.File;
 import java.net.URL;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class ModifierUniversiteController implements Initializable {
@@ -30,28 +28,12 @@ public class ModifierUniversiteController implements Initializable {
     private TextField domaineField;
     @FXML
     private TextField fraisField;
-    
     @FXML
-    private TableView<Universite> universiteTable;
+    private TextField photoPathField;
     @FXML
-    private TableColumn<Universite, Integer> idColumn;
+    private ImageView universiteImageView;
     @FXML
-    private TableColumn<Universite, String> nomColumn;
-    @FXML
-    private TableColumn<Universite, String> villeColumn;
-    @FXML
-    private TableColumn<Universite, String> adresseColumn;
-    @FXML
-    private TableColumn<Universite, String> domaineColumn;
-    @FXML
-    private TableColumn<Universite, Double> fraisColumn;
-    
-    @FXML
-    private TextField searchFieldTable;
-    @FXML
-    private Button searchTableButton;
-    @FXML
-    private Button refreshTableButton;
+    private Button browseButton;
     @FXML
     private Button modifierButton;
     @FXML
@@ -59,235 +41,59 @@ public class ModifierUniversiteController implements Initializable {
     
     private final ServiceUniversite serviceUniversite = new ServiceUniversite();
     private Universite currentUniversite;
-    private ObservableList<Universite> universiteList = FXCollections.observableArrayList();
-    private FilteredList<Universite> filteredUniversites;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Initialize controller
-        modifierButton.setDisable(true); // Disable modifier button until a university is found
-        
-        // Configure table columns
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id_universite"));
-        nomColumn.setCellValueFactory(new PropertyValueFactory<>("Nom"));
-        villeColumn.setCellValueFactory(new PropertyValueFactory<>("Ville"));
-        adresseColumn.setCellValueFactory(new PropertyValueFactory<>("Adresse_universite"));
-        domaineColumn.setCellValueFactory(new PropertyValueFactory<>("Domaine"));
-        fraisColumn.setCellValueFactory(new PropertyValueFactory<>("Frais"));
-        
-        // Debug column mapping
-        System.out.println("INITIALIZE - Mapping columns to properties:");
-        System.out.println("ID Column -> id_universite");
-        System.out.println("Nom Column -> Nom");
-        System.out.println("Ville Column -> Ville");
-        System.out.println("Adresse Column -> Adresse_universite");
-        System.out.println("Domaine Column -> Domaine");
-        System.out.println("Frais Column -> Frais");
-        
-        // Use simplified cell factories without custom styling
-        idColumn.setCellFactory(column -> new TableCell<Universite, Integer>() {
-            @Override
-            protected void updateItem(Integer item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(item != null ? String.valueOf(item) : "");
-                }
-            }
-        });
-        
-        nomColumn.setCellFactory(column -> new TableCell<Universite, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(item != null ? item : "");
-                }
-            }
-        });
-        
-        villeColumn.setCellFactory(column -> new TableCell<Universite, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(item != null ? item : "");
-                }
-            }
-        });
-        
-        adresseColumn.setCellFactory(column -> new TableCell<Universite, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(item != null ? item : "");
-                }
-            }
-        });
-        
-        domaineColumn.setCellFactory(column -> new TableCell<Universite, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(item != null ? item : "");
-                }
-            }
-        });
-        
-        fraisColumn.setCellFactory(column -> new TableCell<Universite, Double>() {
-            @Override
-            protected void updateItem(Double item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(item != null ? String.valueOf(item) : "");
-                }
-            }
-        });
-        
-        // Default row factory
-        universiteTable.setRowFactory(tv -> new TableRow<>());
-        
-        // Load universities
-        loadUniversites();
-        
-        // Setup the filtered list
-        filteredUniversites = new FilteredList<>(universiteList, p -> true);
-        universiteTable.setItems(filteredUniversites);
-        
-        // Add search text listener for real-time filtering
-        searchFieldTable.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null || newValue.isEmpty()) {
-                filteredUniversites.setPredicate(p -> true);
-            }
-        });
-        
-        // Setup table selection listener
-        universiteTable.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> handleTableSelection(newValue));
-    }
-    
-    private void handleTableSelection(Universite selectedUniversite) {
-        if (selectedUniversite != null) {
-            // Fill the form with university data
-            currentUniversite = selectedUniversite;
-            idField.setText(String.valueOf(selectedUniversite.getId_universite()));
-            nomField.setText(selectedUniversite.getNom());
-            villeField.setText(selectedUniversite.getVille());
-            adresseField.setText(selectedUniversite.getAdresse_universite());
-            domaineField.setText(selectedUniversite.getDomaine());
-            fraisField.setText(String.valueOf(selectedUniversite.getFrais()));
-            
-            // Enable the modifier button
-            modifierButton.setDisable(false);
-        }
+        modifierButton.setDisable(true); // Disable modifier button until a university is loaded
     }
     
     @FXML
-    private void handleSearchTableButton() {
-        String searchText = searchFieldTable.getText().toLowerCase();
+    private void handleBrowseButton() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Sélectionner une image");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
         
-        if (searchText == null || searchText.isEmpty()) {
-            filteredUniversites.setPredicate(p -> true);
-        } else {
-            filteredUniversites.setPredicate(universite -> 
-                universite.getNom().toLowerCase().contains(searchText) ||
-                universite.getDomaine().toLowerCase().contains(searchText) ||
-                universite.getVille().toLowerCase().contains(searchText)
-            );
-        }
-    }
-    
-    @FXML
-    private void handleRefreshTableButton() {
-        searchFieldTable.clear();
-        loadUniversites();
-        filteredUniversites.setPredicate(p -> true);
-    }
-    
-    private void loadUniversites() {
-        try {
-            List<Universite> universities = serviceUniversite.recuperer();
-            System.out.println("DEBUGGING: Retrieved " + universities.size() + " universities from service");
-            
-            // Clear our observable list
-            universiteList.clear();
-            
-            // Manually add each university to ensure they're properly loaded
-            for (Universite u : universities) {
-                universiteList.add(u);
-                System.out.println("Added to list: " + u.getId_universite() + " - " + u.getNom());
+        File selectedFile = fileChooser.showOpenDialog(browseButton.getScene().getWindow());
+        if (selectedFile != null) {
+            try {
+                // Update the path field
+                String path = selectedFile.getPath();
+                // Convert to relative path if possible
+                String resourcePath = "images/" + selectedFile.getName();
+                photoPathField.setText(resourcePath);
+                
+                // Display the image
+                Image image = new Image(selectedFile.toURI().toString());
+                universiteImageView.setImage(image);
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger l'image: " + e.getMessage());
             }
-            
-            // Force the TableView to refresh with the new data
-            universiteTable.refresh();
-            
-            // Set the filtered list as the TableView's items source
-            filteredUniversites = new FilteredList<>(universiteList, p -> true);
-            
-            // IMPORTANT - explicitly set items
-            universiteTable.setItems(null); // Clear first
-            universiteTable.setItems(filteredUniversites);
-            
-            // Debug output - print TableView contents
-            System.out.println("DEBUGGING TABLE: Item count: " + universiteTable.getItems().size());
-            
-            // If table is empty, add a test university directly
-            if (universiteTable.getItems().isEmpty() && !universities.isEmpty()) {
-                System.out.println("WARNING: TableView empty despite data in list. Adding test university directly...");
-                // Create a test university
-                Universite testUniv = new Universite(999, "Test University", "Test City", 
-                                       "Test Address", "Test Domain", 1000.0);
-                
-                // Create new list with test university
-                ObservableList<Universite> testList = FXCollections.observableArrayList();
-                testList.add(testUniv);
-                
-                // Set the test list to the TableView
-                universiteTable.setItems(testList);
-                
-                System.out.println("Test university added directly to TableView");
-            }
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur de base de données", e.getMessage());
         }
     }
     
     @FXML
     private void handleModifierButton() {
         if (currentUniversite == null) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez d'abord sélectionner une université");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Aucune université à modifier.");
             return;
         }
         
         if (validateFields()) {
             try {
-                String nom = nomField.getText();
-                String ville = villeField.getText();
-                String adresse = adresseField.getText();
-                String domaine = domaineField.getText();
-                double frais = Double.parseDouble(fraisField.getText());
+                // Update current university with form values
+                currentUniversite.setNom(nomField.getText());
+                currentUniversite.setVille(villeField.getText());
+                currentUniversite.setAdresse_universite(adresseField.getText());
+                currentUniversite.setDomaine(domaineField.getText());
+                currentUniversite.setFrais(Double.parseDouble(fraisField.getText()));
                 
-                // Update current university
-                currentUniversite.setNom(nom);
-                currentUniversite.setVille(ville);
-                currentUniversite.setAdresse_universite(adresse);
-                currentUniversite.setDomaine(domaine);
-                currentUniversite.setFrais(frais);
+                // Update the photo path if changed
+                if (!photoPathField.getText().isEmpty()) {
+                    currentUniversite.setPhotoPath(photoPathField.getText());
+                }
                 
                 // Call service to modify university
                 serviceUniversite.modifier(currentUniversite);
@@ -295,35 +101,29 @@ public class ModifierUniversiteController implements Initializable {
                 // Show success message
                 showAlert(Alert.AlertType.INFORMATION, "Succès", "Université modifiée avec succès!");
                 
-                // Refresh the table
-                loadUniversites();
-                
-                // Clear the form and reset state
-                clearFields();
-                currentUniversite = null;
-                modifierButton.setDisable(true);
+                // Close the window
+                Stage stage = (Stage) modifierButton.getScene().getWindow();
+                stage.close();
                 
             } catch (NumberFormatException e) {
                 showAlert(Alert.AlertType.ERROR, "Erreur de format", "Les frais doivent être un nombre valide");
-            } catch (SQLException e) {
-                showAlert(Alert.AlertType.ERROR, "Erreur de base de données", e.getMessage());
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue: " + e.getMessage());
             }
         }
     }
     
     @FXML
     private void handleCancelButton() {
-        clearFields();
-        currentUniversite = null;
-        modifierButton.setDisable(true);
-        universiteTable.getSelectionModel().clearSelection();
+        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.close();
     }
     
     private boolean validateFields() {
         if (nomField.getText().isEmpty() || villeField.getText().isEmpty() ||
                 adresseField.getText().isEmpty() || domaineField.getText().isEmpty() ||
                 fraisField.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Champs manquants", "Veuillez remplir tous les champs");
+            showAlert(Alert.AlertType.ERROR, "Champs manquants", "Veuillez remplir tous les champs obligatoires");
             return false;
         }
         
@@ -337,20 +137,58 @@ public class ModifierUniversiteController implements Initializable {
         return true;
     }
     
-    private void clearFields() {
-        idField.clear();
-        nomField.clear();
-        villeField.clear();
-        adresseField.clear();
-        domaineField.clear();
-        fraisField.clear();
-    }
-    
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void setUniversite(Universite universite) {
+        // Store the university being modified
+        currentUniversite = universite;
+        
+        // Fill the form with university data
+        idField.setText(String.valueOf(universite.getId_universite()));
+        nomField.setText(universite.getNom());
+        villeField.setText(universite.getVille());
+        adresseField.setText(universite.getAdresse_universite());
+        domaineField.setText(universite.getDomaine());
+        fraisField.setText(String.valueOf(universite.getFrais()));
+        
+        // Set the photo path and load the image
+        if (universite.getPhotoPath() != null && !universite.getPhotoPath().isEmpty()) {
+            photoPathField.setText(universite.getPhotoPath());
+            
+            try {
+                // Try to load from resources folder
+                URL photoUrl = getClass().getResource("/" + universite.getPhotoPath());
+                if (photoUrl != null) {
+                    Image universityImage = new Image(photoUrl.toExternalForm());
+                    universiteImageView.setImage(universityImage);
+                } else {
+                    // Try as a file path
+                    File photoFile = new File("src/main/resources/" + universite.getPhotoPath());
+                    if (photoFile.exists()) {
+                        Image universityImage = new Image(photoFile.toURI().toString());
+                        universiteImageView.setImage(universityImage);
+                    } else {
+                        // Try direct path
+                        try {
+                            Image universityImage = new Image(universite.getPhotoPath());
+                            universiteImageView.setImage(universityImage);
+                        } catch (Exception e) {
+                            System.err.println("Could not load image from direct path: " + e.getMessage());
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error loading university photo: " + e.getMessage());
+            }
+        }
+        
+        // Enable the modifier button
+        modifierButton.setDisable(false);
     }
 } 

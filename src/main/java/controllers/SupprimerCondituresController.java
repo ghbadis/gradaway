@@ -59,6 +59,9 @@ public class SupprimerCondituresController implements Initializable {
     @FXML
     private Button logoutButton;
     
+    @FXML
+    private Button cardsButton;
+    
     private CandidatureService candidatureService;
     private ObservableList<Candidature> candidatureList = FXCollections.observableArrayList();
     private FilteredList<Candidature> filteredCandidatures;
@@ -279,11 +282,58 @@ public class SupprimerCondituresController implements Initializable {
         }
     }
     
+    @FXML
+    private void handleCardsButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/supprimercandidaturecards.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) cardsButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", 
+                    "Impossible de charger la vue en cartes", e.getMessage());
+        }
+    }
+    
     private void showAlert(Alert.AlertType type, String title, String header, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void initialize() {
+        // If any components don't exist in the FXML, handle it gracefully
+        if (candidaturesTable == null) {
+            System.err.println("Warning: candidaturesTable is null - FXML element might be missing");
+        }
+        
+        if (searchField == null) {
+            System.err.println("Warning: searchField is null - FXML element might be missing");
+        }
+        
+        if (searchButton == null) {
+            System.err.println("Warning: searchButton is null - FXML element might be missing");
+        }
+        
+        if (supprimerButton == null) {
+            System.err.println("Warning: supprimerButton is null - FXML element might be missing");
+        }
+        
+        if (refreshButton == null) {
+            System.err.println("Warning: refreshButton is null - FXML element might be missing");
+        }
+        
+        if (retourButton == null) {
+            System.err.println("Warning: retourButton is null - FXML element might be missing");
+        }
+        
+        if (cardsButton == null) {
+            System.err.println("Warning: cardsButton is null - FXML element might be missing");
+        }
     }
 } 

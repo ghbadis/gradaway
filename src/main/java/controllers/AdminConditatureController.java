@@ -20,6 +20,9 @@ public class AdminConditatureController {
 
     @FXML
     private Button supprimerButton;
+    
+    @FXML
+    private Button cardsButton;
 
     @FXML
     private Button logoutButton;
@@ -42,7 +45,7 @@ public class AdminConditatureController {
     @FXML
     void handleAfficherButton(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/afficherconditures.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listcandidaturecards.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) afficherButton.getScene().getWindow();
             Scene scene = new Scene(root);
@@ -53,11 +56,26 @@ public class AdminConditatureController {
             e.printStackTrace();
         }
     }
+    
+    @FXML
+    void handleCardsButton(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listcandidaturecards.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) cardsButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible de charger la vue en cartes des candidatures.", e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     void handleSupprimerButton(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/supprimerconditures.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/supprimercandidaturecards.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) supprimerButton.getScene().getWindow();
             Scene scene = new Scene(root);

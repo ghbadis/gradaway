@@ -4,11 +4,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.UniversiteController"
-            prefHeight="500.0" prefWidth="700.0"
+            prefHeight="650.0" prefWidth="800.0"
             style="-fx-background-color: #0A2463;">
 
     <VBox spacing="20" alignment="CENTER" AnchorPane.topAnchor="50.0" AnchorPane.leftAnchor="50.0" 
@@ -20,41 +21,67 @@
             </font>
         </Label>
         
-        <GridPane hgap="10" vgap="15">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
-            
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="150"/>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="300"/>
-            </columnConstraints>
+        <HBox spacing="30" alignment="CENTER">
+            <!-- Left side - Form fields -->
+            <GridPane hgap="10" vgap="15">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="150"/>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="300"/>
+                </columnConstraints>
 
-            <!-- Nom field -->
-            <Label text="Nom:" textFill="WHITE" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="nomField" promptText="Nom de l'université" 
-                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <!-- Nom field -->
+                <Label text="Nom:" textFill="WHITE" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="nomField" promptText="Nom de l'université" 
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                
+                <!-- Ville field -->
+                <Label text="Ville:" textFill="WHITE" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="villeField" promptText="Ville" 
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                
+                <!-- Adresse field -->
+                <Label text="Adresse:" textFill="WHITE" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="adresseField" promptText="Adresse de l'université" 
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                
+                <!-- Domaine field -->
+                <Label text="Domaine:" textFill="WHITE" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="domaineField" promptText="Domaine d'étude" 
+                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                
+                <!-- Frais field -->
+                <Label text="Frais:" textFill="WHITE" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="fraisField" promptText="Frais d'inscription" 
+                           GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            </GridPane>
             
-            <!-- Ville field -->
-            <Label text="Ville:" textFill="WHITE" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="villeField" promptText="Ville" 
-                       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-            
-            <!-- Adresse field -->
-            <Label text="Adresse:" textFill="WHITE" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <TextField fx:id="adresseField" promptText="Adresse de l'université" 
-                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-            
-            <!-- Domaine field -->
-            <Label text="Domaine:" textFill="WHITE" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <TextField fx:id="domaineField" promptText="Domaine d'étude" 
-                       GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-            
-            <!-- Frais field -->
-            <Label text="Frais:" textFill="WHITE" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <TextField fx:id="fraisField" promptText="Frais d'inscription" 
-                       GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-        </GridPane>
+            <!-- Right side - Photo selection and preview -->
+            <VBox spacing="10" alignment="CENTER">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                
+                <Label text="Photo de l'université:" textFill="WHITE"/>
+                
+                <!-- Image preview -->
+                <ImageView fx:id="photoPreview" fitWidth="200" fitHeight="150" 
+                           preserveRatio="true" style="-fx-border-color: white; -fx-border-width: 1px;"/>
+                
+                <!-- Selected file name label -->
+                <Label fx:id="photoPathLabel" textFill="WHITE" 
+                       maxWidth="200" wrapText="true"/>
+                
+                <!-- Select photo button -->
+                <Button fx:id="selectPhotoButton" text="Sélectionner une photo" 
+                        onAction="#handleSelectPhotoButton" 
+                        prefWidth="200" prefHeight="30"
+                        style="-fx-background-color: #3E92CC; -fx-text-fill: white;"/>
+            </VBox>
+        </HBox>
         
         <HBox spacing="20" alignment="CENTER">
             <Button fx:id="ajouterButton" text="Ajouter Université" 

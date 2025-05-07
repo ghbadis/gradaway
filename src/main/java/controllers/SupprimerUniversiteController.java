@@ -172,20 +172,16 @@ public class SupprimerUniversiteController implements Initializable {
         Optional<ButtonType> result = confirmAlert.showAndWait();
         
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            try {
-                // Delete the university
-                serviceUniversite.supprimer(selectedUniversite);
-                
-                // Update the UI
-                universiteList.remove(selectedUniversite);
-                selectedUniversite = null;
-                detailsBox.setVisible(false);
-                supprimerButton.setDisable(true);
-                
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Université supprimée avec succès");
-            } catch (SQLException e) {
-                showAlert(Alert.AlertType.ERROR, "Erreur de suppression", e.getMessage());
-            }
+            // Delete the university
+            serviceUniversite.supprimer(selectedUniversite);
+
+            // Update the UI
+            universiteList.remove(selectedUniversite);
+            selectedUniversite = null;
+            detailsBox.setVisible(false);
+            supprimerButton.setDisable(true);
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Université supprimée avec succès");
         }
     }
     
@@ -205,8 +201,7 @@ public class SupprimerUniversiteController implements Initializable {
     
     private void loadUniversites() {
         try {
-            List<Universite> universities = serviceUniversite.recuperer();
-            System.out.println("DEBUGGING: Retrieved " + universities.size() + " universities from service");
+            List<Universite> universities = serviceUniversite.getAllUniversites();
             
             // Clear our observable list
             universiteList.clear();
