@@ -1,0 +1,31 @@
+.nav-button {
+    -fx-cursor: hand;
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 15px;
+}
+
+.nav-button:hover {
+    -fx-background-color: #303f9f;
+}
+
+.nav-button:pressed {
+    -fx-background-color: #1a237e;
+}
+
+/* Logout button specific styles */
+.logout-button {
+    -fx-background-color: #ff1744;
+    -fx-alignment: CENTER;
+}
+
+.logout-button:hover {
+    -fx-background-color: #ff4569;
+}
+
+.logout-button:pressed {
+    -fx-background-color: #ff1744;
+} 
