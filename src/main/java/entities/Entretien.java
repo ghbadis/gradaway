@@ -11,8 +11,9 @@ public class Entretien {
     private LocalTime heure_entretien;
     private String etat_entretien;
     private String type_entretien;
+    private String offre;
 
-    public Entretien(int id_entretien, int id_expert, int id_user, LocalDate date_entretien, LocalTime heure_entretien, String etat_entretien, String type_entretien) {
+    public Entretien(int id_entretien, int id_expert, int id_user, LocalDate date_entretien, LocalTime heure_entretien, String etat_entretien, String type_entretien, String offre) {
         this.id_entretien = id_entretien;
         this.id_expert = id_expert;
         this.id_user = id_user;
@@ -20,15 +21,17 @@ public class Entretien {
         this.heure_entretien = heure_entretien;
         this.etat_entretien = etat_entretien;
         this.type_entretien = type_entretien;
+        this.offre = offre;
     }
 
-    public Entretien(int id_expert, int id_user, LocalDate date_entretien, LocalTime heure_entretien, String etat_entretien, String type_entretien) {
+    public Entretien(int id_expert, int id_user, LocalDate date_entretien, LocalTime heure_entretien, String etat_entretien, String type_entretien, String offre) {
         this.id_expert = id_expert;
         this.id_user = id_user;
         this.date_entretien = date_entretien;
         this.heure_entretien = heure_entretien;
         this.etat_entretien = etat_entretien;
         this.type_entretien = type_entretien;
+        this.offre = offre;
     }
 
     public String getType_entretien() {
@@ -87,6 +90,14 @@ public class Entretien {
         this.etat_entretien = etat_entretien;
     }
 
+    public String getOffre() {
+        return offre;
+    }
+
+    public void setOffre(String offre) {
+        this.offre = offre;
+    }
+
     @Override
     public String toString() {
         return "Entretien{" +
@@ -97,6 +108,7 @@ public class Entretien {
                 ", heure_entretien=" + heure_entretien +
                 ", etat_entretien='" + etat_entretien +
                 ", type_entretien='" + type_entretien +
+                ", offre='" + offre +
                 '}';
     }
 }

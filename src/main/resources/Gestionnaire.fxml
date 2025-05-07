@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #0b1d3a;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.GestionnaireController">
+
+    <top>
+        <BorderPane>
+            <center>
+                <HBox alignment="CENTER" spacing="20">
+                    <Rectangle fill="WHITE" height="3" width="50" />
+                    <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" text="Gestionnaire des entretiens et experts" />
+                    <Rectangle fill="WHITE" height="3" width="50" />
+                </HBox>
+            </center>
+            <right>
+                <StackPane alignment="TOP_RIGHT" style="-fx-padding: 10;">
+                    <ImageView fx:id="logoImageView" fitHeight="120" fitWidth="120" preserveRatio="true" />
+                </StackPane>
+            </right>
+        </BorderPane>
+    </top>
+
+    <!-- Center Content -->
+    <center>
+        <VBox alignment="CENTER" spacing="30" style="-fx-padding: 40;">
+            <GridPane alignment="CENTER" hgap="30" vgap="30">
+                <!-- Gestion Experts Button -->
+                <Button fx:id="btnGestionExperts" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 24px; -fx-padding: 20; -fx-min-width: 300; -fx-min-height: 200; -fx-background-radius: 8; -fx-graphic-text-gap: 20;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fx:id="expertIcon" fitHeight="80" fitWidth="80" preserveRatio="true">
+                     <image>
+                        <Image url="@images/expert.png" />
+                     </image></ImageView>
+                    </graphic>
+                    <contentDisplay>TOP</contentDisplay>
+                </Button>
+
+                <!-- Gestion Entretiens Button -->
+                <Button fx:id="btnGestionEntretiens" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 24px; -fx-padding: 20; -fx-min-width: 300; -fx-min-height: 200; -fx-background-radius: 8; -fx-graphic-text-gap: 20;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fx:id="entretienIcon" fitHeight="80" fitWidth="80" preserveRatio="true">
+                     <image>
+                        <Image url="@images/entretien.png" />
+                     </image></ImageView>
+                    </graphic>
+                    <contentDisplay>TOP</contentDisplay>
+                </Button>
+
+                <!-- Demander un entretien Button -->
+                <Button fx:id="btnDemanderEntretien" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 24px; -fx-padding: 20; -fx-min-width: 300; -fx-min-height: 200; -fx-background-radius: 8; -fx-graphic-text-gap: 20;" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <graphic>
+                        <ImageView fx:id="demandeIcon" fitHeight="80" fitWidth="80" preserveRatio="true">
+                     <image>
+                        <Image url="@images/demande.png" />
+                     </image></ImageView>
+                    </graphic>
+                    <contentDisplay>TOP</contentDisplay>
+                </Button>
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+            </rowConstraints>
+            </GridPane>
+        </VBox>
+    </center>
+
+    <!-- Footer -->
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-padding: 20;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 14px;" text="Version 1.0 | © 2025 Gradaway" />
+        </HBox>
+    </bottom>
+
+</BorderPane>
