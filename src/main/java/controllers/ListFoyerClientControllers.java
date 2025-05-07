@@ -166,18 +166,30 @@ public class ListFoyerClientControllers {
 
     private void setupSearch() {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                List<Foyer> foyers = serviceFoyer.recuperer();
-                foyerContainer.getChildren().clear();
+            if (!newValue.trim().isEmpty()) {
+                try {
+                    List<Foyer> foyers = serviceFoyer.recuperer();
+                    foyerContainer.getChildren().clear();
 
-                for (Foyer foyer : foyers) {
-                    if (matchesSearch(foyer, newValue.toLowerCase())) {
-                        foyerContainer.getChildren().add(createFoyerCard(foyer));
+                    for (Foyer foyer : foyers) {
+                        if (matchesSearch(foyer, newValue.toLowerCase())) {
+                            foyerContainer.getChildren().add(createFoyerCard(foyer));
+                        }
                     }
+                    
+                    // Ne pas afficher de message pendant la saisie, seulement lors du clic sur le bouton
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    showAlert("Erreur", "Erreur lors de la recherche: " + e.getMessage(), Alert.AlertType.ERROR);
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                showAlert("Erreur", "Erreur lors de la recherche: " + e.getMessage(), Alert.AlertType.ERROR);
+            } else {
+                // Si le champ de recherche est vide, afficher tous les foyers
+                try {
+                    loadFoyers();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    showAlert("Erreur", "Erreur lors du chargement des foyers: " + e.getMessage(), Alert.AlertType.ERROR);
+                }
             }
         });
     }
@@ -195,15 +207,17 @@ public class ListFoyerClientControllers {
                 try {
                     List<Foyer> foyers = serviceFoyer.recuperer();
                     foyerContainer.getChildren().clear();
+                    boolean foyerFound = false;
                     
                     for (Foyer foyer : foyers) {
                         if (matchesSearch(foyer, searchTerm)) {
                             foyerContainer.getChildren().add(createFoyerCard(foyer));
+                            foyerFound = true;
                         }
                     }
                     
-                    if (foyerContainer.getChildren().isEmpty()) {
-                        showAlert("Aucun résultat", "Aucun foyer ne correspond à votre recherche.", Alert.AlertType.INFORMATION);
+                    if (!foyerFound) {
+                        showAlert("Recherche", "Aucun résultat trouvé pour votre recherche.", Alert.AlertType.INFORMATION);
                     }
                 } catch (SQLException e1) {
                     e1.printStackTrace();
@@ -225,31 +239,6 @@ public class ListFoyerClientControllers {
             List<Foyer> foyers = serviceFoyer.recuperer();
             // Clear existing items
             locationMenu.getItems().clear();
-            
-            // Add section title for Foyers
-            MenuItem foyerTitle = new MenuItem("📋 Foyers");
-            foyerTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-            foyerTitle.setDisable(true);
-            locationMenu.getItems().add(foyerTitle);
-            
-            // Add foyer names as menu items first
-            for (Foyer foyer : foyers) {
-                MenuItem item = new MenuItem(foyer.getNom());
-                item.setOnAction(e -> {
-                    try {
-                        // Show only this specific foyer
-                        foyerContainer.getChildren().clear();
-                        foyerContainer.getChildren().add(createFoyerCard(foyer));
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        showAlert("Erreur", "Erreur lors de l'affichage du foyer: " + ex.getMessage(), Alert.AlertType.ERROR);
-                    }
-                });
-                locationMenu.getItems().add(item);
-            }
-            
-            // Add separator
-            locationMenu.getItems().add(new SeparatorMenuItem());
             
             // Add section title for Locations
             MenuItem locationTitle = new MenuItem("📍 Locations");
@@ -295,7 +284,7 @@ public class ListFoyerClientControllers {
             }
             
             // Style the menu button
-            locationMenu.setText("📍 Localisation");
+            locationMenu.setText("📍 Location");
             locationMenu.setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; " +
                                "-fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;");
             

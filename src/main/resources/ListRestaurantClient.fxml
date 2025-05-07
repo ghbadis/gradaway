@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -37,13 +38,13 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Button>
-            <MenuButton fx:id="locationMenu" prefHeight="40.0" prefWidth="250.0" style="-fx-background-radius: 20px; -fx-border-radius: 20px; -fx-border-color: #e0e0e0; -fx-padding: 8px 15px;" text="Filtrer par ville">
+            <MenuButton fx:id="locationMenu" prefHeight="40.0" prefWidth="250.0" style="-fx-background-radius: 20px; -fx-border-radius: 20px; -fx-border-color: #e0e0e0; -fx-padding: 8px 15px;" text="Ville">
                <font>
                   <Font size="14.0" />
                </font>
                <!-- Les villes seront ajoutées dynamiquement -->
             </MenuButton>
-            <Button mnemonicParsing="false" onAction="#filterByLocation" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-background-radius: 20px;" text="Filtrer">
+            <Button mnemonicParsing="false" onAction="#filterByLocation" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-background-radius: 20px;" text="Search">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
@@ -57,12 +58,12 @@
       <!-- Restaurants List Section -->
       <ScrollPane fitToWidth="true" layoutX="50.0" layoutY="200.0" prefHeight="450.0" prefWidth="900.0" style="-fx-background-color: transparent; -fx-background: transparent;">
          <content>
-            <VBox fx:id="restaurantsContainer" prefWidth="880.0" spacing="15.0" style="-fx-background-color: transparent;">
+            <TilePane fx:id="restaurantsContainer" prefWidth="880.0" hgap="15.0" vgap="15.0" prefColumns="3" alignment="CENTER" tileAlignment="CENTER" style="-fx-background-color: transparent;">
                <!-- Les restaurants seront ajoutés ici dynamiquement -->
                <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </padding>
-            </VBox>
+            </TilePane>
          </content>
       </ScrollPane>
       

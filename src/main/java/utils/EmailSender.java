@@ -1,8 +1,25 @@
 package utils;
 
+import javax.activation.DataHandler;
 import javax.mail.*;
 import javax.mail.internet.*;
+import javax.imageio.ImageIO;
+import javax.mail.util.ByteArrayDataSource;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 public class EmailSender {
     
@@ -23,6 +40,21 @@ public class EmailSender {
      * @return true if the email was sent successfully, false otherwise
      */
     public static boolean sendEmail(String recipient, String subject, String htmlContent) {
+        return sendEmail(recipient, subject, htmlContent, null, null);
+    }
+    
+    /**
+     * Sends an email to the specified recipient with an optional QR code attachment
+     * 
+     * @param recipient Email address of the recipient
+     * @param subject Subject of the email
+     * @param htmlContent HTML content of the email
+     * @param qrCodeContent Content to encode in the QR code (if null, no QR code is attached)
+     * @param qrCodeFileName Name of the QR code file attachment (if null, a default name is used)
+     * @return true if the email was sent successfully, false otherwise
+     */
+    public static boolean sendEmail(String recipient, String subject, String htmlContent, 
+                                   String qrCodeContent, String qrCodeFileName) {
         // Set mail properties
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -40,13 +72,52 @@ public class EmailSender {
         
         try {
             // Create message
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(SENDER_EMAIL));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
             message.setSubject(subject);
             
-            // Set the HTML content
-            message.setContent(htmlContent, "text/html; charset=utf-8");
+            // Create the message body part
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setContent(htmlContent, "text/html; charset=utf-8");
+            
+            // Create a multipart message
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+            
+            // Add QR code attachment if content is provided
+            if (qrCodeContent != null && !qrCodeContent.isEmpty()) {
+                try {
+                    // Generate QR code image
+                    BufferedImage qrImage = QRCodeGenerator.generateQRCodeBufferedImage(qrCodeContent, 300, 300);
+                    
+                    // Convert to byte array
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(qrImage, "PNG", baos);
+                    byte[] imageBytes = baos.toByteArray();
+                    
+                    // Create attachment part
+                    MimeBodyPart attachmentPart = new MimeBodyPart();
+                    attachmentPart.setDataHandler(new DataHandler(
+                            new ByteArrayDataSource(imageBytes, "image/png")));
+                    
+                    // Set filename
+                    String fileName = (qrCodeFileName != null && !qrCodeFileName.isEmpty()) 
+                            ? qrCodeFileName : "reservation_qr_code.png";
+                    attachmentPart.setFileName(fileName);
+                    
+                    // Add to multipart
+                    multipart.addBodyPart(attachmentPart);
+                    
+                    System.out.println("QR code attachment added to email");
+                } catch (Exception e) {
+                    System.err.println("Error creating QR code attachment: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            
+            // Set the complete message parts
+            message.setContent(multipart);
             
             // Send message
             Transport.send(message);
@@ -60,16 +131,57 @@ public class EmailSender {
     }
     
     /**
-     * Generates HTML content for reservation confirmation email
+     * Generates a QR code as a Base64 encoded string for embedding in HTML
+     * Cette méthode est maintenant dépréciée, utilisez QRCodeGenerator.generateQRCodeBase64ForEmail à la place
+     * 
+     * @param content The content to encode in the QR code
+     * @param width The width of the QR code image
+     * @param height The height of the QR code image
+     * @return Base64 encoded string of the QR code image
+     * @throws WriterException If there is an error generating the QR code
+     * @throws IOException If there is an error converting the image
+     * @deprecated Utilisez QRCodeGenerator.generateQRCodeBase64ForEmail à la place
+     */
+    @Deprecated
+    public static String generateQRCodeBase64(String content, int width, int height) throws WriterException, IOException {
+        // Déléguer à la nouvelle méthode optimisée
+        return QRCodeGenerator.generateQRCodeBase64ForEmail(content, width, height);
+    }
+    
+    /**
+     * Generates HTML content for reservation confirmation email with QR code
      * 
      * @param nomFoyer Name of the foyer
      * @param dateDebut Start date of the reservation
      * @param dateFin End date of the reservation
      * @param dateReservation Date when the reservation was made
+     * @param idEtudiant Student ID for the reservation
+     * @param ville City of the foyer
      * @return HTML content as a String
      */
+    /**
+     * Génère le contenu QR pour une réservation
+     * @param nomFoyer Nom du foyer
+     * @param dateDebut Date de début
+     * @param dateFin Date de fin
+     * @param idEtudiant ID de l'étudiant
+     * @param ville Ville du foyer
+     * @return Contenu du code QR
+     */
+    public static String generateQRContent(String nomFoyer, String dateDebut, 
+                                        String dateFin, int idEtudiant, String ville) {
+        return "Réservation Foyer\n" +
+                "ID Étudiant: " + idEtudiant + "\n" +
+                "Foyer: " + nomFoyer + "\n" +
+                "Ville: " + ville + "\n" +
+                "Date début: " + dateDebut + "\n" +
+                "Date fin: " + dateFin;
+    }
+    
     public static String generateReservationConfirmationEmail(String nomFoyer, String dateDebut, 
-                                                           String dateFin, String dateReservation) {
+                                                           String dateFin, String dateReservation,
+                                                           int idEtudiant, String ville) {
+        // Le code QR sera envoyé comme pièce jointe, pas besoin de l'intégrer dans le HTML
         return "<!DOCTYPE html>"
              + "<html>"
              + "<head>"
@@ -83,6 +195,7 @@ public class EmailSender {
              + "        table { width: 100%; border-collapse: collapse; margin: 20px 0; }"
              + "        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }"
              + "        th { background-color: #f2f2f2; }"
+             + "        .qr-code { text-align: center; margin: 20px 0; }"
              + "    </style>"
              + "</head>"
              + "<body>"
@@ -95,11 +208,18 @@ public class EmailSender {
              + "            <p>Nous sommes heureux de vous confirmer que votre réservation au foyer a été confirmée.</p>"
              + "            <h2>Détails de la réservation :</h2>"
              + "            <table>"
+             + "                <tr><th>ID Étudiant</th><td>" + idEtudiant + "</td></tr>"
              + "                <tr><th>Foyer</th><td>" + nomFoyer + "</td></tr>"
+             + "                <tr><th>Ville</th><td>" + ville + "</td></tr>"
              + "                <tr><th>Date de début</th><td>" + dateDebut + "</td></tr>"
              + "                <tr><th>Date de fin</th><td>" + dateFin + "</td></tr>"
              + "                <tr><th>Date de réservation</th><td>" + dateReservation + "</td></tr>"
              + "            </table>"
+             + "            <div class='qr-code' style='text-align: center; margin: 20px 0;'>\n"
+             + "                <h3 style='color: #4CAF50;'>Votre code QR de réservation :</h3>\n"
+             + "                <p><strong>Vous trouverez votre code QR de réservation en pièce jointe de cet email.</strong></p>\n"
+             + "                <p><strong>Présentez ce code QR lors de votre arrivée au foyer.</strong></p>\n"
+             + "            </div>"
              + "            <p>Nous vous remercions pour votre réservation et sommes impatients de vous accueillir.</p>"
              + "            <p>Cordialement,<br>L'équipe du foyer</p>"
              + "        </div>"
@@ -110,4 +230,20 @@ public class EmailSender {
              + "</body>"
              + "</html>";
     }
-} 
+    
+    /**
+     * Generates HTML content for reservation confirmation email without QR code
+     * (Legacy method for backward compatibility)
+     * 
+     * @param nomFoyer Name of the foyer
+     * @param dateDebut Start date of the reservation
+     * @param dateFin End date of the reservation
+     * @param dateReservation Date when the reservation was made
+     * @return HTML content as a String
+     */
+    public static String generateReservationConfirmationEmail(String nomFoyer, String dateDebut, 
+                                                           String dateFin, String dateReservation) {
+        // Call the new method with default values
+        return generateReservationConfirmationEmail(nomFoyer, dateDebut, dateFin, dateReservation, 0, "");
+    }
+}

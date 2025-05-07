@@ -38,7 +38,7 @@ public class ListRestaurantClientController {
 
     @FXML private TextField tf_search;
     @FXML private MenuButton locationMenu;
-    @FXML private VBox restaurantsContainer;
+    @FXML private TilePane restaurantsContainer;
     
     private ServiceRestaurant serviceRestaurant;
     private ObservableList<Restaurant> restaurantList;
@@ -172,10 +172,24 @@ public class ListRestaurantClientController {
             return;
         }
         
-        // Ajouter chaque restaurant dans une nouvelle ligne
+        // Configurer le TilePane pour avoir exactement 3 colonnes
+        restaurantsContainer.setPrefColumns(3);
+        restaurantsContainer.setPrefTileWidth(280);
+        restaurantsContainer.setPrefTileHeight(320);
+        restaurantsContainer.setHgap(15);
+        restaurantsContainer.setVgap(15);
+        restaurantsContainer.setAlignment(Pos.CENTER);
+        restaurantsContainer.setTileAlignment(Pos.CENTER);
+        
+        // Calculer le nombre de lignes nécessaires
+        int numRows = (int) Math.ceil(restaurants.size() / 3.0);
+        restaurantsContainer.setPrefRows(numRows);
+        restaurantsContainer.setPrefHeight(numRows * (320 + 15) + 15); // hauteur = (hauteur de tuile + vgap) * nombre de lignes + vgap
+        
+        // Ajouter chaque restaurant dans la grille
         for (int i = 0; i < restaurants.size(); i++) {
             Restaurant restaurant = restaurants.get(i);
-            HBox restaurantCard = createRestaurantCard(restaurant);
+            VBox restaurantCard = createRestaurantCard(restaurant);
             restaurantsContainer.getChildren().add(restaurantCard);
         }
     }
@@ -183,20 +197,24 @@ public class ListRestaurantClientController {
     /**
      * Crée une carte pour afficher un restaurant
      */
-    private HBox createRestaurantCard(Restaurant restaurant) {
-        // Conteneur principal
-        HBox card = new HBox();
+    private VBox createRestaurantCard(Restaurant restaurant) {
+        // Conteneur principal - utiliser VBox pour un affichage vertical plus compact
+        VBox card = new VBox();
         card.setStyle("-fx-background-color: white; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);");
-        card.setPrefHeight(150);
-        card.setPrefWidth(850);
-        card.setSpacing(15);
+        card.setPrefHeight(320);
+        card.setMinHeight(320);
+        card.setMaxHeight(320);
+        card.setPrefWidth(280);
+        card.setMinWidth(280);
+        card.setMaxWidth(280);
+        card.setSpacing(10);
         card.setPadding(new Insets(10));
-        card.setAlignment(Pos.CENTER_LEFT);
+        card.setAlignment(Pos.TOP_CENTER);
         
         // Image du restaurant
         ImageView imageView = new ImageView();
-        imageView.setFitHeight(130);
-        imageView.setFitWidth(130);
+        imageView.setFitHeight(150);
+        imageView.setFitWidth(260);
         imageView.setPreserveRatio(true);
         
         // Charger l'image
@@ -231,44 +249,46 @@ public class ListRestaurantClientController {
         // Conteneur pour les informations
         VBox infoContainer = new VBox();
         infoContainer.setSpacing(5);
-        infoContainer.setPrefWidth(500);
+        infoContainer.setPrefWidth(260);
         infoContainer.setAlignment(Pos.CENTER_LEFT);
         
         // Nom du restaurant
         Label nameLabel = new Label(restaurant.getNom());
-        nameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2196F3;");
+        nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2196F3;");
+        nameLabel.setWrapText(true);
         
-        // Adresse
-        Label addressLabel = new Label(restaurant.getAdresse() + ", " + restaurant.getVille() + ", " + restaurant.getPays());
-        addressLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #757575;");
+        // Adresse - plus courte pour s'adapter à la carte
+        Label addressLabel = new Label(restaurant.getVille() + ", " + restaurant.getPays());
+        addressLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #757575;");
+        addressLabel.setWrapText(true);
         
         // Capacité
         Label capacityLabel = new Label("Capacité: " + restaurant.getCapaciteTotale() + " personnes");
-        capacityLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333;");
+        capacityLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #333333;");
+        capacityLabel.setWrapText(true);
         
-        // Horaires
-        Label hoursLabel = new Label("Ouvert de " + restaurant.getHoraireOuverture() + " à " + restaurant.getHoraireFermeture());
-        hoursLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333;");
+        // Horaires - format plus court
+        Label hoursLabel = new Label(restaurant.getHoraireOuverture() + " - " + restaurant.getHoraireFermeture());
+        hoursLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #333333;");
+        hoursLabel.setWrapText(true);
         
-        // Ajouter les informations au conteneur
+        // Bouton Réserver
+        Button reserveButton = new Button("Réserver");
+        reserveButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20px;");
+        reserveButton.setPrefWidth(200);
+        reserveButton.setPrefHeight(30);
+        reserveButton.setOnAction(e -> reserveRestaurant(restaurant));
+        
+        // Ajouter les éléments au conteneur d'informations
         infoContainer.getChildren().addAll(nameLabel, addressLabel, capacityLabel, hoursLabel);
         
-        // Conteneur pour le bouton de réservation
-        VBox buttonContainer = new VBox();
-        buttonContainer.setAlignment(Pos.CENTER);
-        buttonContainer.setPrefWidth(200);
+        // Ajouter un espace flexible pour pousser le bouton vers le bas
+        Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+        infoContainer.getChildren().add(spacer);
         
-        // Bouton de réservation
-        Button reserveButton = new Button("Réserver");
-        reserveButton.setPrefHeight(40);
-        reserveButton.setPrefWidth(120);
-        reserveButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20px;");
-        reserveButton.setOnAction(event -> reserveRestaurant(restaurant));
-        
-        buttonContainer.getChildren().add(reserveButton);
-        
-        // Ajouter tous les éléments à la carte
-        card.getChildren().addAll(imageView, infoContainer, buttonContainer);
+        // Ajouter les éléments à la carte
+        card.getChildren().addAll(imageView, infoContainer, reserveButton);
         
         return card;
     }

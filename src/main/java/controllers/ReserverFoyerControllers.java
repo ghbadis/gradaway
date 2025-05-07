@@ -18,10 +18,23 @@ import Services.ServiceFoyer;
 import entities.ReservationFoyer;
 import entities.Foyer;
 import utils.EmailSender;
+import utils.MyDatabase;
+import utils.QRCodeGenerator;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import com.google.zxing.WriterException;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 public class ReserverFoyerControllers {
 
@@ -183,10 +196,6 @@ public class ReserverFoyerControllers {
         }
 
         try {
-            // Générer un ID étudiant aléatoire (entre 1000 et 9999)
-            Random random = new Random();
-            int idEtudiant = 1000 + random.nextInt(9000);
-            
             // Récupérer l'email
             String email = tf_gmail.getText().trim();
             if (!isValidEmail(email)) {
@@ -204,6 +213,19 @@ public class ReserverFoyerControllers {
             // Créer une instance du service de réservation
             ServiceReservationFoyer serviceReservation = new ServiceReservationFoyer();
             
+            // Rechercher un utilisateur existant dans la base de données
+            int idEtudiant = getUserIdFromDatabase();
+            if (idEtudiant == -1) {
+                showAlert("Erreur", "Aucun utilisateur disponible dans la base de données. Veuillez d'abord créer un compte utilisateur.", Alert.AlertType.ERROR);
+                return;
+            }
+            
+            // Vérifier si l'étudiant existe
+            if (!serviceReservation.studentExists(idEtudiant)) {
+                showAlert("Erreur", "L'ID étudiant " + idEtudiant + " n'existe pas dans la base de données.", Alert.AlertType.ERROR);
+                return;
+            }
+            
             // Créer une nouvelle réservation
             ReservationFoyer reservation = new ReservationFoyer();
             reservation.setIdEtudiant(idEtudiant);
@@ -219,11 +241,26 @@ public class ReserverFoyerControllers {
             // Ajouter la réservation à la base de données
             serviceReservation.ajouter(reservation);
             
-            // Envoyer un email de confirmation
+            // Envoyer un email de confirmation avec code QR
             sendConfirmationEmail(email, selectedFoyer, reservation);
             
-            // Afficher un message de confirmation avec l'ID étudiant généré
-            showAlert("Succès", "Réservation confirmée avec succès!\n\nVotre numéro de réservation est : " + idEtudiant + "\nVeuillez conserver ce numéro pour toute référence future.\n\nUn email de confirmation a été envoyé à " + email, Alert.AlertType.INFORMATION);
+            // Sauvegarder le code QR dans un fichier (uniquement pour référence, ne pas l'afficher)
+            try {
+                String userHome = System.getProperty("user.home");
+                String qrFilePath = Paths.get(userHome, "Downloads", "reservation_" + idEtudiant + ".png").toString();
+                
+                // Afficher un message de confirmation simple sans code QR
+                showAlert("Succès", 
+                        "Réservation confirmée avec succès!\n\n" +
+                        "Votre numéro de réservation est associé à l'ID étudiant : " + idEtudiant + "\n" +
+                        "Veuillez conserver ce numéro pour toute référence future.\n\n" +
+                        "Un email de confirmation avec code QR a été envoyé à " + email, 
+                        Alert.AlertType.INFORMATION);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // En cas d'erreur, afficher un message normal
+                showAlert("Succès", "Réservation confirmée avec succès!\n\nVotre numéro de réservation est associé à l'ID étudiant : " + idEtudiant + "\nVeuillez conserver ce numéro pour toute référence future.\n\nUn email de confirmation a été envoyé à " + email, Alert.AlertType.INFORMATION);
+            }
             
             // Réinitialiser les champs après la réservation
             resetFields();
@@ -292,6 +329,28 @@ public class ReserverFoyerControllers {
     private boolean isValidEmail(String email) {
         String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
         return email.matches(emailRegex);
+    }
+    
+    /**
+     * Récupère un ID d'utilisateur valide depuis la base de données
+     * @return ID utilisateur existant ou -1 si aucun utilisateur n'est trouvé
+     */
+    private int getUserIdFromDatabase() {
+        try {
+            Connection con = MyDatabase.getInstance().getCnx();
+            String query = "SELECT id FROM user LIMIT 1";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            
+            if (rs.next()) {
+                return rs.getInt("id");
+            } else {
+                return -1; // Aucun utilisateur trouvé
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     private void navigateToListFoyer() {
@@ -375,6 +434,8 @@ public class ReserverFoyerControllers {
         alert.showAndWait();
     }
     
+    // Méthode showAlertWithQRCode supprimée car nous n'affichons plus le code QR dans l'interface
+    
     /**
      * Envoie un email de confirmation de réservation
      * 
@@ -395,24 +456,40 @@ public class ReserverFoyerControllers {
                 foyer.getNom(), 
                 dateDebut, 
                 dateFin, 
-                dateReservation
+                dateReservation,
+                reservation.getIdEtudiant(),
+                foyer.getVille()
             );
             
-            // Envoyer l'email
+            // Générer le contenu du code QR
+            String qrContent = EmailSender.generateQRContent(
+                foyer.getNom(),
+                dateDebut,
+                dateFin,
+                reservation.getIdEtudiant(),
+                foyer.getVille()
+            );
+            
+            // Nom du fichier QR code
+            String qrFileName = "reservation_" + reservation.getIdEtudiant() + ".png";
+            
+            // Envoyer l'email avec le code QR en pièce jointe
             boolean sent = EmailSender.sendEmail(
                 email, 
                 "Confirmation de réservation - " + foyer.getNom(), 
-                emailContent
+                emailContent,
+                qrContent,
+                qrFileName
             );
             
-            if (!sent) {
-                System.err.println("Échec de l'envoi de l'email à " + email);
+            if (sent) {
+                System.out.println("Email de confirmation avec code QR envoyé avec succès à " + email);
             } else {
-                System.out.println("Email de confirmation envoyé avec succès à " + email);
+                System.err.println("Erreur lors de l'envoi de l'email de confirmation à " + email);
             }
         } catch (Exception e) {
-            System.err.println("Erreur lors de l'envoi de l'email: " + e.getMessage());
             e.printStackTrace();
+            System.err.println("Erreur lors de l'envoi de l'email: " + e.getMessage());
         }
     }
 }

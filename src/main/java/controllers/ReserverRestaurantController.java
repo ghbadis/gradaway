@@ -22,6 +22,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import utils.EmailSender;
+import utils.QRCodeGenerator;
 
 public class ReserverRestaurantController {
 
@@ -130,6 +133,12 @@ public class ReserverRestaurantController {
                     showAlert("Erreur", "Impossible de créer un compte utilisateur. Veuillez réessayer.", Alert.AlertType.ERROR);
                     return;
                 }
+            }
+            
+            // Vérifier que le restaurant n'est pas null
+            if (restaurant == null) {
+                showAlert("Erreur", "Aucun restaurant sélectionné. Veuillez retourner à la liste et sélectionner un restaurant.", Alert.AlertType.ERROR);
+                return;
             }
             
             // Créer une nouvelle réservation avec les valeurs
@@ -295,7 +304,7 @@ public class ReserverRestaurantController {
     }
     
     /**
-     * Envoie un email de confirmation de réservation
+     * Envoie un email de confirmation de réservation avec code QR
      * @param email Email du destinataire
      * @param nomRestaurant Nom du restaurant
      * @param dateReservation Date de la réservation
@@ -304,19 +313,31 @@ public class ReserverRestaurantController {
     private void sendConfirmationEmail(String email, String nomRestaurant, LocalDate dateReservation, int nombrePersonnes) {
         try {
             // Formater la date pour l'affichage
-            String dateFormatted = dateReservation.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            String dateFormatted = dateReservation.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             
             // Générer le contenu HTML de l'email
             String htmlContent = generateReservationConfirmationEmail(nomRestaurant, dateFormatted, nombrePersonnes);
             
-            // Envoyer l'email
-            utils.EmailSender.sendEmail(
+            // Générer le contenu du code QR
+            String qrContent = generateQRContent(nomRestaurant, dateFormatted, nombrePersonnes);
+            
+            // Nom du fichier QR code
+            String qrFileName = "reservation_restaurant_" + System.currentTimeMillis() + ".png";
+            
+            // Envoyer l'email avec le code QR en pièce jointe
+            boolean sent = EmailSender.sendEmail(
                 email, 
                 "Confirmation de réservation - " + nomRestaurant, 
-                htmlContent
+                htmlContent,
+                qrContent,
+                qrFileName
             );
             
-            System.out.println("Email de confirmation envoyé à " + email);
+            if (sent) {
+                System.out.println("Email de confirmation avec code QR envoyé avec succès à " + email);
+            } else {
+                System.err.println("Erreur lors de l'envoi de l'email de confirmation à " + email);
+            }
         } catch (Exception e) {
             System.err.println("Erreur lors de l'envoi de l'email: " + e.getMessage());
             e.printStackTrace();
@@ -340,6 +361,7 @@ public class ReserverRestaurantController {
              "        table { width: 100%; border-collapse: collapse; margin: 20px 0; }" +
              "        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }" +
              "        th { background-color: #f2f2f2; }" +
+             "        .qr-code { text-align: center; margin: 20px 0; }" +
              "    </style>" +
              "</head>" +
              "<body>" +
@@ -356,6 +378,11 @@ public class ReserverRestaurantController {
              "                <tr><th>Date</th><td>" + dateReservation + "</td></tr>" +
              "                <tr><th>Nombre de personnes</th><td>" + nombrePersonnes + "</td></tr>" +
              "            </table>" +
+             "            <div class='qr-code' style='text-align: center; margin: 20px 0;'>\n" +
+             "                <h3 style='color: #4CAF50;'>Votre code QR de réservation :</h3>\n" +
+             "                <p><strong>Vous trouverez votre code QR de réservation en pièce jointe de cet email.</strong></p>\n" +
+             "                <p><strong>Présentez ce code QR lors de votre arrivée au restaurant.</strong></p>\n" +
+             "            </div>" +
              "            <p>Nous vous remercions pour votre réservation et sommes impatients de vous accueillir.</p>" +
              "            <p>Cordialement,<br>L'équipe du restaurant</p>" +
              "        </div>" +
@@ -365,5 +392,20 @@ public class ReserverRestaurantController {
              "    </div>" +
              "</body>" +
              "</html>";
+    }
+    
+    /**
+     * Génère le contenu du code QR pour une réservation de restaurant
+     * @param nomRestaurant Nom du restaurant
+     * @param dateReservation Date de la réservation formatée
+     * @param nombrePersonnes Nombre de personnes
+     * @return Contenu du code QR
+     */
+    private String generateQRContent(String nomRestaurant, String dateReservation, int nombrePersonnes) {
+        return "Réservation Restaurant\n" +
+               "Restaurant: " + nomRestaurant + "\n" +
+               "Date: " + dateReservation + "\n" +
+               "Nombre de personnes: " + nombrePersonnes + "\n" +
+               "Réservation effectuée le: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 }
