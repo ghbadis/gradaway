@@ -187,3 +187,11 @@
     -fx-text-fill: #1976D2;
     -fx-font-size: 15px;
 }
+
+.form-container {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-spacing: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-background-radius: 5px;
+}

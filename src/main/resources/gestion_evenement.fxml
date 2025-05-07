@@ -25,7 +25,7 @@
          <Button fx:id="user_button" text="User" styleClass="add-btn"/>
       </HBox>
 
-      <VBox fx:id="formulaire_container" spacing="10" visible="false" managed="false" layoutX="57.0" layoutY="104.0">
+      <VBox fx:id="formulaire_container" spacing="10" visible="false" managed="false" layoutX="57.0" layoutY="104.0" styleClass="form-container">
          <HBox spacing="10">
             <Label text="Nom :">
                <font>

@@ -183,10 +183,19 @@ public class Ajoutergestionevenementcontrolleur {
     }
 
     private void showFormAjout() {
-        isEditMode = false;
-        clearFields();
-        formulaire_container.setVisible(true);
-        formulaire_container.setManaged(true);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajouter_evenement.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Ajouter un événement");
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+            // Recharger les données après l'ajout
+            loadData();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir la fenêtre d'ajout", e.getMessage());
+        }
     }
 
     private void showFormModification(Evenement evenement) {
