@@ -199,6 +199,8 @@ public class EditProfileController {
             currentUser.setUniversite_origine(tfuniversiteprofil.getText());
             currentUser.setMoyennes(Integer.parseInt(tfmoyenneprofil.getText()));
 
+
+            //
             // Update the user in the database
             serviceUser.modifier(currentUser);
             setMessage("Profil mis à jour avec succès!");
