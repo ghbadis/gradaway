@@ -17,8 +17,6 @@ import java.util.ResourceBundle;
 public class ModifierUniversiteController implements Initializable {
 
     @FXML
-    private TextField idField;
-    @FXML
     private TextField nomField;
     @FXML
     private TextField villeField;
@@ -150,7 +148,6 @@ public class ModifierUniversiteController implements Initializable {
         currentUniversite = universite;
         
         // Fill the form with university data
-        idField.setText(String.valueOf(universite.getId_universite()));
         nomField.setText(universite.getNom());
         villeField.setText(universite.getVille());
         adresseField.setText(universite.getAdresse_universite());

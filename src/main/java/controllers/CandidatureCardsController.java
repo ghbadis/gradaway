@@ -166,9 +166,9 @@ public class CandidatureCardsController implements Initializable {
     
     private VBox createCandidatureCard(Candidature candidature) {
         // Main card container
-        VBox card = new VBox(10);
+        VBox card = new VBox(15);
         card.setPrefWidth(280);
-        card.setPrefHeight(350);
+        card.setPrefHeight(380);
         card.setStyle("-fx-background-color: #1A3473; -fx-background-radius: 10px;");
         card.setPadding(new Insets(15));
         
@@ -176,46 +176,10 @@ public class CandidatureCardsController implements Initializable {
         String userName = getUserName(candidature.getUser_id());
         String universityName = getUniversityName(candidature.getId_universite());
         
-        // Header with domaine
-        Label domaineLabel = new Label(candidature.getDomaine());
-        domaineLabel.setTextFill(Color.WHITE);
-        domaineLabel.setFont(Font.font("System", FontWeight.BOLD, 18));
-        domaineLabel.setWrapText(true);
-        domaineLabel.setTextAlignment(TextAlignment.CENTER);
-        domaineLabel.setAlignment(Pos.CENTER);
-        domaineLabel.setPrefWidth(250);
-        
-        // Info box
-        VBox infoBox = new VBox(10);
-        infoBox.setAlignment(Pos.TOP_LEFT);
-        
-        // Student info
-        Label studentLabel = new Label("Étudiant: " + userName);
-        studentLabel.setTextFill(Color.WHITE);
-        studentLabel.setWrapText(true);
-        
-        // University info
-        Label universityLabel = new Label("Université: " + universityName);
-        universityLabel.setTextFill(Color.WHITE);
-        universityLabel.setWrapText(true);
-        
-        // Date de remise
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String formattedDate = candidature.getDate_de_remise_c() != null ? 
-                                dateFormat.format(candidature.getDate_de_remise_c()) : "Non définie";
-        Label dateLabel = new Label("Date de soumission: " + formattedDate);
-        dateLabel.setTextFill(Color.WHITE);
-        
-        // Add a label for the university image
-        Label imageLabel = new Label("Logo de l'université:");
-        imageLabel.setTextFill(Color.WHITE);
-        imageLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
-        imageLabel.setAlignment(Pos.CENTER);
-        
-        // Add university image instead of status
+        // Add university image at the top
         ImageView universityImageView = new ImageView();
-        universityImageView.setFitHeight(80);
-        universityImageView.setFitWidth(100);
+        universityImageView.setFitHeight(100);
+        universityImageView.setFitWidth(130);
         universityImageView.setPreserveRatio(true);
         
         // Load university image
@@ -268,14 +232,44 @@ public class CandidatureCardsController implements Initializable {
             e.printStackTrace();
         }
         
-        // Center the image
+        // Center the image in a box with background
         HBox imageBox = new HBox();
         imageBox.setAlignment(Pos.CENTER);
-        imageBox.setPadding(new Insets(5));
-        imageBox.setStyle("-fx-background-color: white; -fx-background-radius: 5px; -fx-border-color: #3E92CC; -fx-border-radius: 5px;");
+        imageBox.setPadding(new Insets(8));
+        imageBox.setStyle("-fx-background-color: white; -fx-background-radius: 8px; -fx-border-color: #3E92CC; -fx-border-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);");
         imageBox.getChildren().add(universityImageView);
         
-        infoBox.getChildren().addAll(studentLabel, universityLabel, dateLabel, imageLabel, imageBox);
+        // Header with domaine
+        Label domaineLabel = new Label(candidature.getDomaine());
+        domaineLabel.setTextFill(Color.WHITE);
+        domaineLabel.setFont(Font.font("System", FontWeight.BOLD, 18));
+        domaineLabel.setWrapText(true);
+        domaineLabel.setTextAlignment(TextAlignment.CENTER);
+        domaineLabel.setAlignment(Pos.CENTER);
+        domaineLabel.setPrefWidth(250);
+        
+        // Info box
+        VBox infoBox = new VBox(10);
+        infoBox.setAlignment(Pos.TOP_LEFT);
+        
+        // Student info
+        Label studentLabel = new Label("Étudiant: " + userName);
+        studentLabel.setTextFill(Color.WHITE);
+        studentLabel.setWrapText(true);
+        
+        // University info
+        Label universityLabel = new Label("Université: " + universityName);
+        universityLabel.setTextFill(Color.WHITE);
+        universityLabel.setWrapText(true);
+        
+        // Date de remise
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = candidature.getDate_de_remise_c() != null ? 
+                                dateFormat.format(candidature.getDate_de_remise_c()) : "Non définie";
+        Label dateLabel = new Label("Date de soumission: " + formattedDate);
+        dateLabel.setTextFill(Color.WHITE);
+        
+        infoBox.getChildren().addAll(studentLabel, universityLabel, dateLabel);
         
         // Action buttons
         HBox buttonBox = new HBox(10);
@@ -294,8 +288,8 @@ public class CandidatureCardsController implements Initializable {
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
         
-        // Assemble the card
-        card.getChildren().addAll(domaineLabel, infoBox, spacer, buttonBox);
+        // Assemble the card - image at the top now
+        card.getChildren().addAll(imageBox, domaineLabel, infoBox, spacer, buttonBox);
         
         return card;
     }

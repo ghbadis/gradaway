@@ -50,35 +50,30 @@
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="200" prefWidth="300"/>
             </columnConstraints>
 
-            <!-- ID field -->
-            <Label text="ID:" textFill="WHITE" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="idField" promptText="ID de l'université" editable="false"
+            <!-- Nom field -->
+            <Label text="Nom:" textFill="WHITE" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="nomField" promptText="Nom de l'université" 
                        GridPane.rowIndex="0" GridPane.columnIndex="1"/>
             
-            <!-- Nom field -->
-            <Label text="Nom:" textFill="WHITE" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="nomField" promptText="Nom de l'université" 
+            <!-- Ville field -->
+            <Label text="Ville:" textFill="WHITE" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="villeField" promptText="Ville" 
                        GridPane.rowIndex="1" GridPane.columnIndex="1"/>
             
-            <!-- Ville field -->
-            <Label text="Ville:" textFill="WHITE" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <TextField fx:id="villeField" promptText="Ville" 
+            <!-- Adresse field -->
+            <Label text="Adresse:" textFill="WHITE" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="adresseField" promptText="Adresse de l'université" 
                        GridPane.rowIndex="2" GridPane.columnIndex="1"/>
             
-            <!-- Adresse field -->
-            <Label text="Adresse:" textFill="WHITE" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <TextField fx:id="adresseField" promptText="Adresse de l'université" 
+            <!-- Domaine field -->
+            <Label text="Domaine:" textFill="WHITE" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextField fx:id="domaineField" promptText="Domaine d'étude" 
                        GridPane.rowIndex="3" GridPane.columnIndex="1"/>
             
-            <!-- Domaine field -->
-            <Label text="Domaine:" textFill="WHITE" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <TextField fx:id="domaineField" promptText="Domaine d'étude" 
-                       GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-            
             <!-- Frais field -->
-            <Label text="Frais:" textFill="WHITE" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <Label text="Frais:" textFill="WHITE" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
             <TextField fx:id="fraisField" promptText="Frais d'inscription" 
-                       GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                       GridPane.rowIndex="4" GridPane.columnIndex="1"/>
         </GridPane>
         
         <HBox spacing="20" alignment="CENTER">                  

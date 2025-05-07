@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="800.0" style="-fx-background-color: #2F3E57;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CandidatureCardsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="800.0" style="-fx-background-color: #2F3E57;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CandidatureCardsController">
    <children>
-      <VBox layoutX="10.0" layoutY="10.0" prefHeight="630.0" prefWidth="780.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <VBox layoutX="10.0" layoutY="10.0" prefHeight="680.0" prefWidth="780.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
             <HBox alignment="CENTER" prefHeight="60.0" prefWidth="780.0" spacing="20.0">
                <children>
@@ -31,7 +31,7 @@
                   <Button fx:id="retourButton" mnemonicParsing="false" onAction="#handleRetourButton" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #3E92CC;" text="Retour" textFill="WHITE" />
                </children>
             </HBox>
-            <FlowPane fx:id="candidatureCardsPane" alignment="CENTER" hgap="30" style="-fx-background-color: transparent;" vgap="30">
+            <FlowPane fx:id="candidatureCardsPane" alignment="CENTER" hgap="30" prefHeight="560.0" style="-fx-background-color: transparent;" vgap="40">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
