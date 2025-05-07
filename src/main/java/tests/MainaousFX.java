@@ -20,6 +20,7 @@ public class MainaousFX extends Application {
             // Charger le CSS
             scene.getStylesheets().add(getClass().getResource("/design.css").toExternalForm());
 
+
             // Configurer la fenêtre principale
             primaryStage.setTitle("Gestion des Événements");
             primaryStage.setScene(scene);
@@ -34,4 +35,4 @@ public class MainaousFX extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-} 
+            }
