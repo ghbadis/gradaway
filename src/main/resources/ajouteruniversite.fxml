@@ -9,11 +9,11 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="controllers.UniversiteController"
-            prefHeight="650.0" prefWidth="800.0"
+            prefHeight="700.0" prefWidth="800.0"
             style="-fx-background-color: #0A2463;">
 
-    <VBox spacing="20" alignment="CENTER" AnchorPane.topAnchor="50.0" AnchorPane.leftAnchor="50.0" 
-          AnchorPane.rightAnchor="50.0" AnchorPane.bottomAnchor="50.0">
+    <VBox spacing="15" alignment="CENTER" AnchorPane.topAnchor="30.0" AnchorPane.leftAnchor="50.0" 
+          AnchorPane.rightAnchor="50.0" AnchorPane.bottomAnchor="30.0">
         
         <Label text="Ajouter Université" textFill="WHITE">
             <font>
@@ -23,7 +23,7 @@
         
         <HBox spacing="30" alignment="CENTER">
             <!-- Left side - Form fields -->
-            <GridPane hgap="10" vgap="15">
+            <GridPane hgap="10" vgap="5">
                 <padding>
                     <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>
@@ -37,26 +37,41 @@
                 <Label text="Nom:" textFill="WHITE" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                 <TextField fx:id="nomField" promptText="Nom de l'université" 
                            GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <Label fx:id="nomErrorLabel" textFill="#ff6666" visible="false"
+                       GridPane.rowIndex="1" GridPane.columnIndex="1" 
+                       style="-fx-font-size: 11px;"/>
                 
                 <!-- Ville field -->
-                <Label text="Ville:" textFill="WHITE" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <Label text="Ville:" textFill="WHITE" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
                 <TextField fx:id="villeField" promptText="Ville" 
-                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <Label fx:id="villeErrorLabel" textFill="#ff6666" visible="false"
+                       GridPane.rowIndex="3" GridPane.columnIndex="1"
+                       style="-fx-font-size: 11px;"/>
                 
                 <!-- Adresse field -->
-                <Label text="Adresse:" textFill="WHITE" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <Label text="Adresse:" textFill="WHITE" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
                 <TextField fx:id="adresseField" promptText="Adresse de l'université" 
-                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                           GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                <Label fx:id="adresseErrorLabel" textFill="#ff6666" visible="false"
+                       GridPane.rowIndex="5" GridPane.columnIndex="1"
+                       style="-fx-font-size: 11px;"/>
                 
                 <!-- Domaine field -->
-                <Label text="Domaine:" textFill="WHITE" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <Label text="Domaine:" textFill="WHITE" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
                 <TextField fx:id="domaineField" promptText="Domaine d'étude" 
-                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                           GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+                <Label fx:id="domaineErrorLabel" textFill="#ff6666" visible="false"
+                       GridPane.rowIndex="7" GridPane.columnIndex="1"
+                       style="-fx-font-size: 11px;"/>
                 
                 <!-- Frais field -->
-                <Label text="Frais:" textFill="WHITE" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <Label text="Frais:" textFill="WHITE" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
                 <TextField fx:id="fraisField" promptText="Frais d'inscription" 
-                           GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                           GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+                <Label fx:id="fraisErrorLabel" textFill="#ff6666" visible="false"
+                       GridPane.rowIndex="9" GridPane.columnIndex="1"
+                       style="-fx-font-size: 11px;"/>
             </GridPane>
             
             <!-- Right side - Photo selection and preview -->

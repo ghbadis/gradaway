@@ -47,9 +47,21 @@ public class UniversiteController implements Initializable {
     @FXML
     private Label photoPathLabel;
     
+    // Error labels for validation
+    @FXML
+    private Label nomErrorLabel;
+    @FXML
+    private Label villeErrorLabel;
+    @FXML
+    private Label adresseErrorLabel;
+    @FXML
+    private Label domaineErrorLabel;
+    @FXML
+    private Label fraisErrorLabel;
+    
     private final ServiceUniversite serviceUniversite = new ServiceUniversite();
     private File selectedPhotoFile;
-    private final String UPLOAD_DIR = "src/main/resources/uploads/universities/";
+    private final String UPLOAD_DIR = "src/main/resources/images/";
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -59,6 +71,107 @@ public class UniversiteController implements Initializable {
         
         // Set default image for preview
         setDefaultImage();
+        
+        // Setup real-time validation
+        setupValidationListeners();
+    }
+    
+    private void setupValidationListeners() {
+        // Add listeners to each field for real-time validation
+        nomField.textProperty().addListener((observable, oldValue, newValue) -> validateNomField());
+        villeField.textProperty().addListener((observable, oldValue, newValue) -> validateVilleField());
+        adresseField.textProperty().addListener((observable, oldValue, newValue) -> validateAdresseField());
+        domaineField.textProperty().addListener((observable, oldValue, newValue) -> validateDomaineField());
+        fraisField.textProperty().addListener((observable, oldValue, newValue) -> validateFraisField());
+    }
+    
+    private boolean validateNomField() {
+        String nom = nomField.getText().trim();
+        if (nom.isEmpty()) {
+            nomErrorLabel.setText("Le nom est obligatoire");
+            nomErrorLabel.setVisible(true);
+            return false;
+        } else if (!nom.matches("^[\\p{L}\\s'.,-]{3,50}$")) {
+            nomErrorLabel.setText("Le nom doit contenir entre 3 et 50 caractères alphabétiques");
+            nomErrorLabel.setVisible(true);
+            return false;
+        } else {
+            nomErrorLabel.setVisible(false);
+            return true;
+        }
+    }
+    
+    private boolean validateVilleField() {
+        String ville = villeField.getText().trim();
+        if (ville.isEmpty()) {
+            villeErrorLabel.setText("La ville est obligatoire");
+            villeErrorLabel.setVisible(true);
+            return false;
+        } else if (!ville.matches("^[\\p{L}\\s-]{2,30}$")) {
+            villeErrorLabel.setText("La ville doit contenir entre 2 et 30 caractères alphabétiques");
+            villeErrorLabel.setVisible(true);
+            return false;
+        } else {
+            villeErrorLabel.setVisible(false);
+            return true;
+        }
+    }
+    
+    private boolean validateAdresseField() {
+        String adresse = adresseField.getText().trim();
+        if (adresse.isEmpty()) {
+            adresseErrorLabel.setText("L'adresse est obligatoire");
+            adresseErrorLabel.setVisible(true);
+            return false;
+        } else if (adresse.length() < 5 || adresse.length() > 100) {
+            adresseErrorLabel.setText("L'adresse doit contenir entre 5 et 100 caractères");
+            adresseErrorLabel.setVisible(true);
+            return false;
+        } else {
+            adresseErrorLabel.setVisible(false);
+            return true;
+        }
+    }
+    
+    private boolean validateDomaineField() {
+        String domaine = domaineField.getText().trim();
+        if (domaine.isEmpty()) {
+            domaineErrorLabel.setText("Le domaine d'étude est obligatoire");
+            domaineErrorLabel.setVisible(true);
+            return false;
+        } else if (!domaine.matches("^[\\p{L}\\s,'-]{3,50}$")) {
+            domaineErrorLabel.setText("Le domaine doit contenir entre 3 et 50 caractères valides");
+            domaineErrorLabel.setVisible(true);
+            return false;
+        } else {
+            domaineErrorLabel.setVisible(false);
+            return true;
+        }
+    }
+    
+    private boolean validateFraisField() {
+        String fraisStr = fraisField.getText().trim();
+        if (fraisStr.isEmpty()) {
+            fraisErrorLabel.setText("Les frais sont obligatoires");
+            fraisErrorLabel.setVisible(true);
+            return false;
+        } else {
+            try {
+                double frais = Double.parseDouble(fraisStr);
+                if (frais < 0) {
+                    fraisErrorLabel.setText("Les frais doivent être un nombre positif");
+                    fraisErrorLabel.setVisible(true);
+                    return false;
+                } else {
+                    fraisErrorLabel.setVisible(false);
+                    return true;
+                }
+            } catch (NumberFormatException e) {
+                fraisErrorLabel.setText("Les frais doivent être un nombre valide");
+                fraisErrorLabel.setVisible(true);
+                return false;
+            }
+        }
     }
     
     private void createUploadDirectory() {
@@ -104,12 +217,21 @@ public class UniversiteController implements Initializable {
         
         if (selectedPhotoFile != null) {
             try {
+                // Validate image size (max 5MB)
+                long fileSizeInBytes = selectedPhotoFile.length();
+                long fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+                if (fileSizeInMB > 5) {
+                    showAlert(Alert.AlertType.ERROR, "Fichier trop volumineux", 
+                              "La taille de l'image ne doit pas dépasser 5MB");
+                    return;
+                }
+                
                 // Display the selected image in the preview
                 Image image = new Image(selectedPhotoFile.toURI().toString());
                 photoPreview.setImage(image);
                 
-                // Display the file name
-                photoPathLabel.setText(selectedPhotoFile.getName());
+                // Display the file name with the correct path format
+                photoPathLabel.setText("images/" + selectedPhotoFile.getName());
             } catch (Exception e) {
                 showAlert(Alert.AlertType.ERROR, "Erreur de chargement", 
                           "Impossible de charger l'image: " + e.getMessage());
@@ -119,13 +241,20 @@ public class UniversiteController implements Initializable {
     
     @FXML
     private void handleAjouterButton() throws SQLException {
-        if (validateFields()) {
+        // First validate all fields
+        boolean isValid = validateNomField() & 
+                         validateVilleField() & 
+                         validateAdresseField() & 
+                         validateDomaineField() & 
+                         validateFraisField();
+        
+        if (isValid) {
             try {
-                String nom = nomField.getText();
-                String ville = villeField.getText();
-                String adresse = adresseField.getText();
-                String domaine = domaineField.getText();
-                double frais = Double.parseDouble(fraisField.getText());
+                String nom = nomField.getText().trim();
+                String ville = villeField.getText().trim();
+                String adresse = adresseField.getText().trim();
+                String domaine = domaineField.getText().trim();
+                double frais = Double.parseDouble(fraisField.getText().trim());
                 
                 // Process the photo if one was selected
                 String photoPath = null;
@@ -167,7 +296,7 @@ public class UniversiteController implements Initializable {
         System.out.println("Photo saved to: " + destinationPath);
         
         // Return the relative path to be stored in the database
-        return "uploads/universities/" + uniqueFileName;
+        return "images/" + uniqueFileName;
     }
     
     @FXML
@@ -178,24 +307,73 @@ public class UniversiteController implements Initializable {
     }
     
     private boolean validateFields() {
-        if (nomField.getText().isEmpty() || 
-            villeField.getText().isEmpty() || 
-            adresseField.getText().isEmpty() || 
-            domaineField.getText().isEmpty() || 
-            fraisField.getText().isEmpty()) {
-            
-            showAlert(Alert.AlertType.ERROR, "Erreur de validation", "Tous les champs sont obligatoires");
-            return false;
+        boolean isValid = true;
+        StringBuilder errorMessages = new StringBuilder("Erreurs de validation:\n");
+        
+        // Validate Nom field - letters, spaces, and common punctuation only, 3-50 chars
+        String nom = nomField.getText().trim();
+        if (nom.isEmpty()) {
+            errorMessages.append("- Le nom de l'université est obligatoire\n");
+            isValid = false;
+        } else if (!nom.matches("^[\\p{L}\\s'.,-]{3,50}$")) {
+            errorMessages.append("- Le nom doit contenir entre 3 et 50 caractères alphabétiques\n");
+            isValid = false;
         }
         
-        try {
-            Double.parseDouble(fraisField.getText());
-        } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur de format", "Les frais doivent être un nombre valide");
-            return false;
+        // Validate Ville field - letters, spaces, and hyphens only, 2-30 chars
+        String ville = villeField.getText().trim();
+        if (ville.isEmpty()) {
+            errorMessages.append("- La ville est obligatoire\n");
+            isValid = false;
+        } else if (!ville.matches("^[\\p{L}\\s-]{2,30}$")) {
+            errorMessages.append("- La ville doit contenir entre 2 et 30 caractères alphabétiques\n");
+            isValid = false;
         }
         
-        return true;
+        // Validate Adresse field - allow common address characters, 5-100 chars
+        String adresse = adresseField.getText().trim();
+        if (adresse.isEmpty()) {
+            errorMessages.append("- L'adresse est obligatoire\n");
+            isValid = false;
+        } else if (adresse.length() < 5 || adresse.length() > 100) {
+            errorMessages.append("- L'adresse doit contenir entre 5 et 100 caractères\n");
+            isValid = false;
+        }
+        
+        // Validate Domaine field - letters, spaces, commas, and hyphens, 3-50 chars
+        String domaine = domaineField.getText().trim();
+        if (domaine.isEmpty()) {
+            errorMessages.append("- Le domaine d'étude est obligatoire\n");
+            isValid = false;
+        } else if (!domaine.matches("^[\\p{L}\\s,'-]{3,50}$")) {
+            errorMessages.append("- Le domaine doit contenir entre 3 et 50 caractères valides\n");
+            isValid = false;
+        }
+        
+        // Validate Frais field - must be a positive number
+        String fraisStr = fraisField.getText().trim();
+        if (fraisStr.isEmpty()) {
+            errorMessages.append("- Les frais sont obligatoires\n");
+            isValid = false;
+        } else {
+            try {
+                double frais = Double.parseDouble(fraisStr);
+                if (frais < 0) {
+                    errorMessages.append("- Les frais doivent être un nombre positif\n");
+                    isValid = false;
+                }
+            } catch (NumberFormatException e) {
+                errorMessages.append("- Les frais doivent être un nombre valide\n");
+                isValid = false;
+            }
+        }
+        
+        // Show appropriate error message if validation failed
+        if (!isValid) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de validation", errorMessages.toString());
+        }
+        
+        return isValid;
     }
     
     private void clearFields() {
@@ -204,6 +382,13 @@ public class UniversiteController implements Initializable {
         adresseField.clear();
         domaineField.clear();
         fraisField.clear();
+        
+        // Reset error labels
+        nomErrorLabel.setVisible(false);
+        villeErrorLabel.setVisible(false);
+        adresseErrorLabel.setVisible(false);
+        domaineErrorLabel.setVisible(false);
+        fraisErrorLabel.setVisible(false);
         
         // Reset photo preview
         setDefaultImage();
