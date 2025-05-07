@@ -1,6 +1,7 @@
 package controllers;
 
 import Services.ServiceDossier;
+import Services.ServiceUser;
 import entities.Dossier;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import utils.MqttService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -296,6 +298,10 @@ public class AjoutDossierController {
             clearForm();
             submitButton.setDisable(true);
             viewDossierButton.setDisable(false);
+            MqttService mqttService = new MqttService();
+            ServiceUser serviceUser = new ServiceUser();
+            mqttService.publishSms(String.valueOf(serviceUser.getUserById(currentEtudiantId).getTelephone()), "Bonjour"+serviceUser.getUserById(currentEtudiantId).getNom()+"✅ Le dossier a ete cree avec succes.");
+            mqttService.disconnect();
 
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur Base de Données", "Échec de l'ajout du dossier à la base de données: \n" + e.getMessage());
