@@ -344,6 +344,55 @@ public class ListRestaurantClientController {
     }
     
     /**
+     * Navigue vers la page "Mes Réservations"
+     */
+    @FXML
+    void voirMesReservations(ActionEvent event) {
+        try {
+            // Utiliser l'ID de l'utilisateur qui a fait les réservations
+            // Pour l'exemple, nous allons utiliser l'ID 2 qui semble avoir des réservations
+            int userId = 2;
+            
+            // Charger la vue des réservations
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MesReservationsRestaurant.fxml"));
+            Parent root = loader.load();
+            
+            // Récupérer le contrôleur et définir l'ID de l'utilisateur
+            MesReservationsRestaurantController controller = loader.getController();
+            controller.setUserId(userId);
+            
+            // Afficher la vue
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            // Transition de fondu
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            
+            stage.setScene(scene);
+            fadeIn.play();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors du chargement de la page des réservations: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Affiche une alerte
+     * @param title Titre de l'alerte
+     * @param message Message de l'alerte
+     * @param type Type de l'alerte
+     */
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    
+    /**
      * Méthode pour retourner à l'accueil
      */
     @FXML
@@ -366,14 +415,4 @@ public class ListRestaurantClientController {
         }
     }
     
-    /**
-     * Affiche une alerte
-     */
-    private void showAlert(String title, String message, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }

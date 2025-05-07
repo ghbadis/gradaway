@@ -160,15 +160,35 @@ public class ReserverRestaurantController {
             // Envoyer un email de confirmation
             sendConfirmationEmail(email, restaurant.getNom(), dateReservationValue, nombrePersonnesValue);
             
-            // Afficher un message de succès
-            showAlert("Réservation confirmée", 
-                     "Votre réservation chez " + restaurant.getNom() + " a été enregistrée avec succès.\n" +
-                     "Nombre de personnes: " + nombrePersonnesValue + "\n\n" +
-                     "Un email de confirmation a été envoyé à " + email,
-                     Alert.AlertType.INFORMATION);
+            // Afficher un message de succès avec option pour voir les réservations
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Réservation confirmée");
+            alert.setHeaderText(null);
+            alert.setContentText(
+                "Votre réservation chez " + restaurant.getNom() + " a été enregistrée avec succès.\n" +
+                "Nombre de personnes: " + nombrePersonnesValue + "\n\n" +
+                "Un email de confirmation a été envoyé à " + email
+            );
             
-            // Retourner à la liste des restaurants
-            retournerALaListe();
+            // Ajouter des boutons personnalisés
+            ButtonType voirReservationsButton = new ButtonType("Voir mes réservations");
+            ButtonType retourButton = new ButtonType("Retour à la liste");
+            
+            alert.getButtonTypes().setAll(voirReservationsButton, retourButton);
+            
+            // Créer une copie finale de l'ID de l'étudiant pour l'utiliser dans le lambda
+            final int idEtudiantFinal = idEtudiantValue;
+            
+            // Attendre la réponse de l'utilisateur
+            alert.showAndWait().ifPresent(buttonType -> {
+                if (buttonType == voirReservationsButton) {
+                    // Naviguer vers la page des réservations
+                    naviguerVersMesReservations(idEtudiantFinal);
+                } else {
+                    // Retourner à la liste des restaurants
+                    retournerALaListe();
+                }
+            });
             
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors de l'enregistrement de la réservation: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -204,7 +224,39 @@ public class ReserverRestaurantController {
             stage.setScene(scene);
             fadeIn.play();
         } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors du chargement de la vue: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Erreur", "Erreur lors du chargement de la liste des restaurants: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Navigue vers la page "Mes Réservations" avec l'ID de l'étudiant
+     * @param idEtudiant ID de l'étudiant
+     */
+    private void naviguerVersMesReservations(int idEtudiant) {
+        try {
+            // Charger la vue des réservations
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MesReservationsRestaurant.fxml"));
+            Parent root = loader.load();
+            
+            // Récupérer le contrôleur et définir l'ID de l'utilisateur
+            MesReservationsRestaurantController controller = loader.getController();
+            // Utiliser l'ID 2 pour voir les réservations existantes
+            controller.setUserId(2);
+            
+            // Afficher la vue
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) reserverButton.getScene().getWindow();
+            
+            // Transition de fondu
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            
+            stage.setScene(scene);
+            fadeIn.play();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors du chargement de la page des réservations: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
         }
     }

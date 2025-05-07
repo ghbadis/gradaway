@@ -249,24 +249,45 @@ public class ReserverFoyerControllers {
                 String userHome = System.getProperty("user.home");
                 String qrFilePath = Paths.get(userHome, "Downloads", "reservation_" + idEtudiant + ".png").toString();
                 
-                // Afficher un message de confirmation simple sans code QR
-                showAlert("Succès", 
-                        "Réservation confirmée avec succès!\n\n" +
-                        "Votre numéro de réservation est associé à l'ID étudiant : " + idEtudiant + "\n" +
-                        "Veuillez conserver ce numéro pour toute référence future.\n\n" +
-                        "Un email de confirmation avec code QR a été envoyé à " + email, 
-                        Alert.AlertType.INFORMATION);
+                // Afficher un message de confirmation avec option pour voir les réservations
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Réservation confirmée");
+                alert.setHeaderText(null);
+                alert.setContentText(
+                    "Réservation confirmée avec succès!\n\n" +
+                    "Votre numéro de réservation est associé à l'ID étudiant : " + idEtudiant + "\n" +
+                    "Veuillez conserver ce numéro pour toute référence future.\n\n" +
+                    "Un email de confirmation avec code QR a été envoyé à " + email
+                );
+                
+                // Ajouter des boutons personnalisés
+                ButtonType voirReservationsButton = new ButtonType("Voir mes réservations");
+                ButtonType retourButton = new ButtonType("Retour à la liste");
+                
+                alert.getButtonTypes().setAll(voirReservationsButton, retourButton);
+                
+                // Réinitialiser les champs après la réservation
+                resetFields();
+                
+                // Attendre la réponse de l'utilisateur
+                final int finalIdEtudiant = idEtudiant; // Créer une copie finale pour le lambda
+                alert.showAndWait().ifPresent(buttonType -> {
+                    if (buttonType == voirReservationsButton) {
+                        // Naviguer vers la page des réservations
+                        naviguerVersMesReservations(finalIdEtudiant);
+                    } else {
+                        // Retourner à la liste des foyers
+                        navigateToListFoyerClient();
+                    }
+                });
             } catch (Exception e) {
                 e.printStackTrace();
                 // En cas d'erreur, afficher un message normal
                 showAlert("Succès", "Réservation confirmée avec succès!\n\nVotre numéro de réservation est associé à l'ID étudiant : " + idEtudiant + "\nVeuillez conserver ce numéro pour toute référence future.\n\nUn email de confirmation a été envoyé à " + email, Alert.AlertType.INFORMATION);
+                
+                // Retourner à la liste des foyers
+                navigateToListFoyerClient();
             }
-            
-            // Réinitialiser les champs après la réservation
-            resetFields();
-            
-            // Retourner à la liste des foyers
-            navigateToListFoyerClient();
             
         } catch (SQLException e) {
             e.printStackTrace();
@@ -353,59 +374,60 @@ public class ReserverFoyerControllers {
         }
     }
 
-    private void navigateToListFoyer() {
-        try {
-            // Assurez-vous que le chemin est correct et commence par un slash
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyer.fxml"));
+//    private void navigateToListFoyer() {
+//        try {
+//            // Assurez-vous que le chemin est correct et commence par un slash
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyer.fxml"));
+//            if (loader.getLocation() == null) {
+//                // Si le fichier n'est pas trouvé, essayez un autre chemin
+//                loader = new FXMLLoader(getClass().getResource("/main/resources/ListFoyer.fxml"));
+//
+//                // Si toujours null, essayez sans le slash
+//                if (loader.getLocation() == null) {
+//                    loader = new FXMLLoader(getClass().getResource("ListFoyer.fxml"));
+//                }
+//            }
+//
+//            if (loader.getLocation() == null) {
+//                throw new IOException("Impossible de trouver le fichier FXML ListFoyer.fxml");
+//            }
+//
+//            Parent root = loader.load();
+//            Stage stage = (Stage) tf_gmail.getScene().getWindow();
+//            Scene scene = new Scene(root);
+//            stage.setScene(scene);
+//
+//            // Ajouter une transition de fondu
+//            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+//            fadeIn.setFromValue(0.0);
+//            fadeIn.setToValue(1.0);
+//            fadeIn.play();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
+//        }
+//    }
+//
+
+
+private void navigateToListFoyer() {
+    try {
+        // Assurez-vous que le chemin est correct et commence par un slash
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyer.fxml"));
+        if (loader.getLocation() == null) {
+            // Si le fichier n'est pas trouvé, essayez un autre chemin
+            loader = new FXMLLoader(getClass().getResource("/main/resources/ListFoyer.fxml"));
+
+            // Si toujours null, essayez sans le slash
             if (loader.getLocation() == null) {
-                // Si le fichier n'est pas trouvé, essayez un autre chemin
-                loader = new FXMLLoader(getClass().getResource("/main/resources/ListFoyer.fxml"));
-                
-                // Si toujours null, essayez sans le slash
-                if (loader.getLocation() == null) {
-                    loader = new FXMLLoader(getClass().getResource("ListFoyer.fxml"));
-                }
+                loader = new FXMLLoader(getClass().getResource("ListFoyer.fxml"));
             }
-            
-            if (loader.getLocation() == null) {
-                throw new IOException("Impossible de trouver le fichier FXML ListFoyer.fxml");
-            }
-            
-            Parent root = loader.load();
-            Stage stage = (Stage) tf_gmail.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            
-            // Ajouter une transition de fondu
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            fadeIn.play();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
         }
-    }
-    
-    private void navigateToListFoyerClient() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
-            if (loader.getLocation() == null) {
-                // Si le fichier n'est pas trouvé, essayez un autre chemin
-                loader = new FXMLLoader(getClass().getResource("/main/resources/ListFoyerClient.fxml"));
-                
-                // Si toujours null, essayez sans le slash
-                if (loader.getLocation() == null) {
-                    loader = new FXMLLoader(getClass().getResource("ListFoyerClient.fxml"));
-                }
-            }
-            
-            if (loader.getLocation() == null) {
-                // Si ListFoyerClient.fxml n'est pas trouvé, essayez avec ListFoyer.fxml
-                navigateToListFoyer();
-                return;
-            }
+        
+        if (loader.getLocation() == null) {
+            throw new IOException("Impossible de trouver le fichier FXML ListFoyer.fxml");
+        }
             
             Parent root = loader.load();
             Stage stage = (Stage) tf_gmail.getScene().getWindow();
@@ -432,6 +454,73 @@ public class ReserverFoyerControllers {
         alert.setContentText(message);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
+    }
+    
+    /**
+     * Navigue vers la liste des foyers pour les clients
+     */
+    private void navigateToListFoyerClient() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            if (loader.getLocation() == null) {
+                // Si le fichier n'est pas trouvé, essayez un autre chemin
+                loader = new FXMLLoader(getClass().getResource("/main/resources/ListFoyerClient.fxml"));
+                
+                // Si toujours null, essayez sans le slash
+                if (loader.getLocation() == null) {
+                    loader = new FXMLLoader(getClass().getResource("ListFoyerClient.fxml"));
+                }
+            }
+            
+            if (loader.getLocation() == null) {
+                throw new IOException("Impossible de trouver le fichier FXML ListFoyerClient.fxml");
+            }
+            
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) tf_gmail.getScene().getWindow();
+            stage.setScene(scene);
+            
+            // Ajouter une transition de fondu
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors du chargement de la vue: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    
+    /**
+     * Navigue vers la page "Mes Réservations de Foyer" avec l'ID de l'étudiant
+     * @param idEtudiant ID de l'étudiant
+     */
+    private void naviguerVersMesReservations(int idEtudiant) {
+        try {
+            // Charger la vue des réservations
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MesReservationsFoyer.fxml"));
+            Parent root = loader.load();
+            
+            // Récupérer le contrôleur et définir l'ID de l'utilisateur
+            MesReservationsFoyerController controller = loader.getController();
+            controller.setUserId(idEtudiant);
+            
+            // Afficher la vue
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) tf_gmail.getScene().getWindow();
+            
+            // Transition de fondu
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            
+            stage.setScene(scene);
+            fadeIn.play();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors du chargement de la page des réservations: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
     }
     
     // Méthode showAlertWithQRCode supprimée car nous n'affichons plus le code QR dans l'interface

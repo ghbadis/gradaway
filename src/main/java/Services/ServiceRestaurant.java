@@ -92,7 +92,33 @@ public class ServiceRestaurant implements IService<Restaurant> {
         return restaurants;
     }
 
-    public Restaurant getById(int restaurantId) {
+    /**
+     * Récupère un restaurant par son ID
+     * @param restaurantId ID du restaurant
+     * @return Restaurant trouvé ou null si non trouvé
+     * @throws SQLException En cas d'erreur SQL
+     */
+    public Restaurant recupererParId(int restaurantId) throws SQLException {
+        String req = "SELECT * FROM restaurant WHERE idRestaurant=?";
+        PreparedStatement ps = con.prepareStatement(req);
+        ps.setInt(1, restaurantId);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            int id = rs.getInt("idRestaurant");
+            String nom = rs.getString("nom");
+            String adresse = rs.getString("adresse");
+            String ville = rs.getString("ville");
+            String pays = rs.getString("pays");
+            int capacite = rs.getInt("capacitetotal");
+            String ouverture = rs.getString("horaireouverture");
+            String fermeture = rs.getString("horairefermeture");
+            String tel = rs.getString("telephone");
+            String email = rs.getString("email");
+            String image = rs.getString("image");
+
+            return new Restaurant(id, nom, adresse, ville, pays, capacite, ouverture, fermeture, tel, email, image);
+        }
 
         return null;
     }

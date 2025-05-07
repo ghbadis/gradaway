@@ -97,5 +97,41 @@ public class ServiceReservationFoyer implements IService<ReservationFoyer> {
 
         return reservations;
     }
+    
+    /**
+     * Récupère toutes les réservations d'un étudiant spécifique
+     * @param idEtudiant ID de l'étudiant
+     * @return Liste des réservations de l'étudiant
+     * @throws SQLException En cas d'erreur SQL
+     */
+    public List<ReservationFoyer> getReservationsByEtudiantId(int idEtudiant) throws SQLException {
+        List<ReservationFoyer> reservations = new ArrayList<>();
+        String req = "SELECT * FROM reservationfoyer WHERE idetudient=?";
+        PreparedStatement ps = con.prepareStatement(req);
+        ps.setInt(1, idEtudiant);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            int id = rs.getInt("IdReservation");
+            int foyerId = rs.getInt("idfoyer");
+            LocalDate dateDebut = rs.getDate("datedebut").toLocalDate();
+            LocalDate dateFin = rs.getDate("DateFin").toLocalDate();
+            LocalDate dateReservation = rs.getDate("dateReservation").toLocalDate();
+
+            ReservationFoyer reservation = new ReservationFoyer(id, foyerId, idEtudiant, dateDebut, dateFin, dateReservation);
+            reservations.add(reservation);
+        }
+
+        return reservations;
+    }
+    
+    /**
+     * Récupère toutes les réservations sans filtrer
+     * @return Liste de toutes les réservations
+     * @throws SQLException En cas d'erreur SQL
+     */
+    public List<ReservationFoyer> getAllReservations() throws SQLException {
+        return recuperer();
+    }
 
 }
