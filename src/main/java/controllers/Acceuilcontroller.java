@@ -170,6 +170,30 @@ public class Acceuilcontroller {
 
     @FXML
     public void onevenementButtonClick(ActionEvent actionEvent) {
+        try {
+            System.out.println("AcceuilController: Opening Affiche Evenement view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Événements");
+            stage.setMinWidth(1133); // Match the size from affiche_evenement.fxml
+            stage.setMinHeight(691);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("AcceuilController: Error loading affiche_evenement.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des événements.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
+            e.printStackTrace();
+        }
     }
 
     @FXML
