@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
+import javafx.scene.Node;
 
 import java.io.IOException;
 
@@ -75,10 +76,25 @@ public class Acceuilcontroller {
         }
     }
 
-
-
     @FXML
     public void onentretienButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Display an alert if loading fails
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error Loading View");
+            alert.setContentText("Unable to load the entretien view: " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML

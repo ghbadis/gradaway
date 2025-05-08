@@ -6,8 +6,8 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class MailUtil {
-    private static final String USERNAME = "dhiachaabene20@gmail.com";
-    private static final String PASSWORD = "vbqk txgo qwom zbgm"; // <-- Replace with your Gmail App Password
+    private static final String USERNAME = "awaygrad@gmail.com";
+    private static final String PASSWORD = "dmzq fnaw uglm glyn"; // <-- Replace with your Gmail App Password
 
     public static void sendMail(String to, String subject, String body) throws MessagingException {
         Properties props = new Properties();
