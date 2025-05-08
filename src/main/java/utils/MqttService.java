@@ -46,6 +46,7 @@ public class MqttService {
         System.out.println("Published: " + json);
     }
 
+
     public void disconnect() throws MqttException {
         if (client != null && client.isConnected()) {
             client.disconnect();
