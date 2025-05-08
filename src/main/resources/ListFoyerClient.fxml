@@ -15,7 +15,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <SplitPane dividerPositions="0.21653005464480873" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListFoyerClientControllers">
    <items>
       <AnchorPane prefHeight="764.0" prefWidth="80.0" style="-fx-background-color: #0d47a1;">
@@ -269,6 +268,14 @@
                               <Font size="14.0" />
                            </font>
                         </MenuButton>
+                        <Button mnemonicParsing="false" onAction="#Mes_Reservations" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20;" text="Mes Réservations">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <padding>
+                              <Insets bottom="10" left="20" right="20" top="10" />
+                           </padding>
+                        </Button>
                      </children>
                   </HBox>
 

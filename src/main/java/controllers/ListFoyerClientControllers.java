@@ -340,6 +340,28 @@ public class ListFoyerClientControllers {
         }
     }
 
+    @FXML
+    private void Mes_Reservations() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MesReservationsFoyer.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) foyerContainer.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            // Add fade transition
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

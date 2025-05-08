@@ -268,6 +268,36 @@ public class MesReservationsRestaurantController {
     }
     
     /**
+     * Retourne à la liste des restaurants
+     */
+    @FXML
+    private void retourListeRestaurant() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) reservationsContainer.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            // Transition de fondu
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Afficher une alerte en cas d'erreur
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Erreur lors de la navigation: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+    
+    /**
      * Affiche une alerte
      */
     private void showAlert(String title, String message, Alert.AlertType type) {

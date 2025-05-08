@@ -269,7 +269,7 @@
             <!-- Footer Section -->
             <HBox alignment="CENTER" layoutX="0.0" layoutY="640.0" prefHeight="60.0" prefWidth="1000.0" style="-fx-background-color: #f0f0f0;">
                <children>
-                  <Button mnemonicParsing="false" onAction="#retourAccueil" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-background-radius: 20px;" text="Retour à l'accueil">
+                  <Button mnemonicParsing="false" onAction="#retourListeFoyer" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-background-radius: 20px;" text="Retour à la liste des foyers">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
