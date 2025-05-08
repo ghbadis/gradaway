@@ -16,9 +16,16 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<<<<<<< HEAD
 <SplitPane dividerPositions="0.5, 0.5" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterFoyerControllers">
    <items>
       <AnchorPane prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
+=======
+
+<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterFoyerControllers">
+   <items>
+      <AnchorPane prefHeight="657.0" prefWidth="0.0" style="-fx-background-color: #0d47a1;">
+>>>>>>> 9575b359227ee8a5dbf52b16a7dca02e76cba197
          <children>
             <VBox alignment="CENTER" layoutY="157.0" prefHeight="536.0" prefWidth="250.0" style="-fx-background-color: #1a237e; -fx-background-radius: 0 15 15 0;">
                <children>
@@ -29,7 +36,11 @@
                               <Image url="@images/acceuil.png" />
                            </image>
                         </ImageView>
+<<<<<<< HEAD
                         <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE">
+=======
+                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE">
+>>>>>>> 9575b359227ee8a5dbf52b16a7dca02e76cba197
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -232,6 +243,7 @@
                </children>
             </VBox>
             <VBox alignment="CENTER" layoutX="11.0" prefHeight="110.0" prefWidth="213.0">
+<<<<<<< HEAD
                <children>
                   <ImageView fitHeight="173.0" fitWidth="138.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -252,33 +264,38 @@
                <padding>
                   <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
                </padding>
+=======
+>>>>>>> 9575b359227ee8a5dbf52b16a7dca02e76cba197
                <children>
-                  <Text fill="#1a237e" fontSmoothingType="LCD" strokeWidth="0.0" text="Ajouter Foyer">
-                     <font>
-                        <Font name="Arial Rounded MT Bold" size="35.0" />
-                     </font>
-                  </Text>
+                  <ImageView fitHeight="173.0" fitWidth="138.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/logo.png" />
+                     </image>
+                  </ImageView>
                </children>
             </VBox>
+<<<<<<< HEAD
 
                                     <!-- Form Content -->
             <VBox alignment="TOP_LEFT" layoutX="30.0" layoutY="120.0" spacing="20.0">
+=======
+            <Label layoutX="46.0" layoutY="111.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="GRADAWAY" />
+         </children>
+      </AnchorPane>
+      <SplitPane>
+         <items>
+      
+            <!-- Main Content -->
+            <AnchorPane prefHeight="646.0" prefWidth="793.0" style="-fx-background-color: #f5f5f5;">
+>>>>>>> 9575b359227ee8a5dbf52b16a7dca02e76cba197
                <children>
-                  <!-- Form Fields -->
-                  <GridPane hgap="20" vgap="15">
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
+                  <!-- Header -->
+                  <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="793.0" style="-fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+                     <padding>
+                        <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+                     </padding>
                      <children>
+<<<<<<< HEAD
                         <Label style="-fx-font-weight: bold;" text="Nom du foyer :" />
                         <TextField fx:id="tf_nom" style="-fx-background-radius: 5;" GridPane.columnIndex="1" />
                         
@@ -311,10 +328,82 @@
                                     <Image url="@placeholder/placeholder.png" />
                                  </image>
                               </ImageView>
+=======
+                        <Text fill="#1a237e" fontSmoothingType="LCD" strokeWidth="0.0" text="Ajouter Foyer">
+                           <font>
+                              <Font name="Arial Rounded MT Bold" size="35.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+      
+                  <!-- Form Content -->
+                  <VBox alignment="TOP_LEFT" layoutX="30.0" layoutY="120.0" spacing="20.0">
+                     <children>
+                        <!-- Form Fields -->
+                        <GridPane hgap="20" vgap="15">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label style="-fx-font-weight: bold;" text="Nom du foyer :" />
+                              <TextField fx:id="tf_nom" style="-fx-background-radius: 5;" GridPane.columnIndex="1" />
+                              
+                              <Label style="-fx-font-weight: bold;" text="Adresse :" GridPane.rowIndex="1" />
+                              <TextField fx:id="tf_adresse" style="-fx-background-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              
+                              <Label style="-fx-font-weight: bold;" text="Ville :" GridPane.rowIndex="2" />
+                              <TextField fx:id="tf_ville" style="-fx-background-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              
+                              <Label style="-fx-font-weight: bold;" text="Pays :" GridPane.rowIndex="3" />
+                              <TextField fx:id="tf_pays" style="-fx-background-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              
+                              <Label style="-fx-font-weight: bold;" text="Nombre de chambres :" GridPane.rowIndex="4" />
+                              <TextField fx:id="tf_nombre_de_chambre" style="-fx-background-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              
+                              <Label style="-fx-font-weight: bold;" text="Capacité :" GridPane.rowIndex="5" />
+                              <TextField fx:id="tf_capacite" style="-fx-background-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                           </children>
+                        </GridPane>
+      
+                        <!-- Image Upload Section -->
+                        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+                           <children>
+                              <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Image du foyer" />
+                              <HBox alignment="CENTER_LEFT" spacing="10">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#addimages" style="-fx-background-color: #1a237e; -fx-text-fill: white; -fx-background-radius: 5;" text="Ajouter une image" />
+                                    <ImageView fx:id="imageUploaded" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@placeholder/placeholder.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+      
+                        <!-- Action Buttons -->
+                        <HBox alignment="CENTER_RIGHT" spacing="20" style="-fx-padding: 20 0 0 0;">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#ListFoyer" style="-fx-background-color: #1a237e; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 10 20;" text="Liste des foyers" />
+                              <Button fx:id="btnListeReservation" mnemonicParsing="false" onAction="#navigateToListeReservation" style="-fx-background-color: #1a237e; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 10 20;" text="Liste des réservations" />
+                              <Button mnemonicParsing="false" onAction="#AjouterFoyer" style="-fx-background-color: #d32f2f; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 10 20;" text="Ajouter" />
+>>>>>>> 9575b359227ee8a5dbf52b16a7dca02e76cba197
                            </children>
                         </HBox>
                      </children>
                   </VBox>
+<<<<<<< HEAD
 
                                           <!-- Action Buttons -->
                   <HBox alignment="CENTER_RIGHT" spacing="20" style="-fx-padding: 20 0 0 0;">
@@ -330,5 +419,11 @@
       </AnchorPane>
       <!-- Sidebar -->
       <AnchorPane prefHeight="706.0" prefWidth="0.0" style="-fx-background-color: linear-gradient(to bottom, #1a237e, #0d47a1);" />
+=======
+               </children>
+            </AnchorPane>
+         </items>
+      </SplitPane>
+>>>>>>> 9575b359227ee8a5dbf52b16a7dca02e76cba197
    </items>
 </SplitPane>
