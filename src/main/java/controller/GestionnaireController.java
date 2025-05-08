@@ -22,8 +22,6 @@ public class GestionnaireController {
     private Button btnGestionExperts;
     @FXML
     private Button btnGestionEntretiens;
-    @FXML
-    private Button btnDemanderEntretien;
 
     @FXML
     public void initialize() {
@@ -35,12 +33,10 @@ public class GestionnaireController {
         // Set button text
         btnGestionExperts.setText("Gestion des Experts");
         btnGestionEntretiens.setText("Gestion des Entretiens");
-        btnDemanderEntretien.setText("Demander un Entretien");
 
         // Set button actions
         btnGestionExperts.setOnAction(event -> openListeExperts());
         btnGestionEntretiens.setOnAction(event -> openListeEntretiens());
-        btnDemanderEntretien.setOnAction(event -> openDemanderEntretien());
     }
 
     private void openListeExperts() {
@@ -62,19 +58,6 @@ public class GestionnaireController {
             Parent root = fxmlLoader.load();
             Stage stage = new Stage();
             stage.setTitle("Liste des Entretiens");
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void openDemanderEntretien() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
-            Parent root = fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Demander un Entretien");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
