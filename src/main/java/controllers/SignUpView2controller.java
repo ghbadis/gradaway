@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -40,6 +41,14 @@ public class SignUpView2controller {
     private TextField tfannee_obtention_diplome;
     @FXML
     private ComboBox<Integer> tfage;
+    @FXML
+    private TextField newPassVisible;
+    @FXML
+    private TextField confNewPassVisible;
+    @FXML
+    private ImageView togglePasswordIcon;
+    @FXML
+    private ImageView togglePasswordIcon1;
 
     private String nom, prenom, email, mdp;
     private ServiceUser serviceUser = new ServiceUser();
@@ -57,6 +66,10 @@ public class SignUpView2controller {
         for (int i = 18; i <= 100; i++) {
             tfage.getItems().add(i);
         }
+        newPassVisible.setManaged(false);
+        newPassVisible.setVisible(false);
+        confNewPassVisible.setManaged(false);
+        confNewPassVisible.setVisible(false);
     }
 
     @FXML

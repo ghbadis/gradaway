@@ -38,7 +38,10 @@ public class MqttService {
         payload.put("to", to);
         payload.put("message", message);
 
-        String json = objectMapper.writeValueAsString(payload);
+        // Create JSON manually instead of using ObjectMapper
+        String json = "{\"to\":\"" + to.replace("\"", "\\\"") + 
+                      "\",\"message\":\"" + message.replace("\"", "\\\"") + "\"}";
+        
         MqttMessage mqttMessage = new MqttMessage(json.getBytes());
         mqttMessage.setQos(1);
 
