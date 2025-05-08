@@ -246,4 +246,53 @@ public class EmailSender {
         // Call the new method with default values
         return generateReservationConfirmationEmail(nomFoyer, dateDebut, dateFin, dateReservation, 0, "");
     }
+
+    public static String generateDossierConfirmationEmail(int idDossier, String dateDepot) {
+        return "<!DOCTYPE html>"
+             + "<html>"
+             + "<head>"
+             + "    <style>"
+             + "        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }"
+             + "        .container { max-width: 600px; margin: 0 auto; padding: 20px; }"
+             + "        .header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; }"
+             + "        .content { padding: 20px; background-color: #f9f9f9; }"
+             + "        .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }"
+             + "        table { width: 100%; border-collapse: collapse; margin: 20px 0; }"
+             + "        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }"
+             + "        th { background-color: #f5f5f5; }"
+             + "    </style>"
+             + "</head>"
+             + "<body>"
+             + "    <div class='container'>"
+             + "        <div class='header'>"
+             + "            <h1>Confirmation de dépôt de dossier</h1>"
+             + "        </div>"
+             + "        <div class='content'>"
+             + "            <p>Cher étudiant,</p>"
+             + "            <p>Nous vous confirmons que votre dossier a été déposé avec succès.</p>"
+             + "            <table>"
+             + "                <tr><th>Numéro de dossier</th><td>" + idDossier + "</td></tr>"
+             + "                <tr><th>Date de dépôt</th><td>" + dateDepot + "</td></tr>"
+             + "            </table>"
+             + "            <div class='qr-code' style='text-align: center; margin: 20px 0;'>\n"
+             + "                <h3 style='color: #4CAF50;'>Votre code QR de dossier :</h3>\n"
+             + "                <p><strong>Vous trouverez votre code QR de dossier en pièce jointe de cet email.</strong></p>\n"
+             + "                <p><strong>Conservez ce code QR pour vos références futures.</strong></p>\n"
+             + "            </div>"
+             + "            <p>Nous vous remercions pour votre confiance.</p>"
+             + "            <p>Cordialement,<br>L'équipe GradAway</p>"
+             + "        </div>"
+             + "        <div class='footer'>"
+             + "            <p>Ceci est un email automatique, merci de ne pas y répondre.</p>"
+             + "        </div>"
+             + "    </div>"
+             + "</body>"
+             + "</html>";
+    }
+
+    public static String generateDossierQRContent(int idDossier, String dateDepot) {
+        return "Dossier GradAway\n" +
+               "ID Dossier: " + idDossier + "\n" +
+               "Date de dépôt: " + dateDepot;
+    }
 }
