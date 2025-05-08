@@ -86,12 +86,13 @@ public class ServiceExpert implements IService<Expert> {
     }
 
     @Override
-    public void supprimer(Expert expert) throws SQLException {
+    public boolean supprimer(Expert expert) throws SQLException {
         String req = "DELETE FROM expert WHERE id_expert = ?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, expert.getId_expert());
         ps.executeUpdate();
         System.out.println("Expert supprimé avec succès");
+        return false;
     }
 
     @Override

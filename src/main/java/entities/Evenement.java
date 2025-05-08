@@ -8,8 +8,9 @@ public class Evenement {
     private String lieu;
     private String domaine;
     private int places_disponibles;
+    private String image;
 
-    public Evenement(int id_evenement, String nom, String description, String date, String lieu, String domaine, int places_disponibles) {
+    public Evenement(int id_evenement, String nom, String description, String date, String lieu, String domaine, int places_disponibles, String image) {
         this.id_evenement = id_evenement;
         this.nom = nom;
         this.description = description;
@@ -17,15 +18,17 @@ public class Evenement {
         this.lieu = lieu;
         this.domaine = domaine;
         this.places_disponibles = places_disponibles;
+        this.image = image;
     }
 
-    public Evenement(String nom, String description, String date, String lieu, String domaine, int places_disponibles) {
+    public Evenement(String nom, String description, String date, String lieu, String domaine, int places_disponibles, String image) {
         this.nom = nom;
         this.description = description;
         this.date = date;
         this.lieu = lieu;
         this.domaine = domaine;
         this.places_disponibles = places_disponibles;
+        this.image = image;
     }
 
     public int getId_evenement() {
@@ -84,6 +87,14 @@ public class Evenement {
         this.places_disponibles = places_disponibles;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
         return "Evenement{" +
@@ -94,6 +105,7 @@ public class Evenement {
                 ", lieu='" + lieu + '\'' +
                 ", domaine='" + domaine + '\'' +
                 ", places_disponibles=" + places_disponibles +
+                ", image='" + image + '\'' +
                 '}';
     }
 }

@@ -13,6 +13,13 @@ public class MyDatabase {
     private static MyDatabase instance;
 
     private MyDatabase() {
+        try {
+            // Load MySQL driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL driver loaded successfully");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error loading MySQL driver: " + e.getMessage());
+        }
         connect();
     }
 
@@ -35,11 +42,7 @@ public class MyDatabase {
     public Connection getCnx() {
         try {
             // Check if connection is closed or invalid
-            if (cnx == null || cnx.isClosed()) {
-                connect();
-            }
-            // Validate connection with a small timeout
-            if (!cnx.isValid(2)) {
+            if (cnx == null || cnx.isClosed() || !cnx.isValid(2)) {
                 connect();
             }
         } catch (SQLException e) {

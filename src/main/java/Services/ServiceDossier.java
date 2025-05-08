@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceDossier implements Services.IService<Dossier> {
+public class ServiceDossier implements IService<Dossier> {
     private Connection con;
     public ServiceDossier() {
         con = MyDatabase.getInstance().getCnx();
@@ -57,13 +57,14 @@ public class ServiceDossier implements Services.IService<Dossier> {
     }
 
     @Override
-    public void supprimer(Dossier dossier) throws SQLException {
+    public boolean supprimer(Dossier dossier) throws SQLException {
         String req = "DELETE FROM dossier WHERE id_dossier=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, dossier.getId_dossier());
         ps.executeUpdate();
         System.out.println("Dossier supprimé");
 
+        return false;
     }
 
     @Override
@@ -74,22 +75,39 @@ public class ServiceDossier implements Services.IService<Dossier> {
         ResultSet rs = st.executeQuery(req);
 
         while (rs.next()) {
-            int id = rs.getInt("id_dossier");
-            int idEtudiant = rs.getInt("id_etudiant");
-            String cin = rs.getString("cin");
-            String photo = rs.getString("photo");
-            String bac = rs.getString("diplome_baccalauréat");
-            String releve = rs.getString("releve_note");
-            String diplomes = rs.getString("diplome_obtenus");
-            String lettre = rs.getString("lettre_motivations");
-            String sante = rs.getString("dossier_sante");
-            String cv = rs.getString("cv");
-            LocalDate dateDepot = rs.getDate("datedepot").toLocalDate();
-
-            Dossier d = new Dossier(id, idEtudiant, cin, photo, bac, releve, diplomes, lettre, sante, cv, dateDepot);
-            dossiers.add(d);
+            dossiers.add(mapResultSetToDossier(rs));
         }
 
         return dossiers;
+    }
+
+    // New method to get Dossier by id_etudiant
+    public Dossier recupererParEtudiantId(int id_etudiant) throws SQLException {
+        String req = "SELECT * FROM dossier WHERE id_etudiant = ? LIMIT 1"; // Limit 1 assuming one dossier per student
+        PreparedStatement ps = con.prepareStatement(req);
+        ps.setInt(1, id_etudiant);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            return mapResultSetToDossier(rs);
+        }
+        return null; // Return null if no dossier found for this student
+    }
+
+    // Helper method to map ResultSet to Dossier object
+    private Dossier mapResultSetToDossier(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id_dossier");
+        int idEtudiant = rs.getInt("id_etudiant");
+        String cin = rs.getString("cin");
+        String photo = rs.getString("photo");
+        String bac = rs.getString("diplome_baccalauréat");
+        String releve = rs.getString("releve_note");
+        String diplomes = rs.getString("diplome_obtenus");
+        String lettre = rs.getString("lettre_motivations");
+        String sante = rs.getString("dossier_sante");
+        String cv = rs.getString("cv");
+        LocalDate dateDepot = rs.getDate("datedepot").toLocalDate();
+
+        return new Dossier(id, idEtudiant, cin, photo, bac, releve, diplomes, lettre, sante, cv, dateDepot);
     }
 }

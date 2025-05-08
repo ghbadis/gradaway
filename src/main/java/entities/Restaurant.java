@@ -12,8 +12,26 @@ public class Restaurant {
     private String horaireFermeture;
     private String telephone;
     private String email;
+    private String image;
 
     // Constructeur complet
+    public Restaurant(int idRestaurant, String nom, String adresse, String ville, String pays,
+                      int capaciteTotale, String horaireOuverture, String horaireFermeture,
+                      String telephone, String email, String image) {
+        this.idRestaurant = idRestaurant;
+        this.nom = nom;
+        this.adresse = adresse;
+        this.ville = ville;
+        this.pays = pays;
+        this.capaciteTotale = capaciteTotale;
+        this.horaireOuverture = horaireOuverture;
+        this.horaireFermeture = horaireFermeture;
+        this.telephone = telephone;
+        this.email = email;
+        this.image = image;
+    }
+    
+    // Constructeur complet sans image
     public Restaurant(int idRestaurant, String nom, String adresse, String ville, String pays,
                       int capaciteTotale, String horaireOuverture, String horaireFermeture,
                       String telephone, String email) {
@@ -30,6 +48,22 @@ public class Restaurant {
     }
 
     // Constructeur sans ID (utile pour l'ajout)
+    public Restaurant(String nom, String adresse, String ville, String pays,
+                      int capaciteTotale, String horaireOuverture, String horaireFermeture,
+                      String telephone, String email, String image) {
+        this.nom = nom;
+        this.adresse = adresse;
+        this.ville = ville;
+        this.pays = pays;
+        this.capaciteTotale = capaciteTotale;
+        this.horaireOuverture = horaireOuverture;
+        this.horaireFermeture = horaireFermeture;
+        this.telephone = telephone;
+        this.email = email;
+        this.image = image;
+    }
+    
+    // Constructeur sans ID et sans image
     public Restaurant(String nom, String adresse, String ville, String pays,
                       int capaciteTotale, String horaireOuverture, String horaireFermeture,
                       String telephone, String email) {
@@ -128,6 +162,14 @@ public class Restaurant {
     public void setEmail(String email) {
         this.email = email;
     }
+    
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     @Override
     public String toString() {
@@ -142,6 +184,7 @@ public class Restaurant {
                 ", horaireFermeture='" + horaireFermeture + '\'' +
                 ", telephone='" + telephone + '\'' +
                 ", email='" + email + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
 }

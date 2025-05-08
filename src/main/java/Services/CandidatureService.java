@@ -1,0 +1,311 @@
+package Services;
+
+import models.Candidature;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CandidatureService {
+    private Connection connection;
+    private final int currentUserId = 31; // Example user ID
+    private final int currentDossierId = 37; // Example dossier ID
+
+    public CandidatureService() {
+        try {
+            // Database connection
+            String url = "jdbc:mysql://localhost:3306/gradaway";
+            String user = "root";
+            String password = "";
+            connection = DriverManager.getConnection(url, user, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Candidature> getAllCandidatures() {
+        List<Candidature> candidatures = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM candidature";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Candidature candidature = new Candidature();
+                candidature.setId_c(resultSet.getInt("id_c"));
+                candidature.setId_dossier(resultSet.getInt("id_dossier"));
+                candidature.setUser_id(resultSet.getInt("user_id"));
+                candidature.setId_universite(resultSet.getInt("id_universite"));
+                candidature.setDate_de_remise_c(resultSet.getDate("date_de_remise_c"));
+                candidature.setDomaine(resultSet.getString("domaine"));
+                
+                candidatures.add(candidature);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return candidatures;
+    }
+
+    public Candidature getCandidatureById(int id) {
+        try {
+            String query = "SELECT * FROM candidature WHERE id_c = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                Candidature candidature = new Candidature();
+                candidature.setId_c(resultSet.getInt("id_c"));
+                candidature.setId_dossier(resultSet.getInt("id_dossier"));
+                candidature.setUser_id(resultSet.getInt("user_id"));
+                candidature.setId_universite(resultSet.getInt("id_universite"));
+                candidature.setDate_de_remise_c(resultSet.getDate("date_de_remise_c"));
+                candidature.setDomaine(resultSet.getString("domaine"));
+                
+                return candidature;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean deleteCandidature(int id) {
+        try {
+            String query = "DELETE FROM candidature WHERE id_c = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            int rowsDeleted = statement.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean addCandidature(Candidature candidature) {
+        try {
+            System.out.println("Attempting to add candidature with:");
+            System.out.println("User ID: " + candidature.getUser_id());
+            System.out.println("Dossier ID: " + candidature.getId_dossier());
+            System.out.println("Universite ID: " + candidature.getId_universite());
+            
+            // Improved error reporting for foreign key validation
+            boolean userExists = checkForeignKeyExists("user", "id", candidature.getUser_id());
+            boolean dossierExists = checkForeignKeyExists("dossier", "id_dossier", candidature.getId_dossier());
+            boolean universiteExists = checkForeignKeyExists("universite", "id_universite", candidature.getId_universite());
+            
+            System.out.println("Validation results:");
+            System.out.println("User exists: " + userExists);
+            System.out.println("Dossier exists: " + dossierExists);
+            System.out.println("Universite exists: " + universiteExists);
+            
+            if (!userExists) {
+                System.out.println("Error: User ID " + candidature.getUser_id() + " does not exist");
+                return false;
+            }
+            
+            if (!dossierExists) {
+                System.out.println("Error: Dossier ID " + candidature.getId_dossier() + " does not exist");
+                return false;
+            }
+            
+            if (!universiteExists) {
+                System.out.println("Error: Universite ID " + candidature.getId_universite() + " does not exist");
+                return false;
+            }
+            
+            // If all foreign keys exist, proceed with insert
+            String query = "INSERT INTO candidature (id_dossier, user_id, id_universite, date_de_remise_c, domaine) " +
+                           "VALUES (?, ?, ?, ?, ?)";
+            
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, candidature.getId_dossier());
+            statement.setInt(2, candidature.getUser_id());
+            statement.setInt(3, candidature.getId_universite());
+            statement.setDate(4, new java.sql.Date(candidature.getDate_de_remise_c().getTime()));
+            statement.setString(5, candidature.getDomaine());
+            
+            int rowsInserted = statement.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    // Helper method to check if a foreign key exists in its parent table
+    private boolean checkForeignKeyExists(String tableName, String idColumnName, int id) {
+        try {
+            // First check if the table exists
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet tables = metaData.getTables(null, null, tableName, null);
+            
+            if (!tables.next()) {
+                System.out.println("ERROR: Table '" + tableName + "' does not exist!");
+                return false;
+            }
+            
+            // Check if the column exists
+            ResultSet columns = metaData.getColumns(null, null, tableName, idColumnName);
+            if (!columns.next()) {
+                System.out.println("ERROR: Column '" + idColumnName + "' does not exist in table '" + tableName + "'!");
+                
+                // Show available columns
+                System.out.println("Available columns in '" + tableName + "':");
+                columns = metaData.getColumns(null, null, tableName, null);
+                while (columns.next()) {
+                    System.out.println("- " + columns.getString("COLUMN_NAME"));
+                }
+                
+                return false;
+            }
+            
+            // Check for the ID
+            String query = "SELECT 1 FROM " + tableName + " WHERE " + idColumnName + " = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next(); // Returns true if the ID exists
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    // New method to get a list of existing user IDs
+    public List<Integer> getExistingUserIds() {
+        List<Integer> userIds = new ArrayList<>();
+        try {
+            // First check if the table exists
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet tables = metaData.getTables(null, null, "user", null);
+            
+            if (!tables.next()) {
+                // Try variations of the table name
+                String[] possibleTableNames = {"user", "users", "utilisateur", "utilisateurs"};
+                String actualTableName = null;
+                
+                for (String tableName : possibleTableNames) {
+                    tables = metaData.getTables(null, null, tableName, null);
+                    if (tables.next()) {
+                        actualTableName = tableName;
+                        System.out.println("Found user table with name: " + actualTableName);
+                        break;
+                    }
+                }
+                
+                if (actualTableName == null) {
+                    System.out.println("ERROR: User table not found!");
+                    return userIds;
+                }
+                
+                // Get ID column name
+                ResultSet columns = metaData.getColumns(null, null, actualTableName, null);
+                String idColumnName = "id"; // default
+                
+                while (columns.next()) {
+                    String colName = columns.getString("COLUMN_NAME");
+                    if (colName.equalsIgnoreCase("id") || colName.contains("id") || 
+                        colName.equalsIgnoreCase("user_id") || colName.equalsIgnoreCase("utilisateur_id")) {
+                        idColumnName = colName;
+                        break;
+                    }
+                }
+                
+                String query = "SELECT " + idColumnName + " FROM " + actualTableName + " LIMIT 10";
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                
+                while (resultSet.next()) {
+                    userIds.add(resultSet.getInt(idColumnName));
+                }
+            } else {
+                // Original code
+                String query = "SELECT id FROM user LIMIT 10";
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                
+                while (resultSet.next()) {
+                    userIds.add(resultSet.getInt("id"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userIds;
+    }
+    
+    // New method to get a list of existing dossier IDs
+    public List<Integer> getExistingDossierIds() {
+        List<Integer> dossierIds = new ArrayList<>();
+        try {
+            // First check if the table exists
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet tables = metaData.getTables(null, null, "dossier", null);
+            
+            if (!tables.next()) {
+                // Try variations of the table name
+                String[] possibleTableNames = {"dossier", "dossiers", "folder", "folders"};
+                String actualTableName = null;
+                
+                for (String tableName : possibleTableNames) {
+                    tables = metaData.getTables(null, null, tableName, null);
+                    if (tables.next()) {
+                        actualTableName = tableName;
+                        System.out.println("Found dossier table with name: " + actualTableName);
+                        break;
+                    }
+                }
+                
+                if (actualTableName == null) {
+                    System.out.println("ERROR: Dossier table not found!");
+                    return dossierIds;
+                }
+                
+                // Get ID column name
+                ResultSet columns = metaData.getColumns(null, null, actualTableName, null);
+                String idColumnName = "id_dossier"; // default
+                
+                while (columns.next()) {
+                    String colName = columns.getString("COLUMN_NAME");
+                    if (colName.equalsIgnoreCase("id_dossier") || colName.contains("dossier") || 
+                        colName.equalsIgnoreCase("id") || colName.contains("_id")) {
+                        idColumnName = colName;
+                        break;
+                    }
+                }
+                
+                String query = "SELECT " + idColumnName + " FROM " + actualTableName + " LIMIT 10";
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                
+                while (resultSet.next()) {
+                    dossierIds.add(resultSet.getInt(idColumnName));
+                }
+            } else {
+                // Original code
+                String query = "SELECT id_dossier FROM dossier LIMIT 10";
+                PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery();
+                
+                while (resultSet.next()) {
+                    dossierIds.add(resultSet.getInt("id_dossier"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dossierIds;
+    }
+
+    public void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+} 

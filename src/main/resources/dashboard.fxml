@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.DashboardController"
+            prefHeight="700.0" prefWidth="1000.0"
+            style="-fx-background-color: #0A2463;">
+
+    <VBox spacing="30" alignment="CENTER" AnchorPane.topAnchor="50.0" AnchorPane.leftAnchor="50.0" 
+          AnchorPane.rightAnchor="50.0" AnchorPane.bottomAnchor="50.0">
+        
+        <Label text="GRADAWAY - Dashboard" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="28.0"/>
+            </font>
+        </Label>
+        
+        <VBox spacing="30" alignment="CENTER">
+            <Button text="Gestion des Universités" 
+                    onAction="#handleAdminUniversite"
+                    prefWidth="300" prefHeight="60"
+                    style="-fx-background-color: #3E92CC; -fx-text-fill: white;">
+                <font>
+                    <Font name="System Bold" size="18.0"/>
+                </font>
+            </Button>
+            
+            <Button text="Gestion des Candidatures" 
+                    onAction="#handleAdminConditature"
+                    prefWidth="300" prefHeight="60"
+                    style="-fx-background-color: #3E92CC; -fx-text-fill: white;">
+                <font>
+                    <Font name="System Bold" size="18.0"/>
+                </font>
+            </Button>
+        </VBox>
+        
+        <Button text="Quitter" 
+                onAction="#handleQuitButton"
+                prefWidth="150" prefHeight="40"
+                style="-fx-background-color: #D8315B; -fx-text-fill: white;"/>
+    </VBox>
+</AnchorPane> 

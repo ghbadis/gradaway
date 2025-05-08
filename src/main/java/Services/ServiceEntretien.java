@@ -46,12 +46,13 @@ public class ServiceEntretien implements IService<Entretien> {
     }
 
     @Override
-    public void supprimer(Entretien entretien) throws SQLException {
+    public boolean supprimer(Entretien entretien) throws SQLException {
         String req = "DELETE FROM entretien WHERE id_entretien=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, entretien.getId_entretien());
         ps.executeUpdate();
         System.out.println("Entretien supprimé");
+        return false;
     }
 
     @Override

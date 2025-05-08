@@ -13,6 +13,8 @@ public class ServiceConditature implements IService<Conditature> {
     public ServiceConditature() {
     }
 
+
+
     public void ajouter(Conditature conditature) throws SQLException {
         String req = "INSERT INTO conditature(id_dossier, user_id, id_universite, date_de_remise_C, Domaine) " +
                 "VALUES (" + conditature.getId_dossier() + ", " + conditature.getUser_id() + ", " +
@@ -37,13 +39,15 @@ public class ServiceConditature implements IService<Conditature> {
         System.out.println("Conditature modifiée");
     }
 
-    public void supprimer(Conditature conditature) throws SQLException {
+    public boolean supprimer(Conditature conditature) throws SQLException {
         String req = "DELETE FROM conditature WHERE id_c=?";
         PreparedStatement ps = this.con.prepareStatement(req);
         ps.setInt(1, conditature.getId_c());
         ps.executeUpdate();
         System.out.println("Conditature supprimée");
+        return false;
     }
+
 
     public List<Conditature> recuperer() throws SQLException {
         List<Conditature> conditatures = new ArrayList<>();

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane prefHeight="600.0" prefWidth="1000.0" stylesheets="stylesbadiss.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EnterOPTViewcontroller">
+    <HBox />
+   <StackPane stylesheets="stylesbadis.css">
+      <children>
+         <HBox stylesheets="@../../../../../gradawayprojet/gradaway/src/main/resources/stylesbadis.css">
+            <children>
+               <Pane prefHeight="400.0" prefWidth="450.0" style="-fx-background-color: #ffff;">
+                  <children>
+                     <ImageView fitHeight="321.0" fitWidth="252.0" layoutX="77.0" layoutY="-9.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@images/logo.png" />
+                        </image>
+                     </ImageView>
+                     <ImageView fitHeight="307.0" fitWidth="232.0" layoutX="80.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@images/photo.png" />
+                        </image>
+                     </ImageView>
+                  </children>
+               </Pane>
+               <Pane prefHeight="600.0" prefWidth="639.0" style="-fx-background-color: #e5e5e5;">
+                  <children>
+                     <Button layoutX="54.0" layoutY="398.0" mnemonicParsing="false" onAction="#verifyOTP" prefHeight="42.0" prefWidth="500.0" text="Verify" fx:id="verifyButton">
+                        <font>
+                           <Font name="System Bold" size="12.0" />
+                        </font>
+                     </Button>
+                     <TextField fx:id="input1" layoutX="97.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
+                     <TextField fx:id="input2" layoutX="167.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
+                     <TextField fx:id="input3" layoutX="238.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
+                     <TextField fx:id="input4" layoutX="304.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
+                     <TextField fx:id="input5" layoutX="366.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
+                     <Text layoutX="96.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter OTP" />
+                     <Text layoutX="96.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="We have share a code of your registered email">
+                        <font>
+                           <Font name="High Tower Text Italic" size="12.0" />
+                        </font>
+                     </Text>
+                     <Group fx:id="back1" layoutX="79.0" layoutY="78.0" onMouseClicked="#back">
+                        <children>
+                           <Text layoutX="24.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Back" wrappingWidth="45.29217529296875">
+                              <font>
+                                 <Font size="15.0" />
+                              </font>
+                           </Text>
+                           <ImageView fitHeight="26.0" fitWidth="24.0" layoutY="0.94921875" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@images/back.png" />
+                              </image>
+                           </ImageView>
+                        </children>
+                     </Group>
+                  </children>
+               </Pane>
+            </children>
+         </HBox>
+      </children>
+   </StackPane>
+</StackPane>
