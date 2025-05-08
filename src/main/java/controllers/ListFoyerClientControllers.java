@@ -64,13 +64,13 @@ public class ListFoyerClientControllers {
         // Créer un VBox pour contenir tous les éléments verticalement
         VBox cardContent = new VBox(10);
         cardContent.setAlignment(javafx.geometry.Pos.CENTER);
-        
+
         // Image avec gestion améliorée
         ImageView imageView = new ImageView();
         imageView.setFitWidth(300);
         imageView.setFitHeight(120);
         imageView.setPreserveRatio(true);
-        
+
         // Gérer l'image de manière plus robuste
         boolean imageLoaded = false;
         if (foyer.getImage() != null && !foyer.getImage().isEmpty()) {
@@ -83,12 +83,12 @@ public class ListFoyerClientControllers {
                 // L'image n'a pas pu être chargée, on utilisera l'image par défaut
             }
         }
-        
+
         // Si l'image n'a pas été chargée, utiliser une couleur de fond ou une image par défaut
         if (!imageLoaded) {
             // Créer un rectangle coloré comme placeholder
             imageView.setStyle("-fx-background-color: #e0e0e0;");
-            
+
             // On peut aussi définir une image par défaut si elle existe
             try {
                 // Essayer plusieurs chemins possibles pour l'image par défaut
@@ -99,7 +99,7 @@ public class ListFoyerClientControllers {
                 if (is == null) {
                     is = getClass().getResourceAsStream("/iamge/téléchargé.png");
                 }
-                
+
                 if (is != null) {
                     Image defaultImage = new Image(is);
                     imageView.setImage(defaultImage);
@@ -113,7 +113,7 @@ public class ListFoyerClientControllers {
         VBox infoBox = new VBox(5);
         infoBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         infoBox.setPrefWidth(300);
-        
+
         // Foyer name with bigger, bolder styling
         Label nameLabel = new Label(foyer.getNom());
         nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #2196F3;");
@@ -131,13 +131,13 @@ public class ListFoyerClientControllers {
         // Créer un HBox pour les informations de capacité et chambres
         HBox detailsBox = new HBox(10);
         detailsBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        
+
         Label capacityLabel = new Label("👥 " + foyer.getCapacite());
         capacityLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
 
         Label roomsLabel = new Label("🛏 " + foyer.getNombreDeChambre());
         roomsLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
-        
+
         detailsBox.getChildren().addAll(capacityLabel, roomsLabel);
 
         // Réserver button - s'assurer qu'il est bien configuré
@@ -146,7 +146,7 @@ public class ListFoyerClientControllers {
         reserverButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;");
         reserverButton.setOnMouseEntered(e -> reserverButton.setStyle("-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;"));
         reserverButton.setOnMouseExited(e -> reserverButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;"));
-        
+
         // Configurer l'action du bouton pour naviguer vers la page de réservation avec le foyer sélectionné
         reserverButton.setOnAction(e -> {
             try {
@@ -176,7 +176,7 @@ public class ListFoyerClientControllers {
                             foyerContainer.getChildren().add(createFoyerCard(foyer));
                         }
                     }
-                    
+
                     // Ne pas afficher de message pendant la saisie, seulement lors du clic sur le bouton
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -196,8 +196,8 @@ public class ListFoyerClientControllers {
 
     private boolean matchesSearch(Foyer foyer, String searchTerm) {
         return foyer.getNom().toLowerCase().contains(searchTerm) ||
-               foyer.getVille().toLowerCase().contains(searchTerm) ||
-               foyer.getPays().toLowerCase().contains(searchTerm);
+                foyer.getVille().toLowerCase().contains(searchTerm) ||
+                foyer.getPays().toLowerCase().contains(searchTerm);
     }
 
     private void setupNavigationButton() {
@@ -208,14 +208,14 @@ public class ListFoyerClientControllers {
                     List<Foyer> foyers = serviceFoyer.recuperer();
                     foyerContainer.getChildren().clear();
                     boolean foyerFound = false;
-                    
+
                     for (Foyer foyer : foyers) {
                         if (matchesSearch(foyer, searchTerm)) {
                             foyerContainer.getChildren().add(createFoyerCard(foyer));
                             foyerFound = true;
                         }
                     }
-                    
+
                     if (!foyerFound) {
                         showAlert("Recherche", "Aucun résultat trouvé pour votre recherche.", Alert.AlertType.INFORMATION);
                     }
@@ -239,21 +239,21 @@ public class ListFoyerClientControllers {
             List<Foyer> foyers = serviceFoyer.recuperer();
             // Clear existing items
             locationMenu.getItems().clear();
-            
+
             // Add section title for Locations
             MenuItem locationTitle = new MenuItem("📍 Locations");
             locationTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
             locationTitle.setDisable(true);
             locationMenu.getItems().add(locationTitle);
-            
+
             // Create a set to store unique locations
             Set<String> uniqueLocations = new HashSet<>();
-            
+
             // Add all unique locations to the set
             for (Foyer foyer : foyers) {
                 uniqueLocations.add(foyer.getVille() + ", " + foyer.getPays());
             }
-            
+
             // Create menu items for each unique location
             for (String location : uniqueLocations) {
                 MenuItem item = new MenuItem(location);
@@ -263,14 +263,14 @@ public class ListFoyerClientControllers {
                     if (parts.length == 2) {
                         String city = parts[0];
                         String country = parts[1];
-                        
+
                         try {
                             List<Foyer> filteredFoyers = serviceFoyer.recuperer();
                             foyerContainer.getChildren().clear();
-                            
+
                             for (Foyer foyer : filteredFoyers) {
-                                if (foyer.getVille().equalsIgnoreCase(city) && 
-                                    foyer.getPays().equalsIgnoreCase(country)) {
+                                if (foyer.getVille().equalsIgnoreCase(city) &&
+                                        foyer.getPays().equalsIgnoreCase(country)) {
                                     foyerContainer.getChildren().add(createFoyerCard(foyer));
                                 }
                             }
@@ -282,12 +282,12 @@ public class ListFoyerClientControllers {
                 });
                 locationMenu.getItems().add(item);
             }
-            
+
             // Style the menu button
             locationMenu.setText("📍 Location");
             locationMenu.setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; " +
-                               "-fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;");
-            
+                    "-fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 8 15;");
+
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Erreur", "Erreur lors du chargement des locations: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -298,7 +298,7 @@ public class ListFoyerClientControllers {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ReserverFoyer.fxml"));
             Parent root = loader.load();
-            
+
             // Récupérer le contrôleur et lui passer le foyer sélectionné
             ReserverFoyerControllers controller = loader.getController();
             controller.setSelectedFoyer(foyer);

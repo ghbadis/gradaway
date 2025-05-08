@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="685.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminDossiercontroller">
+<AnchorPane prefHeight="686.0" prefWidth="881.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminDossiercontroller">
    <children>
       <AnchorPane layoutY="-13.0" prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
          <children>
@@ -249,7 +249,7 @@
          </children>
       </HBox>
       
-      <TableView fx:id="dossierTable" layoutX="275.0" layoutY="104.0" prefHeight="581.0" prefWidth="691.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10;">
+      <TableView fx:id="dossierTable" layoutX="275.0" layoutY="104.0" prefHeight="582.0" prefWidth="710.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10;">
          <columns>
             <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
             <TableColumn fx:id="nomColumn" prefWidth="100.0" text="Nom" />
@@ -263,7 +263,7 @@
             <TableColumn fx:id="dossierSanteColumn" prefWidth="120.0" text="Dossier Santé" />
             <TableColumn fx:id="cvColumn" prefWidth="120.0" text="CV" />
             <TableColumn fx:id="dateDepotColumn" prefWidth="120.0" text="Date Dépôt" />
-            <TableColumn fx:id="actionColumn" prefWidth="100.0" text="Action" />
+            <TableColumn fx:id="actionColumn" prefWidth="151.2000488281251" text="Action" />
          </columns>
       </TableView>
    </children>
