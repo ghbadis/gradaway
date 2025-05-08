@@ -31,20 +31,6 @@
                </ImageView>
             </children>
          </Pane>
-         <Group fx:id="back" layoutX="381.0" layoutY="48.0" onMouseClicked="#back">
-            <children>
-               <Text layoutX="24.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Back" wrappingWidth="45.29217529296875">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Text>
-               <ImageView fitHeight="26.0" fitWidth="24.0" layoutY="0.94921875" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@images/back.png" />
-                  </image>
-               </ImageView>
-            </children>
-         </Group>
       </children>
    </AnchorPane>
    <Pane prefHeight="600.0" prefWidth="600.0">
@@ -66,6 +52,20 @@
                <Image url="@images/icons8-mail-24.png" />
             </image>
          </ImageView>
+         <Group fx:id="back1" layoutX="395.0" layoutY="72.0" onMouseClicked="#back">
+            <children>
+               <Text fx:id="backlogin" layoutX="24.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Back" wrappingWidth="45.29217529296875">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Text>
+               <ImageView fitHeight="26.0" fitWidth="24.0" layoutY="0.94921875" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@images/back.png" />
+                  </image>
+               </ImageView>
+            </children>
+         </Group>
       </children>
    </Pane>
 </StackPane>

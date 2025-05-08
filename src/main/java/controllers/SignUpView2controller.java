@@ -101,7 +101,7 @@ public class SignUpView2controller {
                 
                 // Redirection vers la page de connexion
                 try {
-                    Parent root = FXMLLoader.load(getClass().getResource("/LoginView.fxml"));
+                    Parent root = FXMLLoader.load(getClass().getResource("/Login-View.fxml"));
                     Stage stage = (Stage) tfcin.getScene().getWindow();
                     stage.setScene(new Scene(root));
                 } catch (IOException e) {

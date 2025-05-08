@@ -26,8 +26,6 @@ public class SignUpView1controller {
     @FXML
     private TextField tfemail;
     @FXML
-    private Group back;
-    @FXML
     private Text login;
     @FXML
     private javafx.scene.image.ImageView togglePasswordIcon;
@@ -38,6 +36,8 @@ public class SignUpView1controller {
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+    @FXML
+    private Group backlogin;
 
     @FXML
     public void initialize() {
@@ -66,7 +66,7 @@ public class SignUpView1controller {
     public void back(Event event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/LoginView.fxml"));
-            Stage stage = (Stage) back.getScene().getWindow();
+            Stage stage = (Stage) backlogin.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
             showAlert("Erreur", "Impossible de charger la page précédente");

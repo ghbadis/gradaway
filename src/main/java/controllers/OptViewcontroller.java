@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import utils.MyDatabase;
 import utils.EmailService;
@@ -20,13 +21,15 @@ import java.sql.SQLException;
 
 public class OptViewcontroller {
     @FXML
-    private Group back;
-    @FXML
     private TextField tfemailpassword;
 
     private Connection connection;
     private static String currentOTP;
     private static String currentEmail;
+    @FXML
+    private Group back1;
+    @FXML
+    private Text backlogin;
 
     public OptViewcontroller() {
         try {
@@ -41,7 +44,7 @@ public class OptViewcontroller {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) back.getScene().getWindow();
+            Stage stage = (Stage) back1.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
             e.printStackTrace();
