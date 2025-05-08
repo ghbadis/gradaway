@@ -89,7 +89,7 @@ public class EmailSender {
             if (qrCodeContent != null && !qrCodeContent.isEmpty()) {
                 try {
                     // Generate QR code image
-                    BufferedImage qrImage = QRCodeGenerator.generateQRCodeBufferedImage(qrCodeContent, 300, 300);
+                    BufferedImage qrImage = QRCodeGeneratorF.generateQRCodeBufferedImage(qrCodeContent, 300, 300);
                     
                     // Convert to byte array
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -145,7 +145,7 @@ public class EmailSender {
     @Deprecated
     public static String generateQRCodeBase64(String content, int width, int height) throws WriterException, IOException {
         // Déléguer à la nouvelle méthode optimisée
-        return QRCodeGenerator.generateQRCodeBase64ForEmail(content, width, height);
+        return QRCodeGeneratorF.generateQRCodeBase64ForEmail(content, width, height);
     }
     
     /**
