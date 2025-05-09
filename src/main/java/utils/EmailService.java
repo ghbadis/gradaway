@@ -84,10 +84,12 @@ public class EmailService {
             message.setText(emailContent.toString());
             
             Transport.send(message);
-            System.out.println("Email de confirmation de candidature envoyé à " + toEmail);
+            
+            System.out.println("Email de confirmation de candidature envoyé avec succès à " + toEmail);
         } catch (MessagingException e) {
             e.printStackTrace();
-            throw new RuntimeException("Erreur lors de l'envoi de l'email de confirmation de candidature: " + e.getMessage());
+            System.err.println("Erreur lors de l'envoi de l'email de confirmation: " + e.getMessage());
+            throw new RuntimeException("Erreur lors de l'envoi de l'email de confirmation");
         }
     }
 } 
