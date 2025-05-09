@@ -117,18 +117,23 @@ public class Ajouterafficheevenementcontrolleur {
 
         // Image de l'événement
         ImageView imageView = new ImageView();
-        if (evenement.getImage() != null) {
-            try {
+        try {
+            if (evenement.getImage() != null && !evenement.getImage().isEmpty()) {
                 Image image = new Image(evenement.getImage());
                 imageView.setImage(image);
-                imageView.setFitWidth(250);
-                imageView.setFitHeight(150);
-                imageView.setPreserveRatio(true);
-            } catch (Exception e) {
-                // Image par défaut si l'image ne peut pas être chargée
-                imageView.setImage(new Image("/image/default_event.png"));
+            } else {
+                imageView.setImage(new Image(getClass().getResourceAsStream("/images/default_event.png")));
+            }
+        } catch (Exception e) {
+            try {
+                imageView.setImage(new Image(getClass().getResourceAsStream("/images/default_event.png")));
+            } catch (Exception ex) {
+                imageView = new ImageView();
             }
         }
+        imageView.setFitWidth(250);
+        imageView.setFitHeight(150);
+        imageView.setPreserveRatio(true);
 
         // Informations de l'événement
         Label nomLabel = new Label(evenement.getNom());

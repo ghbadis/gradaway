@@ -66,10 +66,8 @@ public class SignUpView2controller {
         for (int i = 18; i <= 100; i++) {
             tfage.getItems().add(i);
         }
-        newPassVisible.setManaged(false);
-        newPassVisible.setVisible(false);
-        confNewPassVisible.setManaged(false);
-        confNewPassVisible.setVisible(false);
+        // Les champs newPassVisible et confNewPassVisible ne sont pas utilisés dans le FXML
+        // donc on ne les initialise pas ici pour éviter les NullPointerException
     }
 
     @FXML
@@ -114,7 +112,7 @@ public class SignUpView2controller {
                 
                 // Redirection vers la page de connexion
                 try {
-                    Parent root = FXMLLoader.load(getClass().getResource("/Login-View.fxml"));
+                    Parent root = FXMLLoader.load(getClass().getResource("/login-view.fxml"));
                     Stage stage = (Stage) tfcin.getScene().getWindow();
                     stage.setScene(new Scene(root));
                 } catch (IOException e) {

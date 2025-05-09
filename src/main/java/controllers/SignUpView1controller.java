@@ -96,6 +96,7 @@ public class SignUpView1controller {
                 Stage stage = (Stage) tfnom.getScene().getWindow();
                 stage.setScene(new Scene(root));
             } catch (IOException e) {
+                e.printStackTrace();
                 showAlert("Erreur", "Impossible de charger la page suivante");
             }
         }
