@@ -126,7 +126,7 @@ public class AdminDossiercontroller implements Initializable {
             return new SimpleStringProperty("N/A");
         });
 
-        // Set cell value factories for image columns
+        // Set cell value factories for image columns..
         photoColumn.setCellValueFactory(new PropertyValueFactory<>("photo"));
         cinColumn.setCellValueFactory(new PropertyValueFactory<>("cin"));
         diplomeBacColumn.setCellValueFactory(new PropertyValueFactory<>("diplome_baccalauréat"));
