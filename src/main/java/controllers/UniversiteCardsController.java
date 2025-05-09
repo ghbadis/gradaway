@@ -20,6 +20,7 @@ import Services.ServiceConditature;
 import Services.ServiceUniversite;
 import Services.CandidatureService;
 import models.Candidature;
+import utils.EmailService;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import java.util.Properties;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class UniversiteCardsController implements Initializable {
 
@@ -332,9 +342,20 @@ public class UniversiteCardsController implements Initializable {
             boolean success = candidatureService.addCandidature(candidature);
             
             if (success) {
+                // Get university name for email
+                String universiteName = "";
+                try {
+                    universiteName = serviceUniversite.recuperer(universiteId).getNom();
+                } catch (SQLException e) {
+                    System.err.println("Error getting university name: " + e.getMessage());
+                }
+                
+                // Send email notification
+                EmailService.sendCandidatureConfirmationEmail("mnbettaieb@gmail.com", universiteName, domaine, submissionDate);
+                
                 // Show success message
                 showAlert(Alert.AlertType.INFORMATION, "Succès", 
-                        "Votre candidature a été soumise avec succès", "");
+                        "Votre candidature a été soumise avec succès", "Une notification a été envoyée par email.");
             } else {
                 showAlert(Alert.AlertType.ERROR, "Erreur", 
                         "Impossible de soumettre la candidature - vérifiez que l'utilisateur et le dossier existent", "");
