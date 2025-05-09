@@ -35,6 +35,7 @@ public class NewPassView {
     private Text welcome;
 
     private Connection connection;
+    private String storedPassword = "";
 
     @FXML
     public void initialize() {
@@ -49,13 +50,15 @@ public class NewPassView {
 
     private void togglePasswordVisibility(TextField passwordField, ImageView toggleIcon) {
         if (passwordField.getPromptText().equals("••••••••")) {
+            // Sauvegarder le mot de passe actuel
+            storedPassword = passwordField.getText();
+            // Afficher le mot de passe en clair
+            passwordField.setText(storedPassword);
             passwordField.setPromptText("");
-            // Change icon to show password is visible
-            // You can set a different icon here if needed
         } else {
+            // Masquer le mot de passe
+            passwordField.setText("");
             passwordField.setPromptText("••••••••");
-            // Change icon to show password is hidden
-            // You can set a different icon here if needed
         }
     }
 
