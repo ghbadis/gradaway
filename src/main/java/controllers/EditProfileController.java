@@ -3,12 +3,19 @@ package controllers;
 import Services.ServiceUser;
 import entities.User;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.event.ActionEvent;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class EditProfileController {
@@ -147,7 +154,7 @@ public class EditProfileController {
                 tfmoyenneprofil.setText(String.valueOf(currentUser.getMoyennes()));
                 
                 // Welcome message
-                setMessage("Bienvenue " + currentUser.getPrenom() + " " + currentUser.getNom());
+                //setMessage("Bienvenue " + currentUser.getPrenom() + " " + currentUser.getNom());
                 System.out.println("EditProfileController: Fields populated successfully");
             } catch (Exception e) {
                 setMessage("Erreur lors du remplissage des champs: " + e.getMessage());
@@ -266,4 +273,215 @@ public class EditProfileController {
             }
         }
     }
+
+    @FXML
+    public void acceuilbutton(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Acceuil.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Acceuil");
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("AcceuilController: Error loading Acceuil.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void volsbutton(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void universitébutton(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion des Candidatures");
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("AcceuilController: Error loading adminconditature.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des candidatures.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void evenementbutton(ActionEvent actionEvent) {
+        try {
+            System.out.println("AcceuilController: Opening Affiche Evenement view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Événements");
+            stage.setMinWidth(1133); // Match the size from affiche_evenement.fxml
+            stage.setMinHeight(691);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("AcceuilController: Error loading affiche_evenement.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des événements.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void hebergementbutton(ActionEvent actionEvent) {
+        try {
+            System.out.println("AcceuilController: Opening ListFoyerClient view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Foyers");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("AcceuilController: Error loading ListFoyerClient.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des foyers.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void restaurantbutton(ActionEvent actionEvent) {
+        try {
+            System.out.println("AcceuilController: Opening ListRestaurantClient view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Restaurants");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("AcceuilController: Error loading ListRestaurantClient.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des restaurants.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void dossierbutton(ActionEvent actionEvent) {
+        if (this.userId <= 0) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "ID utilisateur invalide. Impossible d'ouvrir la gestion des dossiers.");
+            return;
+        }
+
+        try {
+            System.out.println("AcceuilController: Opening AjoutDossier view for User ID: " + this.userId);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
+            Parent root = loader.load();
+
+            AjoutDossierController ajoutDossierController = loader.getController();
+            ajoutDossierController.setEtudiantId(this.userId); // Pass the user ID
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion du Dossier");
+            stage.setMinWidth(1200); // Match the size from LoginViewcontroller or adjust
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+
+            // Optional: Close the accueil window if needed
+            // Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            // currentStage.close();
+
+        } catch (IOException e) {
+            System.err.println("AcceuilController: Error loading AjoutDossier.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue du dossier.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void logoutbutton(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            Scene scene = new Scene(root);
+            loginStage.setScene(scene);
+            loginStage.setTitle("Login - GradAway");
+            loginStage.setResizable(true);
+            loginStage.centerOnScreen();
+            loginStage.show();
+            // Close current Accueil window
+            Stage currentStage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            System.err.println("Acceuilcontroller: Error loading login view: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la déconnexion.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void entretienbutton(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Display an alert if loading fails
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error Loading View");
+            alert.setContentText("Unable to load the entretien view: " + e.getMessage());
+            alert.showAndWait();
+        }
+
+    }
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 }
+
