@@ -21,7 +21,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
 import utils.QRCodeGenerator;
+import utils.PDFGenerator;
+import java.awt.Desktop;
+import java.awt.image.BufferedImage;
+import java.net.URI;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import javafx.embed.swing.SwingFXUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -38,6 +48,7 @@ public class ListeReservationController {
     private ObservableList<ReservationEvenement> reservationsList;
     private ServiceEvenement serviceEvenement = new ServiceEvenement();
     private ReservationEvenement selectedReservation = null;
+    private String userEmail;
 
     @FXML
     public void initialize() {
@@ -52,13 +63,23 @@ public class ListeReservationController {
         modifier_button.setOnAction(event -> modifierReservation());
     }
 
+    public void setUserEmail(String email) {
+        this.userEmail = email;
+        loadData(); // Recharger les données avec le nouvel email
+    }
+
     public void refreshData() {
         loadData();
     }
 
     private void loadData() {
         try {
-            List<ReservationEvenement> reservations = serviceReservation.recuperer();
+            List<ReservationEvenement> reservations;
+            if (userEmail != null && !userEmail.isEmpty()) {
+                reservations = serviceReservation.recupererParEmail(userEmail);
+            } else {
+                reservations = serviceReservation.recuperer();
+            }
             afficherReservations(reservations);
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors du chargement des réservations", e.getMessage());
@@ -130,41 +151,63 @@ public class ListeReservationController {
         }
     }
 
+    @FXML
     private void afficherQRCode(ReservationEvenement reservation) {
         try {
+            // Générer le PDF et obtenir l'URL
+            String pdfUrl = PDFGenerator.generateBilletPDF(reservation);
+            
             // Créer une nouvelle fenêtre pour afficher le QR code
             Stage qrStage = new Stage();
             VBox root = new VBox(20);
-            root.setPadding(new Insets(20));
             root.setAlignment(Pos.CENTER);
-
-            // Générer le contenu du QR code
-            String qrContent = String.format(
-                "Réservation #%d\nÉvénement #%d\nNom: %s %s\nDate: %s",
-                reservation.getId_reservation(),
-                reservation.getId_evenement(),
-                reservation.getNom(),
-                reservation.getPrenom(),
-                reservation.getDate()
-            );
-
-            // Générer et afficher le QR code
-            ImageView qrCode = QRCodeGenerator.generateQRCode(qrContent, 200, 200);
-            if (qrCode != null) {
-                root.getChildren().add(qrCode);
+            root.setPadding(new Insets(20));
+            
+            // Générer le QR code avec l'URL du PDF
+            MultiFormatWriter writer = new MultiFormatWriter();
+            BitMatrix bitMatrix = writer.encode(pdfUrl, BarcodeFormat.QR_CODE, 300, 300);
+            
+            // Convertir le QR code en image
+            BufferedImage qrImage = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
+            for (int x = 0; x < 300; x++) {
+                for (int y = 0; y < 300; y++) {
+                    qrImage.setRGB(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
+                }
             }
-
-            // Ajouter un label avec les informations
-            Label infoLabel = new Label("Votre billet d'entrée");
-            infoLabel.getStyleClass().add("title-label");
-            root.getChildren().add(infoLabel);
-
+            
+            // Afficher le QR code
+            ImageView qrImageView = new ImageView(SwingFXUtils.toFXImage(qrImage, null));
+            qrImageView.setFitWidth(300);
+            qrImageView.setFitHeight(300);
+            
+            // Ajouter un message explicatif
+            Label messageLabel = new Label("Scannez ce QR code pour accéder à votre billet");
+            messageLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+            
+            // Ajouter un bouton pour ouvrir le PDF directement
+            Button openPdfButton = new Button("Ouvrir le PDF");
+            openPdfButton.setOnAction(e -> {
+                try {
+                    Desktop.getDesktop().browse(new URI(pdfUrl));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            
+            root.getChildren().addAll(messageLabel, qrImageView, openPdfButton);
+            
             Scene scene = new Scene(root);
-            qrStage.setTitle("Billet d'entrée");
+            qrStage.setTitle("QR Code du Billet");
             qrStage.setScene(scene);
             qrStage.show();
+            
         } catch (Exception e) {
-            showAlert("Erreur", "Erreur lors de la génération du QR code", e.getMessage());
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Erreur lors de la génération du QR code");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
     }
 

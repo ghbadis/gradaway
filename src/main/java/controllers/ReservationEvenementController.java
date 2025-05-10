@@ -127,12 +127,16 @@ public class ReservationEvenementController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/liste_reservation.fxml"));
             Parent root = loader.load();
 
+            // Récupérer le contrôleur et lui passer l'email
+            ListeReservationController controller = loader.getController();
+            controller.setUserEmail(email_txtf.getText());
+
             Stage stage = new Stage();
             stage.setTitle("Mes Réservations");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException | RuntimeException e) {
-            e.printStackTrace(); // Affiche le stacktrace dans la console
+            e.printStackTrace();
             showAlert("Erreur", "Erreur lors de l'ouverture de la liste des réservations", e.toString() + "\n" + (e.getCause() != null ? e.getCause().toString() : ""));
         }
     }
