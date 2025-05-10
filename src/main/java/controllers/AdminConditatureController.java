@@ -30,6 +30,7 @@ public class AdminConditatureController {
     @FXML
     void handleAjouterButton(ActionEvent event) {
         try {
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/listuniversitecards.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ajouterButton.getScene().getWindow();
