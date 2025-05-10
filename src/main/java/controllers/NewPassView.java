@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.scene.Group;
 import utils.MyDatabase;
 import utils.PasswordHasher;
+import javafx.scene.control.PasswordField;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -21,13 +22,13 @@ import java.sql.SQLException;
 
 public class NewPassView {
     @FXML
-    private TextField newPass;
+    private PasswordField newPass;
     @FXML
-    private TextField confNewPass;
+    private TextField newPassVisible;
     @FXML
-    private ImageView togglePasswordIcon1;
+    private PasswordField confNewPass;
     @FXML
-    private ImageView togglePasswordIcon;
+    private TextField confNewPassVisible;
     @FXML
     private Group back1;
     @FXML
@@ -36,30 +37,22 @@ public class NewPassView {
     private Text welcome;
 
     private Connection connection;
-    private String storedPassword = "";
+    @FXML
+    private ImageView togglePasswordIcon2;
+    @FXML
+    private ImageView togglePasswordIcon1;
+
+    private boolean isNewPassVisible = false;
+    private boolean isConfNewPassVisible = false;
 
     @FXML
     public void initialize() {
-        // Set password fields to be masked by default
-        newPass.setPromptText("••••••••");
-        confNewPass.setPromptText("••••••••");
-
-        // Add click handlers for password toggle icons
-        togglePasswordIcon.setOnMouseClicked(event -> togglePasswordVisibility(newPass, togglePasswordIcon));
-        togglePasswordIcon1.setOnMouseClicked(event -> togglePasswordVisibility(confNewPass, togglePasswordIcon1));
-    }
-
-    private void togglePasswordVisibility(TextField passwordField, ImageView toggleIcon) {
-        if (passwordField.getPromptText().equals("••••••••")) {
-            // Sauvegarder le mot de passe actuel
-            storedPassword = passwordField.getText();
-            // Afficher le mot de passe en clair
-            passwordField.setText(storedPassword);
-            passwordField.setPromptText("");
-        } else {
-            // Masquer le mot de passe
-            passwordField.setText("");
-            passwordField.setPromptText("••••••••");
+        // Initialize password visibility toggle
+        if (togglePasswordIcon1 != null) {
+            togglePasswordIcon1.setOnMouseClicked(event -> toggleNewPassVisibility());
+        }
+        if (togglePasswordIcon2 != null) {
+            togglePasswordIcon2.setOnMouseClicked(event -> toggleConfNewPassVisibility());
         }
     }
 
@@ -162,5 +155,35 @@ public class NewPassView {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    private void toggleNewPassVisibility() {
+        if (isNewPassVisible) {
+            // Hide password
+            newPass.setText(newPassVisible.getText());
+            newPass.setVisible(true);
+            newPassVisible.setVisible(false);
+        } else {
+            // Show password
+            newPassVisible.setText(newPass.getText());
+            newPassVisible.setVisible(true);
+            newPass.setVisible(false);
+        }
+        isNewPassVisible = !isNewPassVisible;
+    }
+
+    private void toggleConfNewPassVisibility() {
+        if (isConfNewPassVisible) {
+            // Hide password
+            confNewPass.setText(confNewPassVisible.getText());
+            confNewPass.setVisible(true);
+            confNewPassVisible.setVisible(false);
+        } else {
+            // Show password
+            confNewPassVisible.setText(confNewPass.getText());
+            confNewPassVisible.setVisible(true);
+            confNewPass.setVisible(false);
+        }
+        isConfNewPassVisible = !isConfNewPassVisible;
     }
 } 
