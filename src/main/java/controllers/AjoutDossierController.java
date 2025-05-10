@@ -6,6 +6,7 @@ import entities.Dossier;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -37,14 +38,6 @@ public class AjoutDossierController {
     @FXML private ImageView lettreMotivationPreview;
     @FXML private ImageView dossierSantePreview;
     @FXML private ImageView cvPreview;
-    @FXML private TextField cinPathField;
-    @FXML private TextField photoPathField;
-    @FXML private TextField diplomeBacPathField;
-    @FXML private TextField releveNotePathField;
-    @FXML private TextField diplomeObtenuPathField;
-    @FXML private TextField lettreMotivationPathField;
-    @FXML private TextField dossierSantePathField;
-    @FXML private TextField cvPathField;
     @FXML private DatePicker dateDepotPicker;
     @FXML private Button submitButton;
     @FXML private Button cancelButton;
@@ -459,4 +452,67 @@ public class AjoutDossierController {
         }
         alert.showAndWait();
     }
-} 
+
+    @FXML
+    public void volsbutton(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void logoutbutton(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            Scene scene = new Scene(root);
+            loginStage.setScene(scene);
+            loginStage.setTitle("Login - GradAway");
+            loginStage.setResizable(true);
+            loginStage.centerOnScreen();
+            loginStage.show();
+            // Close current Accueil window
+            Stage currentStage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            System.err.println("Acceuilcontroller: Error loading login view: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la déconnexion.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void acceuilbutton(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    public void userbutton(ActionEvent actionEvent) {
+
+
+    }
+
+    @FXML
+    public void universitébutton(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    public void evenementbutton(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    public void hebergementbutton(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    public void restaurantbutton(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    public void entretienbutton(ActionEvent actionEvent) {
+
+    }
+
+}

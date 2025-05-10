@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.Group;
 import utils.MyDatabase;
+import utils.PasswordHasher;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -85,10 +86,18 @@ public class NewPassView {
             return;
         }
 
+        if (password.length() < 6) {
+            showAlert("Erreur", "Le mot de passe doit contenir au moins 6 caractères");
+            return;
+        }
+
         try {
+            // Hasher le nouveau mot de passe
+            String hashedPassword = PasswordHasher.hashPassword(password);
+
             String query = "UPDATE user SET mdp = ? WHERE email = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, password); // Dans un cas réel, il faudrait hasher le mot de passe
+            preparedStatement.setString(1, hashedPassword);
             preparedStatement.setString(2, OptViewcontroller.getCurrentEmail());
 
             int rowsAffected = preparedStatement.executeUpdate();

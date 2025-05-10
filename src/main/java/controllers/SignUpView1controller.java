@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import utils.PasswordHasher;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -85,41 +86,53 @@ public class SignUpView1controller {
     }
 
     @FXML
-    public void continuer(ActionEvent actionEvent) {
-        if (validateFields()) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/SignUpView2.fxml"));
-                Parent root = loader.load();
-                SignUpView2controller controller = loader.getController();
-                controller.setUserData(tfnom.getText(), tfprenom.getText(), tfemail.getText(), tfmdp.getText());
-                
-                Stage stage = (Stage) tfnom.getScene().getWindow();
-                stage.setScene(new Scene(root));
-            } catch (IOException e) {
-                e.printStackTrace();
-                showAlert("Erreur", "Impossible de charger la page suivante");
-            }
-        }
-    }
+    public void continuer(ActionEvent event) {
+        String nom = tfnom.getText();
+        String prenom = tfprenom.getText();
+        String email = tfemail.getText();
+        String password = tfmdp.getText();
 
-    private boolean validateFields() {
-        if (tfnom.getText().isEmpty() || tfprenom.getText().isEmpty() || 
-            tfemail.getText().isEmpty() || tfmdp.getText().isEmpty()) {
-            showAlert("Erreur", "Tous les champs sont obligatoires");
-            return false;
+        if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            showAlert("Erreur", "Veuillez remplir tous les champs");
+            return;
         }
 
-        if (!EMAIL_PATTERN.matcher(tfemail.getText()).matches()) {
-            showAlert("Erreur", "Format d'email invalide");
-            return false;
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            showAlert("Erreur", "Veuillez entrer une adresse email valide");
+            return;
         }
 
-        if (tfmdp.getText().length() < 6) {
+        if (password.length() < 6) {
             showAlert("Erreur", "Le mot de passe doit contenir au moins 6 caractères");
-            return false;
+            return;
         }
 
-        return true;
+        // Hasher le mot de passe avant de le stocker
+        String hashedPassword = PasswordHasher.hashPassword(password);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SignUpView2.fxml"));
+            Parent root = loader.load();
+
+            SignUpView2controller controller = loader.getController();
+            controller.setUserData(nom, prenom, email, hashedPassword);
+
+            Stage currentStage = (Stage) tfnom.getScene().getWindow();
+            currentStage.close();
+
+            Stage signUpStage = new Stage();
+            Scene scene = new Scene(root);
+            signUpStage.setScene(scene);
+            signUpStage.setTitle("Sign Up - Step 2");
+            signUpStage.setResizable(true);
+            signUpStage.centerOnScreen();
+            signUpStage.show();
+
+        } catch (IOException e) {
+            System.err.println("Error loading SignUpView2.fxml: " + e.getMessage());
+            showAlert("Erreur", "Erreur lors de l'ouverture de la page suivante");
+            e.printStackTrace();
+        }
     }
 
     private void showAlert(String title, String content) {

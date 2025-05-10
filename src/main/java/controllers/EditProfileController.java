@@ -276,17 +276,7 @@ public class EditProfileController {
 
     @FXML
     public void acceuilbutton(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Acceuil.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Acceuil");
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("AcceuilController: Error loading Acceuil.fxml: " + e.getMessage());
-            e.printStackTrace();
-        }
+
     }
 
     @FXML
@@ -295,142 +285,27 @@ public class EditProfileController {
 
     @FXML
     public void universitébutton(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Gestion des Candidatures");
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("AcceuilController: Error loading adminconditature.fxml: " + e.getMessage());
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des candidatures.");
-            e.printStackTrace();
-        }
+
     }
 
     @FXML
     public void evenementbutton(ActionEvent actionEvent) {
-        try {
-            System.out.println("AcceuilController: Opening Affiche Evenement view");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
-            Parent root = loader.load();
 
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Événements");
-            stage.setMinWidth(1133); // Match the size from affiche_evenement.fxml
-            stage.setMinHeight(691);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-
-        } catch (IOException e) {
-            System.err.println("AcceuilController: Error loading affiche_evenement.fxml: " + e.getMessage());
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des événements.");
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
-            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
-            e.printStackTrace();
-        }
     }
 
     @FXML
     public void hebergementbutton(ActionEvent actionEvent) {
-        try {
-            System.out.println("AcceuilController: Opening ListFoyerClient view");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
-            Parent root = loader.load();
 
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Liste des Foyers");
-            stage.setMinWidth(1200);
-            stage.setMinHeight(800);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-
-        } catch (IOException e) {
-            System.err.println("AcceuilController: Error loading ListFoyerClient.fxml: " + e.getMessage());
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des foyers.");
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
-            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
-            e.printStackTrace();
-        }
     }
 
     @FXML
     public void restaurantbutton(ActionEvent actionEvent) {
-        try {
-            System.out.println("AcceuilController: Opening ListRestaurantClient view");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
-            Parent root = loader.load();
 
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Liste des Restaurants");
-            stage.setMinWidth(1200);
-            stage.setMinHeight(800);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-
-        } catch (IOException e) {
-            System.err.println("AcceuilController: Error loading ListRestaurantClient.fxml: " + e.getMessage());
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des restaurants.");
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
-            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
-            e.printStackTrace();
-        }
     }
 
     @FXML
     public void dossierbutton(ActionEvent actionEvent) {
-        if (this.userId <= 0) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "ID utilisateur invalide. Impossible d'ouvrir la gestion des dossiers.");
-            return;
-        }
 
-        try {
-            System.out.println("AcceuilController: Opening AjoutDossier view for User ID: " + this.userId);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
-            Parent root = loader.load();
-
-            AjoutDossierController ajoutDossierController = loader.getController();
-            ajoutDossierController.setEtudiantId(this.userId); // Pass the user ID
-
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Gestion du Dossier");
-            stage.setMinWidth(1200); // Match the size from LoginViewcontroller or adjust
-            stage.setMinHeight(800);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-
-            // Optional: Close the accueil window if needed
-            // Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            // currentStage.close();
-
-        } catch (IOException e) {
-            System.err.println("AcceuilController: Error loading AjoutDossier.fxml: " + e.getMessage());
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue du dossier.");
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
-            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -448,6 +323,7 @@ public class EditProfileController {
             // Close current Accueil window
             Stage currentStage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
             currentStage.close();
+
         } catch (IOException e) {
             System.err.println("Acceuilcontroller: Error loading login view: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la déconnexion.");
@@ -457,23 +333,7 @@ public class EditProfileController {
 
     @FXML
     public void entretienbutton(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
-            Parent root = loader.load();
 
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Display an alert if loading fails
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Error Loading View");
-            alert.setContentText("Unable to load the entretien view: " + e.getMessage());
-            alert.showAndWait();
-        }
 
     }
     private void showAlert(Alert.AlertType alertType, String title, String content) {

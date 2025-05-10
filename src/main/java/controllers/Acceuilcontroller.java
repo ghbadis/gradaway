@@ -88,6 +88,7 @@ public class Acceuilcontroller {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
             // Display an alert if loading fails
@@ -108,6 +109,7 @@ public class Acceuilcontroller {
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion des Candidatures");
             stage.show();
+
         } catch (IOException e) {
             System.err.println("AcceuilController: Error loading adminconditature.fxml: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des candidatures.");
@@ -147,6 +149,7 @@ public class Acceuilcontroller {
             // Optional: Close the accueil window if needed
             // Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             // currentStage.close();
+            // Fermer la fenêtre actuelle
 
         } catch (IOException e) {
             System.err.println("AcceuilController: Error loading AjoutDossier.fxml: " + e.getMessage());
@@ -216,11 +219,13 @@ public class Acceuilcontroller {
             System.err.println("AcceuilController: Error loading EditProfile.fxml: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue du profil.");
             e.printStackTrace();
+
         } catch (Exception e) {
             System.err.println("AcceuilController: Unexpected error opening profile: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
             e.printStackTrace();
         }
+        
     }
 
     @FXML
