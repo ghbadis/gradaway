@@ -19,7 +19,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<SplitPane dividerPositions="0.2399697199091597" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DemanderEntretienController">
+<SplitPane dividerPositions="0.2399697199091597" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DemanderEntretienController">
    <items>
       <AnchorPane prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
          <children>

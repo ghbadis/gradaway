@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="white-bg" stylesheets="@design.css" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CarteLieuController">
+   <children>
+      <VBox spacing="20" styleClass="form-container" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.bottomAnchor="20.0">
+         <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+         </padding>
+         
+         <Label text="Choisir un lieu" styleClass="title-label"/>
+         
+         <WebView fx:id="carte_webview" VBox.vgrow="ALWAYS"/>
+         
+         <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="valider_button" text="Valider" styleClass="add-btn"/>
+            <Button fx:id="annuler_button" text="Annuler" styleClass="clear-btn"/>
+         </HBox>
+      </VBox>
+   </children>
+</AnchorPane> 

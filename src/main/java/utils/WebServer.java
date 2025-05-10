@@ -13,7 +13,7 @@ import java.util.Enumeration;
 
 public class WebServer {
     private static HttpServer server;
-    private static final int[] PORTS = {8081, 8082, 8083, 8084, 8085}; // Liste de ports à essayer
+    private static final int[] PORTS = {8080, 8081, 8082, 8083, 8084, 8085, 8090, 9000, 10000, 12000, 15000, 20000, 30000, 40000, 50000}; // Liste élargie de ports à essayer
     private static final String PDF_DIR = "src/main/resources/web/billets/";
     private static String localIpAddress;
     private static int usedPort;

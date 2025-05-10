@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<SplitPane dividerPositions="0.25" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterFoyerControllers">
+<SplitPane dividerPositions="0.25" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterFoyerControllers">
    <items>
       <AnchorPane prefHeight="712.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
          <children>

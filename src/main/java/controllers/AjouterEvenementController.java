@@ -2,6 +2,8 @@ package controllers;
 
 import entities.Evenement;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DateCell;
@@ -10,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import Services.ServiceEvenement;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +28,7 @@ public class AjouterEvenementController {
     @FXML private Button valider_button;
     @FXML private Button annuler_button;
     @FXML private Button choisir_image_button;
+    @FXML private Button choisir_lieu_button;
 
     private final ServiceEvenement serviceEvenement = new ServiceEvenement();
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -47,6 +51,7 @@ public class AjouterEvenementController {
         valider_button.setOnAction(event -> validerFormulaire());
         annuler_button.setOnAction(event -> fermerFenetre());
         choisir_image_button.setOnAction(event -> choisirImage());
+        choisir_lieu_button.setOnAction(event -> ouvrirCarte());
     }
 
     private void validerFormulaire() {
@@ -93,6 +98,23 @@ public class AjouterEvenementController {
         java.io.File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             image_txtf.setText(selectedFile.toURI().toString());
+        }
+    }
+
+    private void ouvrirCarte() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/carte_lieu.fxml"));
+            Scene scene = new Scene(loader.load());
+            
+            CarteLieuController controller = loader.getController();
+            controller.setLieuTextField(lieu_txtf);
+            
+            Stage stage = new Stage();
+            stage.setTitle("Choisir un lieu");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture de la carte", e.getMessage());
         }
     }
 } 
