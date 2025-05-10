@@ -100,6 +100,8 @@ public class AjoutDossierController {
         System.out.println("Initialisation du contrôleur AjoutDossierController");
         
         dateDepotPicker.setValue(LocalDate.now());
+        dateDepotPicker.setDisable(true);
+        dateDepotPicker.setStyle("-fx-opacity: 0.7;");
         serviceDossier = new ServiceDossier();
         serviceUser = new ServiceUser();
 

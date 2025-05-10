@@ -96,7 +96,10 @@ public class ModifierDossierController {
         dossierSantePath = dossier.getDossier_sante();
         cvPath = dossier.getCv();
 
+        // Désactiver la modification de la date de dépôt
         dateDepotPicker.setValue(dossier.getDatedepot());
+        dateDepotPicker.setDisable(true);
+        dateDepotPicker.setStyle("-fx-opacity: 0.7;");
         
         System.out.println("Chemins des fichiers chargés:");
         System.out.println("CIN: " + cinPath);
