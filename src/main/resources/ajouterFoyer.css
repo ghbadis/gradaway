@@ -1,0 +1,55 @@
+/* ajouterFoyer.css - Styling for AjouterFoyer.fxml */
+
+.root {
+    -fx-background-color: #f8f9fa;
+}
+
+AnchorPane {
+    -fx-background-color: #f8f9fa;
+}
+
+.label, Text {
+    -fx-fill: #22223b;
+    -fx-font-family: 'Arial Black', Arial, sans-serif;
+}
+
+TextField {
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #4a4e69;
+    -fx-border-width: 1.5px;
+    -fx-background-color: #fff;
+    -fx-font-size: 13px;
+    -fx-padding: 6 10 6 10;
+}
+
+Button {
+    -fx-background-color: linear-gradient(to right, #c9ada7, #4a4e69);
+    -fx-text-fill: #fff;
+    -fx-font-family: 'Arial Black', Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, #22223b33, 5, 0, 0, 1);
+    -fx-padding: 7 20 7 20;
+}
+
+Button:hover {
+    -fx-background-color: linear-gradient(to right, #4a4e69, #c9ada7);
+    -fx-text-fill: #f2e9e4;
+}
+
+ImageView {
+    -fx-effect: dropshadow(three-pass-box, #22223b44, 12, 0, 0, 2);
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-border-color: #9a8c98;
+    -fx-border-width: 2px;
+}
+
+Accordion {
+    -fx-background-color: #e9ecef;
+    -fx-border-color: #9a8c98;
+    -fx-border-radius: 8px;
+}

@@ -1,23 +1,31 @@
 package entities;
 
 public class Expert {
-    private int id_user,id_expert;
-    private String nom_expert,prenom_expert,email, specialite  ;
+    private int id_user,id_expert, anneeExperience;
+    private String nom_expert,prenom_expert,email, specialite, telephone;
 
-    public Expert(int id_user, String nom_expert, String prenom_expert, String specialite, String email) {
+    // Constructeur par défaut
+    public Expert() {
+    }
+
+    public Expert(int id_user, int id_expert, String nom_expert, String prenom_expert, String specialite, String email, String telephone, int anneeExperience) {
         this.id_user = id_user;
         this.id_expert = id_expert;
         this.nom_expert = nom_expert;
         this.prenom_expert = prenom_expert;
         this.email = email;
         this.specialite = specialite;
+        this.telephone = telephone;
+        this.anneeExperience = anneeExperience;
     }
 
-    public Expert(String nom_expert, String prenom_expert, String email, String specialite) {
+    public Expert(String nom_expert, String prenom_expert, String email, String specialite, String telephone, int anneeExperience) {
         this.nom_expert = nom_expert;
         this.prenom_expert = prenom_expert;
         this.email = email;
         this.specialite = specialite;
+        this.telephone = telephone;
+        this.anneeExperience = anneeExperience;
     }
 
     public int getId_user() {
@@ -68,6 +76,22 @@ public class Expert {
         this.specialite = specialite;
     }
 
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public int getAnneeExperience() {
+        return anneeExperience;
+    }
+
+    public void setAnneeExperience(int anneeExperience) {
+        this.anneeExperience = anneeExperience;
+    }
+
     @Override
     public String toString() {
         return "Expert{" +
@@ -77,6 +101,8 @@ public class Expert {
                 ", prenom_expert='" + prenom_expert + '\'' +
                 ", email='" + email + '\'' +
                 ", specialite='" + specialite + '\'' +
+                ", telephone='" + telephone + '\'' +
+                ", anneeExperience=" + anneeExperience +
                 '}';
     }
 }

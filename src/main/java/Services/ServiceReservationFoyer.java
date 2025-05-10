@@ -46,12 +46,34 @@ public class ServiceReservationFoyer implements IService<ReservationFoyer> {
     }
 
     @Override
-    public void supprimer(ReservationFoyer reservation) throws SQLException {
+    public boolean supprimer(ReservationFoyer reservation) throws SQLException {
         String req = "DELETE FROM reservationfoyer WHERE IdReservation=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, reservation.getIdReservation());
-        ps.executeUpdate();
+        int rowsAffected = ps.executeUpdate();
         System.out.println("Réservation supprimée !");
+        return rowsAffected > 0;
+    }
+
+
+    public boolean studentExists(int studentId) throws SQLException {
+        String sql = "SELECT id FROM user WHERE id = ?";
+        Connection connection;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, studentId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        }
+    }
+
+    public boolean foyerExists(int foyerId) throws SQLException {
+        String sql = "SELECT id FROM foyer WHERE id = ?";
+        Connection connection;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, foyerId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        }
     }
 
     @Override
@@ -74,6 +96,42 @@ public class ServiceReservationFoyer implements IService<ReservationFoyer> {
         }
 
         return reservations;
+    }
+    
+    /**
+     * Récupère toutes les réservations d'un étudiant spécifique
+     * @param idEtudiant ID de l'étudiant
+     * @return Liste des réservations de l'étudiant
+     * @throws SQLException En cas d'erreur SQL
+     */
+    public List<ReservationFoyer> getReservationsByEtudiantId(int idEtudiant) throws SQLException {
+        List<ReservationFoyer> reservations = new ArrayList<>();
+        String req = "SELECT * FROM reservationfoyer WHERE idetudient=?";
+        PreparedStatement ps = con.prepareStatement(req);
+        ps.setInt(1, idEtudiant);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            int id = rs.getInt("IdReservation");
+            int foyerId = rs.getInt("idfoyer");
+            LocalDate dateDebut = rs.getDate("datedebut").toLocalDate();
+            LocalDate dateFin = rs.getDate("DateFin").toLocalDate();
+            LocalDate dateReservation = rs.getDate("dateReservation").toLocalDate();
+
+            ReservationFoyer reservation = new ReservationFoyer(id, foyerId, idEtudiant, dateDebut, dateFin, dateReservation);
+            reservations.add(reservation);
+        }
+
+        return reservations;
+    }
+    
+    /**
+     * Récupère toutes les réservations sans filtrer
+     * @return Liste de toutes les réservations
+     * @throws SQLException En cas d'erreur SQL
+     */
+    public List<ReservationFoyer> getAllReservations() throws SQLException {
+        return recuperer();
     }
 
 }

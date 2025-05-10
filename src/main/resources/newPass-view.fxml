@@ -65,6 +65,16 @@
                      <Font name="System Bold" size="17.0" />
                   </font>
                </Button>
+               <ImageView fx:id="togglePasswordIcon" fitHeight="20.0" fitWidth="30.0" layoutX="859.0" layoutY="290.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@images/EYE.png" />
+                  </image>
+               </ImageView>
+               <ImageView fx:id="togglePasswordIcon1" fitHeight="20.0" fitWidth="30.0" layoutX="859.0" layoutY="359.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@images/EYE.png" />
+                  </image>
+               </ImageView>
             </children>
          </Pane>
       </children>

@@ -3,6 +3,7 @@ package controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -49,11 +50,53 @@ public class Acceuilcontroller {
 
     @FXML
     public void onhebergementButtonClick(ActionEvent actionEvent) {
+        try {
+            System.out.println("AcceuilController: Opening ListFoyerClient view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            Parent root = loader.load();
 
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Foyers");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("AcceuilController: Error loading ListFoyerClient.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des foyers.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
+            e.printStackTrace();
+        }
     }
+
+
 
     @FXML
     public void onentretienButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Display an alert if loading fails
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error Loading View");
+            alert.setContentText("Unable to load the entretien view: " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML
@@ -210,6 +253,30 @@ public class Acceuilcontroller {
 
     @FXML
     public void onrestaurantButtonClick(ActionEvent actionEvent) {
+        try {
+            System.out.println("AcceuilController: Opening ListRestaurantClient view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Restaurants");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("AcceuilController: Error loading ListRestaurantClient.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des restaurants.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
+            e.printStackTrace();
+        }
     }
 
     @FXML

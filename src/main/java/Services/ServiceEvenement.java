@@ -47,12 +47,13 @@ public class ServiceEvenement implements IService<Evenement> {
     }
 
     @Override
-    public void supprimer(Evenement evenement) throws SQLException {
+    public boolean supprimer(Evenement evenement) throws SQLException {
         String req = "DELETE FROM evenement WHERE id_evenement=?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, evenement.getId_evenement());
         ps.executeUpdate();
         System.out.println("Événement supprimé");
+        return false;
     }
 
     @Override

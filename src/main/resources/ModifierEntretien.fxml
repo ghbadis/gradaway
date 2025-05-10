@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.ModifierEntretienController"
+            prefHeight="600.0" prefWidth="800.0"
+            style="-fx-background-color: #0b1d3a;">
+
+    <VBox alignment="CENTER" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets top="30" right="30" bottom="30" left="30"/>
+        </padding>
+
+        <Label text="Modification d'un Entretien" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+        <GridPane hgap="10" vgap="10" alignment="CENTER">
+            <Label text="ID Entretien:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <TextField fx:id="idEntretienField" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: white; -fx-prompt-text-fill: gray;" editable="false"/>
+
+            <Label text="Expert:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <ComboBox fx:id="expertComboBox" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-background-color: white;"/>
+
+            <Label text="ID Utilisateur:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <TextField fx:id="userIdField" promptText="Entrez l'ID de l'utilisateur" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-background-color: white; -fx-prompt-text-fill: gray;"/>
+
+            <Label text="Date de l'entretien:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <DatePicker fx:id="dateEntretien" GridPane.columnIndex="1" GridPane.rowIndex="3" style="-fx-background-color: white;"/>
+
+            <Label text="Heure de l'entretien:" GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <TextField fx:id="heureEntretien" promptText="HH:mm" GridPane.columnIndex="1" GridPane.rowIndex="4" style="-fx-background-color: white; -fx-prompt-text-fill: gray;"/>
+
+            <Label text="État de l'entretien:" GridPane.columnIndex="0" GridPane.rowIndex="5" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <ComboBox fx:id="etatEntretien" GridPane.columnIndex="1" GridPane.rowIndex="5" style="-fx-background-color: white;"/>
+
+            <Label text="Type d'entretien:" GridPane.columnIndex="0" GridPane.rowIndex="6" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <ComboBox fx:id="typeEntretien" GridPane.columnIndex="1" GridPane.rowIndex="6" style="-fx-background-color: white;"/>
+
+            <Label text="Offre universitaire:" GridPane.columnIndex="0" GridPane.rowIndex="7" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            <ComboBox fx:id="offreComboBox" GridPane.columnIndex="1" GridPane.rowIndex="7" style="-fx-background-color: white;"/>
+        </GridPane>
+
+        <HBox spacing="20" alignment="CENTER">
+            <Button text="Modifier" fx:id="modifierButton" 
+                    style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 16;"/>
+            <Button text="Annuler" fx:id="annulerButton"
+                    style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 16;"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

@@ -1,6 +1,7 @@
 package controllers;
 
 import Services.ServiceDossier;
+import Services.ServiceUser;
 import entities.Dossier;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,12 +17,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import utils.MqttService;
+import utils.EmailSender;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class AjoutDossierController {
 
@@ -48,7 +52,8 @@ public class AjoutDossierController {
     @FXML private AnchorPane rootPane; // Assuming the root element has fx:id="rootPane"
 
     private int currentEtudiantId = -1; // Placeholder for the student ID
-    private ServiceDossier serviceDossier; // Declare the service
+    private ServiceDossier serviceDossier;
+    private ServiceUser serviceUser;
     private String cinPath;
     private String photoPath;
     private String diplomeBacPath;
@@ -103,6 +108,7 @@ public class AjoutDossierController {
         
         dateDepotPicker.setValue(LocalDate.now());
         serviceDossier = new ServiceDossier();
+        serviceUser = new ServiceUser();
 
         submitButton.setDisable(true);
         viewDossierButton.setDisable(true);
@@ -250,6 +256,63 @@ public class AjoutDossierController {
     @FXML void handleUploadDossierSante(ActionEvent event) { handleFileUpload(event, dossierSantePreview, "dossierSante"); }
     @FXML void handleUploadCv(ActionEvent event) { handleFileUpload(event, cvPreview, "cv"); }
 
+    private void sendConfirmationEmail(Dossier dossier) {
+        try {
+            // Formater la date pour l'affichage
+            String dateDepot = dossier.getDatedepot().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            
+            // Générer le contenu HTML de l'email
+            String emailContent = EmailSender.generateDossierConfirmationEmail(
+                dossier.getId_dossier(),
+                dateDepot
+            );
+            
+            // Générer le contenu du code QR
+            String qrContent = EmailSender.generateDossierQRContent(
+                dossier.getId_dossier(),
+                dateDepot
+            );
+            
+            // Nom du fichier QR code
+            String qrFileName = "dossier_" + dossier.getId_dossier() + ".png";
+            
+            // Récupérer l'email de l'étudiant depuis la base de données
+            String email = getStudentEmail(dossier.getId_etudiant());
+            
+            if (email != null) {
+                // Envoyer l'email avec le code QR en pièce jointe
+                boolean sent = EmailSender.sendEmail(
+                    email, 
+                    "Confirmation de dépôt de dossier - GradAway", 
+                    emailContent,
+                    qrContent,
+                    qrFileName
+                );
+                
+                if (sent) {
+                    System.out.println("Email de confirmation avec code QR envoyé avec succès à " + email);
+                } else {
+                    System.err.println("Erreur lors de l'envoi de l'email de confirmation à " + email);
+                }
+            } else {
+                System.err.println("Impossible de trouver l'email de l'étudiant avec l'ID: " + dossier.getId_etudiant());
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'envoi de l'email: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private String getStudentEmail(int studentId) {
+        try {
+            return serviceUser.getUserById(studentId).getEmail();
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération de l'email de l'étudiant: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @FXML
     void handleSubmit(ActionEvent event) {
         if (currentEtudiantId <= 0) {
@@ -278,24 +341,36 @@ public class AjoutDossierController {
         }
 
         try {
-            Dossier newDossier = new Dossier(
-                    currentEtudiantId,
-                    cinPath,
-                    photoPath,
-                    diplomeBacPath,
-                    releveNotePath,
-                    diplomeObtenuPath,
-                    lettreMotivationPath,
-                    dossierSantePath,
-                    cvPath,
-                    dateDepotPicker.getValue()
+            // Créer et sauvegarder le dossier
+            Dossier dossier = new Dossier(
+                currentEtudiantId,
+                cinPath,
+                photoPath,
+                diplomeBacPath,
+                releveNotePath,
+                diplomeObtenuPath,
+                lettreMotivationPath,
+                dossierSantePath,
+                cvPath,
+                dateDepotPicker.getValue()
             );
 
-            serviceDossier.ajouter(newDossier);
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Dossier ajouté avec succès!");
+            serviceDossier.ajouter(dossier);
+            // Récupérer le dossier avec son ID
+            Dossier savedDossier = serviceDossier.recupererParEtudiantId(currentEtudiantId);
+            if (savedDossier != null) {
+                // Envoyer l'email de confirmation avec le code QR
+                sendConfirmationEmail(savedDossier);
+            }
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Dossier ajouté avec succès !");
             clearForm();
             submitButton.setDisable(true);
             viewDossierButton.setDisable(false);
+            MqttService mqttService = new MqttService();
+            ServiceUser serviceUser = new ServiceUser();
+            mqttService.publishSms(String.valueOf(serviceUser.getUserById(currentEtudiantId).getTelephone()), "Bonjour"+serviceUser.getUserById(currentEtudiantId).getNom()+"✅ Le dossier a ete cree avec succes.");
+            mqttService.disconnect();
 
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur Base de Données", "Échec de l'ajout du dossier à la base de données: \n" + e.getMessage());

@@ -12,7 +12,7 @@ public class Main extends Application {
         try {
             FXMLLoader loader = new FXMLLoader();
             // Load the login FXML file
-            loader.setLocation(getClass().getResource("/login-view.fxml"));
+            loader.setLocation(getClass().getResource("/login-view.fxml "));
             Parent root = loader.load();
 
             // Configurer la scène

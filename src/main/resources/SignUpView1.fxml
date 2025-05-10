@@ -44,14 +44,7 @@
          </font>
       </Button>
       <Text fx:id="login" layoutX="434.0" layoutY="500.0" onMouseClicked="#login" strokeType="OUTSIDE" strokeWidth="0.0" text="You have an account? Login Here" />
-      <Group fx:id="back" layoutX="381.0" layoutY="48.0" onMouseClicked="#back">
-         <children>
-            <Text layoutX="19.0" layoutY="13.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Back" />
-            <ImageView fitHeight="35.0" fitWidth="15.0" layoutY="0.94921875" pickOnBounds="true" preserveRatio="true">
-               <Image url="@images/back.png" />
-            </ImageView>
-         </children>
-      </Group>
+      <Group fx:id="backlogin" layoutX="381.0" layoutY="48.0" onMouseClicked="#back" />
       <Label layoutX="585.0" layoutY="35.0" prefHeight="42.0" prefWidth="140.0" text="Welcome" textFill="#fc0101">
          <font>
             <Font size="28.0" />

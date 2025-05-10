@@ -14,17 +14,13 @@ public class MyDatabase {
 
     private MyDatabase() {
         try {
-            // Chargement du driver MySQL
+            // Load MySQL driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-
-            // Établissement de la connexion
-            cnx = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            System.out.println("Connexion à la base de données établie avec succès");
+            System.out.println("MySQL driver loaded successfully");
         } catch (ClassNotFoundException e) {
-            System.err.println("Erreur de chargement du driver MySQL : " + e.getMessage());
-        } catch (SQLException e) {
-            System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
+            System.err.println("Error loading MySQL driver: " + e.getMessage());
         }
+        connect();
     }
 
     public static MyDatabase getInstance() {
@@ -34,13 +30,24 @@ public class MyDatabase {
         return instance;
     }
 
+    private void connect() {
+        try {
+            cnx = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            System.out.println("Connected to database");
+        } catch (SQLException e) {
+            System.out.println("Connection failed: " + e.getMessage());
+        }
+    }
+
     public Connection getCnx() {
         try {
-            if (cnx == null || cnx.isClosed()) {
-                cnx = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            // Check if connection is closed or invalid
+            if (cnx == null || cnx.isClosed() || !cnx.isValid(2)) {
+                connect();
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération de la connexion : " + e.getMessage());
+            System.out.println("Connection validation failed: " + e.getMessage());
+            connect();
         }
         return cnx;
     }
