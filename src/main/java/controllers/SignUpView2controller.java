@@ -15,10 +15,17 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SignUpView2controller {
     @FXML
@@ -34,13 +41,13 @@ public class SignUpView2controller {
     @FXML
     private Group back;
     @FXML
-    private TextField tfdomaine_etude;
+    private ComboBox<String> tfdomaine_etude;
     @FXML
     private TextField tfuniversite_origine;
     @FXML
-    private TextField tfannee_obtention_diplome;
+    private ComboBox<Integer> tfannee_obtention_diplome;
     @FXML
-    private ComboBox<Integer> tfage;
+    private TextField tfage;
     @FXML
     private TextField newPassVisible;
     @FXML
@@ -62,12 +69,38 @@ public class SignUpView2controller {
 
     @FXML
     public void initialize() {
-        //  âges de 18 à 100 ans
-        for (int i = 18; i <= 100; i++) {
-            tfage.getItems().add(i);
+        // Add listener for date of birth changes
+        tfdateNaissance.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                calculateAndDisplayAge(newValue);
+            }
+        });
+
+        // Initialize domaine_etude ComboBox
+        ObservableList<String> domaines = FXCollections.observableArrayList(
+            "Mathématiques",
+            "Sciences expérimentales",
+            "Économie et gestion",
+            "Sciences techniques",
+            "Lettres",
+            "Sport",
+            "Sciences de l'informatique"
+        );
+        tfdomaine_etude.setItems(domaines);
+
+        // Initialize annee_obtention_diplome ComboBox
+        List<Integer> annees = new ArrayList<>();
+        for (int i = 1999; i <= 2025; i++) {
+            annees.add(i);
         }
-        // Les champs newPassVisible et confNewPassVisible ne sont pas utilisés dans le FXML
-        // donc on ne les initialise pas ici pour éviter les NullPointerException
+        tfannee_obtention_diplome.setItems(FXCollections.observableArrayList(annees));
+    }
+
+    private void calculateAndDisplayAge(LocalDate birthDate) {
+        LocalDate referenceDate = LocalDate.of(2025, 1, 1);
+        Period period = Period.between(birthDate, referenceDate);
+        int age = period.getYears();
+        tfage.setText(String.valueOf(age));
     }
 
     @FXML
@@ -87,16 +120,16 @@ public class SignUpView2controller {
             try {
                 // Création de l'utilisateur avec les données du formulaire
                 User user = new User(
-                    tfage.getValue(),
+                    Integer.parseInt(tfage.getText()),
                     Integer.parseInt(tfcin.getText()),
                     Integer.parseInt(tftelephone.getText()),
                     Integer.parseInt(tfmoyennes.getText()),
-                    Integer.parseInt(tfannee_obtention_diplome.getText()),
+                    tfannee_obtention_diplome.getValue(),
                     nom,
                     prenom,
                     tfnationalite.getText(),
                     email,
-                    tfdomaine_etude.getText(),
+                    tfdomaine_etude.getValue(),
                     tfuniversite_origine.getText(),
                     "Etudiant",
                     tfdateNaissance.getValue(),
@@ -134,35 +167,47 @@ public class SignUpView2controller {
         try {
             // Vérification des champs vides
             if (tfcin.getText().isEmpty() || tftelephone.getText().isEmpty() || 
-                tfage.getValue() == null || tfdateNaissance.getValue() == null ||
-                tfnationalite.getText().isEmpty() || tfdomaine_etude.getText().isEmpty() ||
-                tfuniversite_origine.getText().isEmpty() || tfannee_obtention_diplome.getText().isEmpty() ||
+                tfdateNaissance.getValue() == null ||
+                tfnationalite.getText().isEmpty() || tfdomaine_etude.getValue() == null ||
+                tfuniversite_origine.getText().isEmpty() || tfannee_obtention_diplome.getValue() == null ||
                 tfmoyennes.getText().isEmpty()) {
                 showAlert("Erreur", "Tous les champs sont obligatoires");
                 return false;
             }
 
-            // Vérification des champs numériques
-            int cin = Integer.parseInt(tfcin.getText());
-            int telephone = Integer.parseInt(tftelephone.getText());
-            int moyennes = Integer.parseInt(tfmoyennes.getText());
-            int annee = Integer.parseInt(tfannee_obtention_diplome.getText());
+            // Vérification du format CIN (8 chiffres)
+            String cin = tfcin.getText();
+            if (!cin.matches("\\d{8}")) {
+                showAlert("Erreur", "Le CIN doit contenir exactement 8 chiffres");
+                return false;
+            }
 
-            // Vérification des valeurs numériques
-            if (cin <= 0 || telephone <= 0 || moyennes < 0 || moyennes > 20 || annee <= 0) {
-                showAlert("Erreur", "Veuillez vérifier les valeurs numériques saisies");
+            // Vérification du format téléphone (8 chiffres)
+            String telephone = tftelephone.getText();
+            if (!telephone.matches("\\d{8}")) {
+                showAlert("Erreur", "Le numéro de téléphone doit contenir exactement 8 chiffres");
                 return false;
             }
 
             // Vérification de la date de naissance
-            if (tfdateNaissance.getValue().isAfter(LocalDate.now())) {
-                showAlert("Erreur", "La date de naissance ne peut pas être dans le futur");
+            LocalDate birthDate = tfdateNaissance.getValue();
+            LocalDate maxDate = LocalDate.of(2007, 1, 1);
+            if (birthDate.isAfter(maxDate)) {
+                showAlert("Erreur", "Vous devez être majeur (-18)");
+                return false;
+            }
+
+            // Vérification des autres champs numériques
+            int moyennes = Integer.parseInt(tfmoyennes.getText());
+
+            if (moyennes < 9 || moyennes > 20) {
+                showAlert("Erreur", "Veuillez vérifier votre moyenne");
                 return false;
             }
 
             return true;
         } catch (NumberFormatException e) {
-            showAlert("Erreur", "Les champs CIN, Téléphone, Moyennes et Année doivent être des nombres valides");
+            showAlert("Erreur", "Les champs Moyennes doivent être des nombres valides");
             return false;
         }
     }

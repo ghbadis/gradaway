@@ -31,7 +31,7 @@
                 <TextField id="email" fx:id="loginEmail" layoutX="91.0" layoutY="182.0" prefHeight="38.0" prefWidth="500.0" promptText="Email" />
                 <PasswordField id="password" fx:id="loginPasswd" layoutX="91.0" layoutY="277.0" prefHeight="38.0" prefWidth="500.0" promptText="Password" />
                 <TextField id="password" fx:id="VloginPasswd" layoutX="92.0" layoutY="277.0" prefHeight="38.0" prefWidth="500.0" promptText="Password" visible="false" />
-                <Button layoutX="90.0" layoutY="410.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="42.0" prefWidth="500.0" text="Login">
+                <Button layoutX="90.0" layoutY="410.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="42.0" prefWidth="500.0" style="-fx-background-color: #6988f2;" text="Login">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
@@ -57,13 +57,13 @@
                         <Image url="@images/icons8-password-24.png" />
                     </image>
                 </ImageView>
-                <Button fx:id="signUpButton" layoutX="90.0" layoutY="470.0" mnemonicParsing="false" onAction="#handleSignUp" prefHeight="49.0" prefWidth="500.0" text="SignUp" />
+                <Button fx:id="signUpButton" layoutX="90.0" layoutY="470.0" mnemonicParsing="false" onAction="#handleSignUp" prefHeight="49.0" prefWidth="500.0" style="-fx-background-color: #6988f2;" text="SignUp" />
             <ImageView fx:id="togglePasswordIcon" fitHeight="20.0" fitWidth="30.0" layoutX="563.0" layoutY="290.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@images/EYE.png" />
                </image>
             </ImageView>
-            <Text fx:id="forgotPass" layoutX="494.0" layoutY="352.0" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Forgot password" onMouseClicked="#handleForgotPassword" />
+            <Text fx:id="forgotPass" layoutX="494.0" layoutY="352.0" onMouseClicked="#handleForgotPassword" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Forgot password" />
             </children>
         </Pane>
     </HBox>

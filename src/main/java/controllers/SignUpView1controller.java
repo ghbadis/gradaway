@@ -34,8 +34,8 @@ public class SignUpView1controller {
 
     private boolean isPasswordVisible = false;
 
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(gmail\\.com|yahoo\\.com|outlook\\.com|hotmail\\.com|icloud\\.com|aol\\.com|protonmail\\.com|zoho\\.com|orange\\.fr|free\\.fr|sfr\\.fr|laposte\\.net|bouyguestelecom\\.fr)$";
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX, Pattern.CASE_INSENSITIVE);
     @FXML
     private Group backlogin;
 
