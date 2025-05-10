@@ -42,6 +42,8 @@ public class Ajoutergestionevenementcontrolleur {
     @FXML
     private Button ajouter_evenement_button;
     @FXML
+    private Button liste_reservation_button;
+    @FXML
     private VBox formulaire_container;
     @FXML
     private Button valider_button;
@@ -70,6 +72,7 @@ public class Ajoutergestionevenementcontrolleur {
         loadData();
         
         ajouter_evenement_button.setOnAction(event -> showFormAjout());
+        liste_reservation_button.setOnAction(event -> ouvrirListeReservations());
         valider_button.setOnAction(event -> validerFormulaire());
         annuler_button.setOnAction(event -> hideFormulaire());
         user_button.setOnAction(event -> ouvrirInterfaceUser());
@@ -342,6 +345,20 @@ public class Ajoutergestionevenementcontrolleur {
         java.io.File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             image_txtf.setText(selectedFile.toURI().toString());
+        }
+    }
+
+    private void ouvrirListeReservations() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/liste_reservation.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Liste des Réservations");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir la liste des réservations", e.getMessage());
         }
     }
 }

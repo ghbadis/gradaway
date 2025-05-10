@@ -4,12 +4,14 @@ import entities.Evenement;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import Services.ServiceEvenement;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class AjouterEvenementController {
@@ -29,6 +31,19 @@ public class AjouterEvenementController {
 
     @FXML
     public void initialize() {
+        // Définir la date minimale à aujourd'hui
+        date_picker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate today = LocalDate.now();
+                setDisable(empty || date.isBefore(today));
+            }
+        });
+        
+        // Définir la date par défaut à aujourd'hui
+        date_picker.setValue(LocalDate.now());
+
         valider_button.setOnAction(event -> validerFormulaire());
         annuler_button.setOnAction(event -> fermerFenetre());
         choisir_image_button.setOnAction(event -> choisirImage());
