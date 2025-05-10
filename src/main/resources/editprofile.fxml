@@ -13,6 +13,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+
+
+
 <AnchorPane prefHeight="688.0" prefWidth="1144.0" style="-fx-background-color: #f9f9f9;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditProfileController">
    <Label fx:id="messageLabel" layoutX="435.0" layoutY="80.0" textFill="#ff0000" />
    <Label layoutX="466.0" layoutY="394.0" text="Nationalité" />
