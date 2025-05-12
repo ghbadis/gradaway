@@ -64,11 +64,20 @@ public class AjouterEvenementController {
         try {
             String nom = nom_txtf.getText();
             String description = description_txtf.getText();
-            String date = date_picker.getValue().format(dateFormatter);
+            LocalDate dateValue = date_picker.getValue();
             String lieu = lieu_txtf.getText();
             String domaine = domaine_txtf.getText();
-            int placesDisponibles = Integer.parseInt(place_disponible_txtf.getText());
+            String placesStr = place_disponible_txtf.getText();
             String image = image_txtf != null ? image_txtf.getText() : null;
+
+            // Contrôle de saisie : tous les champs doivent être remplis
+            if (nom.isEmpty() || description.isEmpty() || dateValue == null || lieu.isEmpty() || domaine.isEmpty() || placesStr.isEmpty() || image == null || image.isEmpty()) {
+                showAlert("Erreur", "Champs obligatoires", "Veuillez remplir tous les champs avant d'ajouter l'événement.");
+                return;
+            }
+
+            int placesDisponibles = Integer.parseInt(placesStr);
+            String date = dateValue.format(dateFormatter);
 
             Evenement evenement = new Evenement(nom, description, date, lieu, domaine, placesDisponibles, image);
             serviceEvenement.ajouter(evenement);

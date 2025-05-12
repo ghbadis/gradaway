@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import Services.ServiceEvenement;
@@ -39,6 +40,16 @@ public class ModifierEvenementController {
 
     @FXML
     public void initialize() {
+        // Empêcher la sélection de dates passées
+        date_picker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate today = LocalDate.now();
+                setDisable(empty || date.isBefore(today));
+            }
+        });
+
         valider_button.setOnAction(event -> validerModification());
         annuler_button.setOnAction(event -> fermerFenetre());
     }
