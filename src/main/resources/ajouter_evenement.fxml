@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.web.WebView?>
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="white-bg" stylesheets="@design.css" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterEvenementController">
    <children>
@@ -42,7 +43,7 @@
             <Label text="Lieu :" styleClass="form-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
             <HBox spacing="10" GridPane.rowIndex="3" GridPane.columnIndex="1">
                 <TextField fx:id="lieu_txtf" styleClass="textfield" HBox.hgrow="ALWAYS"/>
-                <Button fx:id="choisir_lieu_button" text="Choisir" styleClass="add-btn"/>
+                <Button fx:id="choisir_lieu_button" text="Choisir" styleClass="add-btn" onAction="#showMapDialog"/>
             </HBox>
             
             <Label text="Domaine :" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>

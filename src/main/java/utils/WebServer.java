@@ -13,7 +13,18 @@ import java.util.Enumeration;
 
 public class WebServer {
     private static HttpServer server;
-    private static final int[] PORTS = {8080, 8081, 8082, 8083, 8084, 8085, 8090, 9000, 10000, 12000, 15000, 20000, 30000, 40000, 50000}; // Liste élargie de ports à essayer
+    private static final int[] PORTS = {
+        8080, 8081, 8082, 8083, 8084, 8085, 8086, 8087, 8088, 8089,
+        8090, 8091, 8092, 8093, 8094, 8095, 8096, 8097, 8098, 8099,
+        9000, 9001, 9002, 9003, 9004, 9005, 9006, 9007, 9008, 9009,
+        10000, 10001, 10002, 10003, 10004, 10005, 10006, 10007, 10008, 10009,
+        12000, 12001, 12002, 12003, 12004, 12005, 12006, 12007, 12008, 12009,
+        15000, 15001, 15002, 15003, 15004, 15005, 15006, 15007, 15008, 15009,
+        20000, 20001, 20002, 20003, 20004, 20005, 20006, 20007, 20008, 20009,
+        30000, 30001, 30002, 30003, 30004, 30005, 30006, 30007, 30008, 30009,
+        40000, 40001, 40002, 40003, 40004, 40005, 40006, 40007, 40008, 40009,
+        50000, 50001, 50002, 50003, 50004, 50005, 50006, 50007, 50008, 50009
+    };
     private static final String PDF_DIR = "src/main/resources/web/billets/";
     private static String localIpAddress;
     private static int usedPort;
@@ -137,12 +148,14 @@ public class WebServer {
         } catch (IOException e) {
             System.err.println("Erreur lors du démarrage du serveur web: " + e.getMessage());
             e.printStackTrace();
+            throw new RuntimeException("Impossible de démarrer le serveur web", e);
         }
     }
 
     private static int findAvailablePort() {
         for (int port : PORTS) {
             try (ServerSocket socket = new ServerSocket(port)) {
+                socket.setReuseAddress(true);
                 return port;
             } catch (IOException e) {
                 System.out.println("Port " + port + " est déjà utilisé, essai du suivant...");
