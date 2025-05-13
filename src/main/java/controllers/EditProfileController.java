@@ -13,10 +13,16 @@ import javafx.scene.image.ImageView;
 import javafx.event.ActionEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditProfileController {
     @FXML
@@ -25,8 +31,6 @@ public class EditProfileController {
     private TextField tfprenomprofil;
     @FXML
     private TextField tfemailprofil;
-    @FXML
-    private TextField tfmdpprfil;
     @FXML
     private TextField tfcinprofil;
     @FXML
@@ -38,9 +42,9 @@ public class EditProfileController {
     @FXML
     private TextField tfnationaliteprofil;
     @FXML
-    private TextField tfdomaineprofil;
+    private ComboBox<String> tfdomaineprofil;
     @FXML
-    private TextField tfdiplomeprofil;
+    private ComboBox<Integer> tfdiplomeprofil;
     @FXML
     private TextField tfuniversiteprofil;
     @FXML
@@ -55,6 +59,10 @@ public class EditProfileController {
     private int userId;
     @FXML
     private ImageView ajouterimageprofil;
+    @FXML
+    private PasswordField oldPassword;
+    @FXML
+    private PasswordField newPassword;
 
     public EditProfileController() {
         serviceUser = new ServiceUser();
@@ -64,21 +72,44 @@ public class EditProfileController {
     public void initialize() {
         System.out.println("EditProfileController: initialize() called");
         
-        // Initialize age ComboBox with values from 18 to 100
-        if (tfageprofil != null) {
-            System.out.println("EditProfileController: Initializing age ComboBox");
-            for (int i = 18; i <= 100; i++) {
-                tfageprofil.getItems().add(String.valueOf(i));
+        // Add listener for date of birth changes
+        tfdatenaissanceprofil.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                calculateAndDisplayAge(newValue);
             }
-        } else {
-            System.err.println("EditProfileController: tfageprofil is null");
+        });
+
+        // Initialize domaine_etude ComboBox
+        ObservableList<String> domaines = FXCollections.observableArrayList(
+            "Mathématiques",
+            "Sciences expérimentales",
+            "Économie et gestion",
+            "Sciences techniques",
+            "Lettres",
+            "Sport",
+            "Sciences de l'informatique"
+        );
+        tfdomaineprofil.setItems(domaines);
+
+        // Initialize annee_obtention_diplome ComboBox
+        List<Integer> annees = new ArrayList<>();
+        for (int i = 1999; i <= 2025; i++) {
+            annees.add(i);
         }
+        tfdiplomeprofil.setItems(FXCollections.observableArrayList(annees));
 
         // If userId was set before initialize, load the user data
         if (userId > 0) {
             System.out.println("EditProfileController: Loading user data in initialize()");
             loadUserData();
         }
+    }
+
+    private void calculateAndDisplayAge(LocalDate birthDate) {
+        LocalDate referenceDate = LocalDate.of(2025, 1, 1);
+        Period period = Period.between(birthDate, referenceDate);
+        int age = period.getYears();
+        tfageprofil.setValue(String.valueOf(age));
     }
 
     public void setUserId(int userId) {
@@ -121,40 +152,38 @@ public class EditProfileController {
                 tfnomprofil.setText(currentUser.getNom());
                 tfprenomprofil.setText(currentUser.getPrenom());
                 tfemailprofil.setText(currentUser.getEmail());
-                tfmdpprfil.setText(currentUser.getMdp());
-                tfnationaliteprofil.setText(String.valueOf(currentUser.getCin()));
-                tfcinprofil.setText(currentUser.getNationalite());
+                tfcinprofil.setText(String.valueOf(currentUser.getCin()));
+                tfnationaliteprofil.setText(currentUser.getNationalite());
                 tftelephoneprofil.setText(String.valueOf(currentUser.getTelephone()));
                 
-                // Load profile image if exists
-                if (currentUser.getImage() != null && !currentUser.getImage().isEmpty()) {
-                    try {
-                        File imageFile = new File(currentUser.getImage());
-                        if (imageFile.exists()) {
-                            Image image = new Image(imageFile.toURI().toString());
-                            ajouterimageprofil.setImage(image);
-                        }
-                    } catch (Exception e) {
-                        System.err.println("Error loading profile image: " + e.getMessage());
+                // Load profile image if exists, otherwise set default
+                String imagePath = (currentUser.getImage() != null && !currentUser.getImage().isEmpty())
+                    ? currentUser.getImage()
+                    : "src/main/resources/images/profilee.jpg";
+                try {
+                    File imageFile = new File(imagePath);
+                    if (imageFile.exists()) {
+                        Image image = new Image(imageFile.toURI().toString());
+                        ajouterimageprofil.setImage(image);
                     }
+                } catch (Exception e) {
+                    System.err.println("Error loading profile image: " + e.getMessage());
                 }
                 
                 // Age and Date of Birth
                 if (tfageprofil != null) {
-                    tfageprofil.getSelectionModel().select(String.valueOf(currentUser.getAge()));
+                    tfageprofil.setValue(String.valueOf(currentUser.getAge()));
                 }
                 if (tfdatenaissanceprofil != null) {
                     tfdatenaissanceprofil.setValue(currentUser.getDateNaissance());
                 }
                 
                 // Additional Information
-                tfdomaineprofil.setText(currentUser.getDomaine_etude());
-                tfdiplomeprofil.setText(String.valueOf(currentUser.getAnnee_obtention_diplome()));
+                tfdomaineprofil.setValue(currentUser.getDomaine_etude());
+                tfdiplomeprofil.setValue(currentUser.getAnnee_obtention_diplome());
                 tfuniversiteprofil.setText(currentUser.getUniversite_origine());
                 tfmoyenneprofil.setText(String.valueOf(currentUser.getMoyennes()));
                 
-                // Welcome message
-                //setMessage("Bienvenue " + currentUser.getPrenom() + " " + currentUser.getNom());
                 System.out.println("EditProfileController: Fields populated successfully");
             } catch (Exception e) {
                 setMessage("Erreur lors du remplissage des champs: " + e.getMessage());
@@ -181,13 +210,20 @@ public class EditProfileController {
             
             // Validate required fields
             if (tfnomprofil.getText().isEmpty() || tfprenomprofil.getText().isEmpty() || 
-                tfemailprofil.getText().isEmpty() || tfmdpprfil.getText().isEmpty() ||
-                tfcinprofil.getText().isEmpty() || tftelephoneprofil.getText().isEmpty() ||
-                tfageprofil.getValue() == null || tfdatenaissanceprofil.getValue() == null ||
-                tfnationaliteprofil.getText().isEmpty() || tfdomaineprofil.getText().isEmpty() ||
-                tfdiplomeprofil.getText().isEmpty() || tfuniversiteprofil.getText().isEmpty() ||
-                tfmoyenneprofil.getText().isEmpty()) {
+                tfemailprofil.getText().isEmpty() || tfcinprofil.getText().isEmpty() || 
+                tftelephoneprofil.getText().isEmpty() || tfageprofil.getValue() == null || 
+                tfdatenaissanceprofil.getValue() == null || tfnationaliteprofil.getText().isEmpty() || 
+                tfdomaineprofil.getValue() == null || tfdiplomeprofil.getValue() == null || 
+                tfuniversiteprofil.getText().isEmpty() || tfmoyenneprofil.getText().isEmpty()) {
                 setMessage("Veuillez remplir tous les champs obligatoires");
+                return;
+            }
+
+            // Validate date of birth
+            LocalDate birthDate = tfdatenaissanceprofil.getValue();
+            LocalDate maxDate = LocalDate.of(2007, 1, 1);
+            if (birthDate.isAfter(maxDate)) {
+                setMessage("Vous devez être majeur (-18)");
                 return;
             }
 
@@ -195,25 +231,22 @@ public class EditProfileController {
             currentUser.setNom(tfnomprofil.getText());
             currentUser.setPrenom(tfprenomprofil.getText());
             currentUser.setEmail(tfemailprofil.getText());
-            currentUser.setMdp(tfmdpprfil.getText());
-            currentUser.setCin(Integer.parseInt(tfnationaliteprofil.getText()));
-            currentUser.setNationalite(tfcinprofil.getText());
+            currentUser.setCin(Integer.parseInt(tfcinprofil.getText()));
+            currentUser.setNationalite(tfnationaliteprofil.getText());
             currentUser.setTelephone(Integer.parseInt(tftelephoneprofil.getText()));
             currentUser.setAge(Integer.parseInt(tfageprofil.getValue()));
             currentUser.setDateNaissance(tfdatenaissanceprofil.getValue());
-            currentUser.setDomaine_etude(tfdomaineprofil.getText());
-            currentUser.setAnnee_obtention_diplome(Integer.parseInt(tfdiplomeprofil.getText()));
+            currentUser.setDomaine_etude(tfdomaineprofil.getValue());
+            currentUser.setAnnee_obtention_diplome(tfdiplomeprofil.getValue());
             currentUser.setUniversite_origine(tfuniversiteprofil.getText());
             currentUser.setMoyennes(Integer.parseInt(tfmoyenneprofil.getText()));
 
-
-            //
             // Update the user in the database
             serviceUser.modifier(currentUser);
             setMessage("Profil mis à jour avec succès!");
             System.out.println("Profile updated successfully for user: " + currentUser.getNom());
         } catch (NumberFormatException e) {
-            setMessage("Erreur: Veuillez entrer des nombres valides pour les champs numériques");
+            setMessage("Erreur: Veuillez entrer des nombres valides pour les champs numériques (CIN, téléphone, moyenne)");
             System.err.println("Number format error: " + e.getMessage());
         } catch (Exception e) {
             setMessage("Erreur lors de la mise à jour du profil: " + e.getMessage());
@@ -274,41 +307,41 @@ public class EditProfileController {
         }
     }
 
-    @FXML
+    @Deprecated
     public void acceuilbutton(ActionEvent actionEvent) {
 
     }
 
-    @FXML
+    @Deprecated
     public void volsbutton(ActionEvent actionEvent) {
     }
 
-    @FXML
+    @Deprecated
     public void universitébutton(ActionEvent actionEvent) {
 
     }
 
-    @FXML
+    @Deprecated
     public void evenementbutton(ActionEvent actionEvent) {
 
     }
 
-    @FXML
+    @Deprecated
     public void hebergementbutton(ActionEvent actionEvent) {
 
     }
 
-    @FXML
+    @Deprecated
     public void restaurantbutton(ActionEvent actionEvent) {
 
     }
 
-    @FXML
+    @Deprecated
     public void dossierbutton(ActionEvent actionEvent) {
 
     }
 
-    @FXML
+    @Deprecated
     public void logoutbutton(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
@@ -331,7 +364,7 @@ public class EditProfileController {
         }
     }
 
-    @FXML
+    @Deprecated
     public void entretienbutton(ActionEvent actionEvent) {
 
 
@@ -342,6 +375,44 @@ public class EditProfileController {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    public void changepassword(ActionEvent actionEvent) {
+        try {
+            // Validate input fields
+            if (oldPassword.getText().isEmpty() || newPassword.getText().isEmpty()) {
+                setMessage("Veuillez remplir tous les champs de mot de passe");
+                return;
+            }
+
+            // Verify old password
+            if (!serviceUser.verifyPassword(userId, oldPassword.getText())) {
+                setMessage("Ancien mot de passe incorrect");
+                return;
+            }
+
+            // Validate new password (minimum 6 characters)
+            if (newPassword.getText().length() < 6) {
+                setMessage("Le nouveau mot de passe doit contenir au moins 6 caractères");
+                return;
+            }
+
+            // Update password in database
+            serviceUser.updatePassword(userId, newPassword.getText());
+            
+            // Clear password fields
+            oldPassword.clear();
+            newPassword.clear();
+            
+            setMessage("Mot de passe modifié avec succès!");
+            System.out.println("Password updated successfully for user ID: " + userId);
+            
+        } catch (Exception e) {
+            setMessage("Erreur lors du changement de mot de passe: " + e.getMessage());
+            System.err.println("Error changing password: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
 

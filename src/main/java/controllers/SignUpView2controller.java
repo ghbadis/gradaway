@@ -19,6 +19,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -134,7 +139,7 @@ public class SignUpView2controller {
                     "Etudiant",
                     tfdateNaissance.getValue(),
                     mdp,
-                    "default.jpg"
+                    "src/main/resources/images/profilee.jpg"
                 );
 
                 // Tentative d'ajout dans la base de données

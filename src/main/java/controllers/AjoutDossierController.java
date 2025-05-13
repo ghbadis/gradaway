@@ -364,7 +364,7 @@ public class AjoutDossierController {
             viewDossierButton.setDisable(false);
             MqttService mqttService = new MqttService();
             ServiceUser serviceUser = new ServiceUser();
-            mqttService.publishSms(String.valueOf(serviceUser.getUserById(currentEtudiantId).getTelephone()), "Bonjour"+serviceUser.getUserById(currentEtudiantId).getNom()+"✅ Le dossier a ete cree avec succes.");
+            mqttService.publishSms(String.valueOf(serviceUser.getUserById(currentEtudiantId).getTelephone()), "Bonjour" + serviceUser.getUserById(currentEtudiantId).getNom()+ "✅ Le dossier a ete cree avec succes.");
             mqttService.disconnect();
 
         } catch (SQLException e) {

@@ -160,4 +160,28 @@ public class ServiceUser implements IService<User> {
             return null;
         }
     }
+
+    public boolean verifyPassword(int userId, String password) throws SQLException {
+        String req = "SELECT mdp FROM user WHERE id = ?";
+        try (PreparedStatement ps = con.prepareStatement(req)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                String hashedPassword = rs.getString("mdp");
+                return utils.PasswordHasher.verifyPassword(password, hashedPassword);
+            }
+            return false;
+        }
+    }
+
+    public void updatePassword(int userId, String newPassword) throws SQLException {
+        String hashedPassword = utils.PasswordHasher.hashPassword(newPassword);
+        String req = "UPDATE user SET mdp = ? WHERE id = ?";
+        try (PreparedStatement ps = con.prepareStatement(req)) {
+            ps.setString(1, hashedPassword);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        }
+    }
 }
