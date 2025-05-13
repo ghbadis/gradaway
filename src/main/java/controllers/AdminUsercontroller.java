@@ -9,6 +9,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 
 public class AdminUsercontroller implements Initializable {
 
@@ -31,6 +33,8 @@ public class AdminUsercontroller implements Initializable {
     private ListView<HBox> userListView;
 
     private ServiceUser serviceUser;
+    @FXML
+    private TextField rechercheruser;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -271,5 +275,40 @@ public class AdminUsercontroller implements Initializable {
         alert.setHeaderText(title);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    public void rechercheruser(ActionEvent actionEvent) {
+        String searchText = rechercheruser.getText().trim();
+        
+        if (searchText.isEmpty()) {
+            // If search field is empty, show all users
+            loadUsers();
+            return;
+        }
+
+        try {
+            List<User> allUsers = serviceUser.recuperer();
+            userListView.getItems().clear();
+
+            // Filter users by email or CIN
+            for (User user : allUsers) {
+                String userEmail = user.getEmail().toLowerCase();
+                String userCin = String.valueOf(user.getCin()).toLowerCase();
+                String searchLower = searchText.toLowerCase();
+
+                if (userEmail.contains(searchLower) || userCin.contains(searchLower)) {
+                    HBox userBox = createUserBox(user);
+                    userListView.getItems().add(userBox);
+                }
+            }
+
+            // Show message if no users found
+            if (userListView.getItems().isEmpty()) {
+                showError("Recherche", "Aucun utilisateur trouvé avec cet email ou CIN.");
+            }
+        } catch (Exception e) {
+            showError("Erreur de recherche", e.getMessage());
+        }
     }
 }
