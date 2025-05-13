@@ -48,7 +48,7 @@ public class ListeReservationController {
     private ObservableList<ReservationEvenement> reservationsList;
     private ServiceEvenement serviceEvenement = new ServiceEvenement();
     private ReservationEvenement selectedReservation = null;
-    private String userEmail;
+    private int currentUserId;
 
     @FXML
     public void initialize() {
@@ -63,9 +63,9 @@ public class ListeReservationController {
         modifier_button.setOnAction(event -> modifierReservation());
     }
 
-    public void setUserEmail(String email) {
-        this.userEmail = email;
-        loadData(); // Recharger les données avec le nouvel email
+    public void setCurrentUserId(int userId) {
+        this.currentUserId = userId;
+        loadData(); // Recharger les données avec le nouvel ID utilisateur
     }
 
     public void refreshData() {
@@ -75,8 +75,8 @@ public class ListeReservationController {
     private void loadData() {
         try {
             List<ReservationEvenement> reservations;
-            if (userEmail != null && !userEmail.isEmpty()) {
-                reservations = serviceReservation.recupererParEmail(userEmail);
+            if (currentUserId > 0) {
+                reservations = serviceReservation.recupererParIdEtudiant(currentUserId);
             } else {
                 reservations = serviceReservation.recuperer();
             }

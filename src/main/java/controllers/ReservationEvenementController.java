@@ -127,9 +127,9 @@ public class ReservationEvenementController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/liste_reservation.fxml"));
             Parent root = loader.load();
 
-            // Récupérer le contrôleur et lui passer l'email
+            // Récupérer le contrôleur et lui passer l'ID de l'utilisateur
             ListeReservationController controller = loader.getController();
-            controller.setUserEmail(email_txtf.getText());
+            controller.setCurrentUserId(currentUser.getId());
 
             Stage stage = new Stage();
             stage.setTitle("Mes Réservations");

@@ -94,4 +94,23 @@ public class ServiceReservationEvenement implements IService<ReservationEvenemen
         }
         return reservations;
     }
+
+    public List<ReservationEvenement> recupererParIdEtudiant(int idEtudiant) throws SQLException {
+        List<ReservationEvenement> reservations = new ArrayList<>();
+        String req = "SELECT * FROM reservationevenement WHERE id_etudiant = ?";
+        PreparedStatement ps = con.prepareStatement(req);
+        ps.setInt(1, idEtudiant);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            int id = rs.getInt("id_reservation");
+            int idEvenement = rs.getInt("id_evenement");
+            String email = rs.getString("email");
+            String nom = rs.getString("nom");
+            String prenom = rs.getString("prenom");
+            String date = rs.getString("date");
+            ReservationEvenement r = new ReservationEvenement(id, idEtudiant, idEvenement, email, nom, prenom, date);
+            reservations.add(r);
+        }
+        return reservations;
+    }
 }

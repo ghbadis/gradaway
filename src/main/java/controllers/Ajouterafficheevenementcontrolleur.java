@@ -30,6 +30,8 @@ public class Ajouterafficheevenementcontrolleur {
     private ComboBox<String> domaine_comb;
     @FXML
     private GridPane affiche_even_grid;
+    @FXML
+    private Button liste_reservation_button;
 
     private final ServiceEvenement serviceEvenement = new ServiceEvenement();
     private final ServiceUser serviceUser = new ServiceUser();
@@ -71,6 +73,7 @@ public class Ajouterafficheevenementcontrolleur {
     private void setupListeners() {
         domaine_comb.setOnAction(event -> filtrerParDomaine());
         chercher_button.setOnAction(event -> chercherEvenements());
+        liste_reservation_button.setOnAction(event -> ouvrirListeReservations());
     }
 
     private void filtrerParDomaine() {
@@ -202,6 +205,25 @@ public class Ajouterafficheevenementcontrolleur {
                         "Places disponibles: " + evenement.getPlaces_disponibles()
         );
         alert.showAndWait();
+    }
+
+    private void ouvrirListeReservations() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/liste_reservation.fxml"));
+            Parent root = loader.load();
+            
+            // Passer l'ID de l'utilisateur au contrôleur de la liste des réservations
+            ListeReservationController controller = loader.getController();
+            controller.setCurrentUserId(currentUserId);
+            
+            Stage stage = new Stage();
+            stage.setTitle("Liste de mes réservations");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir la liste des réservations", e.getMessage());
+        }
     }
 
     private void showAlert(String title, String header, String content) {
