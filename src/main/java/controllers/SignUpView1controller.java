@@ -13,9 +13,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import utils.PasswordHasher;
+import Services.ServiceUser;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
+import java.sql.SQLException;
 
 public class SignUpView1controller {
     @FXML
@@ -34,6 +36,7 @@ public class SignUpView1controller {
     private TextField visiblePasswordField;
 
     private boolean isPasswordVisible = false;
+    private ServiceUser serviceUser;
 
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(gmail\\.com|yahoo\\.com|outlook\\.com|hotmail\\.com|esprit\\.tn|icloud\\.com|aol\\.com|protonmail\\.com|zoho\\.com|orange\\.fr|free\\.fr|sfr\\.fr|laposte\\.net|bouyguestelecom\\.fr)$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX, Pattern.CASE_INSENSITIVE);
@@ -42,6 +45,7 @@ public class SignUpView1controller {
 
     @FXML
     public void initialize() {
+        serviceUser = new ServiceUser();
         // Initialize password visibility toggle
         if (togglePasswordIcon != null) {
             togglePasswordIcon.setOnMouseClicked(event -> togglePasswordVisibility());
@@ -107,10 +111,16 @@ public class SignUpView1controller {
             return;
         }
 
-        // Hasher le mot de passe avant de le stocker
-        String hashedPassword = PasswordHasher.hashPassword(password);
-
         try {
+            // Vérifier si l'email existe déjà
+            if (serviceUser.emailExists(email)) {
+                showAlert("Erreur", "Cette adresse email est déjà utilisée");
+                return;
+            }
+
+            // Hasher le mot de passe avant de le stocker
+            String hashedPassword = PasswordHasher.hashPassword(password);
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/SignUpView2.fxml"));
             Parent root = loader.load();
 
@@ -128,6 +138,10 @@ public class SignUpView1controller {
             signUpStage.centerOnScreen();
             signUpStage.show();
 
+        } catch (SQLException e) {
+            System.err.println("Error checking email: " + e.getMessage());
+            showAlert("Erreur", "Une erreur est survenue lors de la vérification de l'email");
+            e.printStackTrace();
         } catch (IOException e) {
             System.err.println("Error loading SignUpView2.fxml: " + e.getMessage());
             showAlert("Erreur", "Erreur lors de l'ouverture de la page suivante");

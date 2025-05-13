@@ -184,4 +184,16 @@ public class ServiceUser implements IService<User> {
             ps.executeUpdate();
         }
     }
+
+    public boolean emailExists(String email) throws SQLException {
+        String req = "SELECT COUNT(*) FROM user WHERE email = ?";
+        try (PreparedStatement ps = con.prepareStatement(req)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
 }
