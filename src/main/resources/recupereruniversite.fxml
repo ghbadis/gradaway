@@ -254,6 +254,7 @@
               <HBox alignment="CENTER" spacing="10">
                   <TextField fx:id="searchField" prefWidth="400" promptText="Rechercher par nom ou domaine d'étude" />
                   <Button fx:id="searchButton" onAction="#handleSearchButton" style="-fx-background-color: #3E92CC; -fx-text-fill: white;" text="Rechercher" />
+                  <Button fx:id="ajouterButton" onAction="#handleAjouterButton" style="-fx-background-color: #3E92CC; -fx-text-fill: white;" text="Ajouter" />
               </HBox>
               
               <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent;">

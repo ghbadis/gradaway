@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import models.Candidature;
 import Services.CandidatureService;
 import Services.ServiceUniversite;
+import utils.UserSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,11 +45,15 @@ public class CandidatureCardsController implements Initializable {
     private Button refreshButton;
     @FXML
     private Button retourButton;
+    @FXML
+    private Button ajouterButton;
     
     private CandidatureService candidatureService;
     private ServiceUniversite universiteService;
     private ObservableList<Candidature> candidatureList = FXCollections.observableArrayList();
     private FilteredList<Candidature> filteredCandidatures;
+
+    private int currentUserId ;
     
     private Connection connection;
     
@@ -60,6 +65,15 @@ public class CandidatureCardsController implements Initializable {
         
         // Setup database connection
         initializeConnection();
+        
+        // Get user ID from UserSession
+        currentUserId = UserSession.getInstance().getUserId();
+        System.out.println("[DEBUG] CandidatureCardsController: Got user ID from UserSession: " + currentUserId);
+        
+        // Set the user ID in the service
+        if (candidatureService != null) {
+            candidatureService.setCurrentUserId(currentUserId);
+        }
         
         // Load candidatures
         loadCandidatures();
@@ -113,33 +127,60 @@ public class CandidatureCardsController implements Initializable {
     @FXML
     private void handleRetourButton() {
         try {
-            closeConnection();
-            Parent root = FXMLLoader.load(getClass().getResource("/adminconditature.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Acceuil.fxml"));
+            Parent root = loader.load();
             Stage stage = (Stage) retourButton.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.setTitle("Accueil");
             stage.show();
         } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", 
+                    "Impossible de retourner à l'accueil", e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void handleAjouterButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listuniversitecards.fxml"));
+            Parent root = loader.load();
+            UniversiteCardsController controller = loader.getController();
+            // Pass the current user ID to the UniversiteCardsController
+            controller.setUserId(this.getCurrentUserId());
+            Stage stage = (Stage) ajouterButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Universités");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger la liste des universités", e.getMessage());
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation",
-                    "Impossible de retourner à la page précédente", e.getMessage());
         }
     }
     
     private void loadCandidatures() {
         try {
-            List<Candidature> candidatures = candidatureService.getAllCandidatures();
-            System.out.println("Retrieved " + candidatures.size() + " candidatures from service");
-            
-            // Clear our observable list
-            candidatureList.clear();
-            
-            // Add each candidature to ensure they're properly loaded
-            for (Candidature c : candidatures) {
-                candidatureList.add(c);
+            if (currentUserId <= 0) {
+                System.out.println("[DEBUG] No user ID set, not loading candidatures.");
+                candidatureList.clear();
+                displayCandidatures(candidatureList);
+                return;
             }
             
+            System.out.println("[DEBUG] Loading candidatures for user ID: " + currentUserId);
+            List<Candidature> candidatures = candidatureService.getAllCandidatures();
+            System.out.println("[DEBUG] Retrieved " + candidatures.size() + " candidatures for current user");
+            
+            // Clear the list before adding new items
+            candidatureList.clear();
+            
+            // Add all candidatures to the list
+            candidatureList.addAll(candidatures);
+            
+            // Display the candidatures
             displayCandidatures(candidatureList);
+            
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur de chargement", 
@@ -297,7 +338,7 @@ public class CandidatureCardsController implements Initializable {
     private String getUserName(int userId) {
         try {
             if (connection != null && !connection.isClosed()) {
-                String query = "SELECT nom, prenom FROM utilisateur WHERE id_user = ?";
+                String query = "SELECT nom, prenom FROM user WHERE id = ?";
                 PreparedStatement statement = connection.prepareStatement(query);
                 statement.setInt(1, userId);
                 ResultSet resultSet = statement.executeQuery();
@@ -360,5 +401,17 @@ public class CandidatureCardsController implements Initializable {
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur de suppression", "La suppression a échoué.", "Veuillez réessayer.");
         }
+    }
+    
+    public void setUserId(int userId) {
+        this.currentUserId = userId;
+        System.out.println("[DEBUG] CandidatureCardsController: setUserId called with " + userId);
+        if (candidatureService != null) {
+            candidatureService.setCurrentUserId(userId);
+        }
+    }
+
+    public int getCurrentUserId() {
+        return this.currentUserId;
     }
 } 

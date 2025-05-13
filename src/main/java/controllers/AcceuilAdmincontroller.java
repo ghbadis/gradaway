@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import utils.UserSession;
 
 import java.io.IOException;
 
@@ -90,6 +91,10 @@ public class AcceuilAdmincontroller {
     @FXML
     public void onlogoutAdminButtonClick(ActionEvent actionEvent) {
         try {
+            // Clear the user session
+            UserSession.getInstance().clearSession();
+            System.out.println("AcceuilAdmincontroller: User session cleared on logout");
+            
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
             Parent root = loader.load();
             Stage loginStage = new Stage();
@@ -99,12 +104,12 @@ public class AcceuilAdmincontroller {
             loginStage.setResizable(true);
             loginStage.centerOnScreen();
             loginStage.show();
+            
             // Close current Accueil window
             Stage currentStage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
             currentStage.close();
         } catch (IOException e) {
             System.err.println("Acceuilcontroller: Error loading login view: " + e.getMessage());
-
             e.printStackTrace();
         }
     }
@@ -126,11 +131,12 @@ public class AcceuilAdmincontroller {
     @FXML
     public void onuniversiteAdminButtonClick(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminuniversite.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/recupereruniversite.fxml"));
             Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Gestion des Universités");
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Universités");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

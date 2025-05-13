@@ -11,12 +11,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
+import utils.UserSession;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import Services.ServiceDossier;
 
 public class Acceuilcontroller {
 
     private int userId;
+    private ServiceDossier serviceDossier = new ServiceDossier();
 
     @FXML
     private Button scheduleEntretienButton;
@@ -102,14 +108,20 @@ public class Acceuilcontroller {
     @FXML
     public void onuniversiteButtonClick(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listcandidaturecards.fxml"));
             Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Gestion des Candidatures");
+            
+            // Get the controller and set the user ID from UserSession
+            CandidatureCardsController controller = loader.getController();
+            controller.setUserId(UserSession.getInstance().getUserId());
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Mes Candidatures");
             stage.show();
         } catch (IOException e) {
-            System.err.println("AcceuilController: Error loading adminconditature.fxml: " + e.getMessage());
+            System.err.println("AcceuilController: Error loading listcandidaturecards.fxml: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des candidatures.");
             e.printStackTrace();
         }
@@ -131,8 +143,12 @@ public class Acceuilcontroller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
             Parent root = loader.load();
 
+            Integer dossierId = serviceDossier.getDossierIdByUserId(this.userId);
             AjoutDossierController ajoutDossierController = loader.getController();
-            ajoutDossierController.setEtudiantId(this.userId); // Pass the user ID
+            ajoutDossierController.setEtudiantId(this.userId);
+            if (dossierId != null) {
+                ajoutDossierController.setDossierId(dossierId);
+            }
 
             Stage stage = new Stage();
             Scene scene = new Scene(root);
@@ -162,6 +178,10 @@ public class Acceuilcontroller {
     @FXML
     public void onlogoutButtonClick(ActionEvent actionEvent) {
         try {
+            // Clear the user session
+            UserSession.getInstance().clearSession();
+            System.out.println("Acceuilcontroller: User session cleared on logout");
+            
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
             Parent root = loader.load();
             Stage loginStage = new Stage();
@@ -171,6 +191,7 @@ public class Acceuilcontroller {
             loginStage.setResizable(true);
             loginStage.centerOnScreen();
             loginStage.show();
+            
             // Close current Accueil window
             Stage currentStage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
             currentStage.close();

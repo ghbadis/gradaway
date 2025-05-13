@@ -94,6 +94,18 @@ public class ServiceDossier implements IService<Dossier> {
         return null; // Return null if no dossier found for this student
     }
 
+    // New method: get dossier ID by user ID
+    public Integer getDossierIdByUserId(int userId) throws SQLException {
+        String req = "SELECT id_dossier FROM dossier WHERE id_etudiant = ? LIMIT 1";
+        PreparedStatement ps = con.prepareStatement(req);
+        ps.setInt(1, userId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt("id_dossier");
+        }
+        return null;
+    }
+
     // Helper method to map ResultSet to Dossier object
     private Dossier mapResultSetToDossier(ResultSet rs) throws SQLException {
         int id = rs.getInt("id_dossier");
@@ -109,5 +121,9 @@ public class ServiceDossier implements IService<Dossier> {
         LocalDate dateDepot = rs.getDate("datedepot").toLocalDate();
 
         return new Dossier(id, idEtudiant, cin, photo, bac, releve, diplomes, lettre, sante, cv, dateDepot);
+    }
+
+    public Connection getConnection() {
+        return con;
     }
 }

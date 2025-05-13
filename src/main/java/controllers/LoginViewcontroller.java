@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import utils.MyDatabase;
+import utils.UserSession;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -121,6 +122,10 @@ public class LoginViewcontroller {
                 int userId = resultSet.getInt("id");
                 String role = resultSet.getString("role");
                 System.out.println("LoginViewcontroller: Login successful for user ID: " + userId + " with role: " + role);
+                
+                // Set the user ID in UserSession
+                UserSession.getInstance().setUserId(userId);
+                System.out.println("LoginViewcontroller: User ID set in UserSession: " + UserSession.getInstance().getUserId());
                 
                 Stage loginStage = (Stage) loginEmail.getScene().getWindow();
                 loginStage.close();

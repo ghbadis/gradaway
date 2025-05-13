@@ -40,6 +40,8 @@ public class RecupererUniversiteController implements Initializable {
     private Button refreshButton;
     @FXML
     private Button closeButton;
+    @FXML
+    private Button ajouterButton;
 
     private final ServiceUniversite serviceUniversite = new ServiceUniversite();
 
@@ -73,9 +75,33 @@ public class RecupererUniversiteController implements Initializable {
     }
 
     @FXML
-    private void handleCloseButton(ActionEvent event) {
-        Stage stage = (Stage) closeButton.getScene().getWindow();
-        stage.close();
+    private void handleCloseButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AcceuilAdmin.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) closeButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Accueil Admin");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible de retourner à l'accueil admin", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleAjouterButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ajouteruniversite.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ajouterButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Ajouter Université");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir l'interface d'ajout d'université", e.getMessage());
+        }
     }
 
     private void loadUniversites() {

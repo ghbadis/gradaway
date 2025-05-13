@@ -258,14 +258,14 @@
                   <HBox alignment="CENTER" prefHeight="60.0" prefWidth="780.0" spacing="20.0">
                      <children>
                         <TextField fx:id="searchField" prefHeight="30.0" prefWidth="300.0" promptText="Rechercher..." />
-                        <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearchButton" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #3E92CC;" text="Rechercher" textFill="WHITE" />
-                        <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#handleRefreshButton" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #3E92CC;" text="Actualiser" textFill="WHITE" />
-                        <Button fx:id="retourButton" mnemonicParsing="false" onAction="#handleRetourButton" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #3E92CC;" text="Retour" textFill="WHITE" />
+                        <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearchButton" text="Rechercher" />
+                        <Button fx:id="ajouterButton" mnemonicParsing="false" onAction="#handleAjouterButton" text="Ajouter" style="-fx-background-color: #3E92CC; -fx-text-fill: white;" />
+                        <Button fx:id="retourButton" mnemonicParsing="false" onAction="#handleRetourButton" text="Retour" />
                      </children>
                   </HBox>
                   <ScrollPane fitToWidth="true" prefHeight="560.0" prefWidth="780.0" style="-fx-background: transparent; -fx-background-color: transparent;">
                      <content>
-                        <FlowPane fx:id="candidatureCardsPane" alignment="CENTER" hgap="30" prefWidth="760.0" style="-fx-background-color: transparent;" vgap="40">
+                        <FlowPane fx:id="candidatureCardsPane" alignment="CENTER" hgap="30" style="-fx-background-color: transparent;" vgap="40">
                            <padding>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </padding>

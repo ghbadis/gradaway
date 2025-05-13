@@ -7,8 +7,8 @@ import java.util.List;
 
 public class CandidatureService {
     private Connection connection;
-    private final int currentUserId = 31; // Example user ID
-    private final int currentDossierId = 37; // Example dossier ID
+    private int currentUserId;
+    private int currentDossierId;
 
     public CandidatureService() {
         try {
@@ -22,11 +22,57 @@ public class CandidatureService {
         }
     }
 
+    public void setCurrentUserId(int userId) {
+        this.currentUserId = userId;
+    }
+    public void setCurrentDossierId(int dossierId) {
+        this.currentDossierId = dossierId;
+    }
+
     public List<Candidature> getAllCandidatures() {
         List<Candidature> candidatures = new ArrayList<>();
         try {
-            String query = "SELECT * FROM candidature";
+            String query;
+            PreparedStatement statement;
+            
+            if (currentUserId > 0) {
+                // If we have a current user ID, filter by it
+                query = "SELECT * FROM candidature WHERE user_id = ?";
+                statement = connection.prepareStatement(query);
+                statement.setInt(1, currentUserId);
+                System.out.println("[DEBUG] CandidatureService: Filtering candidatures for user ID: " + currentUserId);
+            } else {
+                // Otherwise get all candidatures
+                query = "SELECT * FROM candidature";
+                statement = connection.prepareStatement(query);
+                System.out.println("[DEBUG] CandidatureService: Getting all candidatures (no user filter)");
+            }
+            
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Candidature candidature = new Candidature();
+                candidature.setId_c(resultSet.getInt("id_c"));
+                candidature.setId_dossier(resultSet.getInt("id_dossier"));
+                candidature.setUser_id(resultSet.getInt("user_id"));
+                candidature.setId_universite(resultSet.getInt("id_universite"));
+                candidature.setDate_de_remise_c(resultSet.getDate("date_de_remise_c"));
+                candidature.setDomaine(resultSet.getString("domaine"));
+                
+                candidatures.add(candidature);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return candidatures;
+    }
+
+    public List<Candidature> getCandidaturesForUser(int userId) {
+        List<Candidature> candidatures = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM candidature WHERE user_id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -307,5 +353,21 @@ public class CandidatureService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean candidatureExists(int userId, int universiteId) {
+        try {
+            String query = "SELECT COUNT(*) FROM candidature WHERE user_id = ? AND id_universite = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            statement.setInt(2, universiteId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 } 

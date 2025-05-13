@@ -52,6 +52,7 @@ public class AjoutDossierController {
     @FXML private AnchorPane rootPane; // Assuming the root element has fx:id="rootPane"
 
     private int currentEtudiantId = -1; // Placeholder for the student ID
+    private Integer currentDossierId = null;
     private ServiceDossier serviceDossier;
     private ServiceUser serviceUser;
     private String cinPath;
@@ -65,21 +66,43 @@ public class AjoutDossierController {
 
     // Updated method to check for existing dossier
     public void setEtudiantId(int id) {
+        System.out.println("AjoutDossierController: setEtudiantId called with id = " + id);
         this.currentEtudiantId = id;
         System.out.println("Current Etudiant ID set to: " + this.currentEtudiantId);
 
-        if (id <= 0) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "ID étudiant invalide.");
+        try {
+            if (id <= 0 || serviceUser.getUserById(id) == null) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "ID étudiant invalide ou utilisateur inexistant.");
+                submitButton.setDisable(true);
+                viewDossierButton.setDisable(true);
+                return;
+            }
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la vérification de l'utilisateur: " + e.getMessage());
             submitButton.setDisable(true);
             viewDossierButton.setDisable(true);
-        } else {
-            // Check if dossier exists for this student
-            checkExistingDossier(id);
+            return;
         }
+        // Check if dossier exists for this student
+        checkExistingDossier(id);
     }
 
     private void checkExistingDossier(int etudiantId) {
         try {
+            // Print the database connection URL
+            java.sql.Connection debugCon = serviceDossier.getConnection();
+            if (debugCon != null) {
+                System.out.println("[DEBUG] Database URL: " + debugCon.getMetaData().getURL());
+            } else {
+                System.out.println("[DEBUG] Database connection is null");
+            }
+            // Print all dossiers in the database
+            System.out.println("[DEBUG] All dossiers in the database:");
+            java.util.List<entities.Dossier> allDossiers = serviceDossier.recuperer();
+            for (entities.Dossier dossier : allDossiers) {
+                System.out.println("  id_dossier=" + dossier.getId_dossier() + ", id_etudiant=" + dossier.getId_etudiant());
+            }
+            System.out.println("Looking for dossier with id_etudiant = " + etudiantId);
             Dossier existingDossier = serviceDossier.recupererParEtudiantId(etudiantId);
             if (existingDossier != null) {
                 System.out.println("Dossier already exists for student ID: " + etudiantId + ". Disabling submit button.");
@@ -104,8 +127,7 @@ public class AjoutDossierController {
 
     @FXML
     public void initialize() {
-        System.out.println("Initialisation du contrôleur AjoutDossierController");
-        
+        System.out.println("AjoutDossierController: initialize called");
         dateDepotPicker.setValue(LocalDate.now());
         serviceDossier = new ServiceDossier();
         serviceUser = new ServiceUser();
@@ -335,13 +357,13 @@ public class AjoutDossierController {
         // Vérifier si toutes les images ont été sélectionnées
         if (cinPath == null || photoPath == null || diplomeBacPath == null || 
             releveNotePath == null || diplomeObtenuPath == null || lettreMotivationPath == null || 
-            dossierSantePath == null || cvPath == null || dateDepotPicker.getValue() == null) {
+            dossierSantePath == null || cvPath == null) {
             showAlert(Alert.AlertType.WARNING, "Champs Incomplets", "Veuillez sélectionner toutes les images requises.");
             return;
         }
 
         try {
-            // Créer et sauvegarder le dossier
+            // Créer et sauvegarder le dossier avec la date actuelle
             Dossier dossier = new Dossier(
                 currentEtudiantId,
                 cinPath,
@@ -352,7 +374,7 @@ public class AjoutDossierController {
                 lettreMotivationPath,
                 dossierSantePath,
                 cvPath,
-                dateDepotPicker.getValue()
+                LocalDate.now()  // Utiliser la date actuelle directement
             );
 
             serviceDossier.ajouter(dossier);
@@ -458,5 +480,10 @@ public class AjoutDossierController {
             System.err.println("Warning: Could not set owner for alert dialog. Root pane or scene not ready.");
         }
         alert.showAndWait();
+    }
+
+    public void setDossierId(Integer dossierId) {
+        this.currentDossierId = dossierId;
+        System.out.println("AjoutDossierController: setDossierId called with id = " + dossierId);
     }
 } 

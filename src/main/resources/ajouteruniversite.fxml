@@ -14,9 +14,10 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
 
 
-<SplitPane dividerPositions="0.2399697199091597" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UniversiteController">
+<SplitPane dividerPositions="0.2399697199091597" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterUniversiteController">
    <items>
       <AnchorPane prefHeight="700.0" prefWidth="154.0" style="-fx-background-color: #0d47a1;">
          <children>
@@ -247,6 +248,10 @@
       
           <VBox alignment="CENTER" spacing="15" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="30.0">
               
+              <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 20 20 0 0;">
+                  <Button fx:id="retourButton" onAction="#handleRetourButton" text="Retour" style="-fx-background-color: #D8315B; -fx-text-fill: white;" />
+              </HBox>
+              
               <Label text="Ajouter Université" textFill="WHITE">
                   <font>
                       <Font name="System Bold" size="24.0" />
@@ -272,23 +277,23 @@
                       
                       <!-- Ville field -->
                       <Label text="Ville:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                      <TextField fx:id="villeField" promptText="Ville" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                      <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                          <WebView fx:id="mapView" prefHeight="200" prefWidth="300" />
+                          <Label fx:id="selectedCityLabel" textFill="WHITE" />
+                          <TextField fx:id="selectedAddressField" promptText="Collez l'adresse ici" />
+                          <Button fx:id="openMapButton" text="Ouvrir la carte dans le navigateur" onAction="#handleOpenMapButton" />
+                      </VBox>
                       <Label fx:id="villeErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                       
-                      <!-- Adresse field -->
-                      <Label text="Adresse:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                      <TextField fx:id="adresseField" promptText="Adresse de l'université" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                      <Label fx:id="adresseErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                      
                       <!-- Domaine field -->
-                      <Label text="Domaine:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-                      <TextField fx:id="domaineField" promptText="Domaine d'étude" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                      <Label fx:id="domaineErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                      <Label text="Domaine:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                      <TextField fx:id="domaineField" promptText="Domaine d'étude" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                      <Label fx:id="domaineErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                       
                       <!-- Frais field -->
-                      <Label text="Frais:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="8" />
-                      <TextField fx:id="fraisField" promptText="Frais d'inscription" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                      <Label fx:id="fraisErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                      <Label text="Frais:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                      <TextField fx:id="fraisField" promptText="Frais d'inscription" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                      <Label fx:id="fraisErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                   <rowConstraints>
                      <RowConstraints />
                      <RowConstraints />
@@ -325,7 +330,7 @@
               <HBox alignment="CENTER" spacing="20">
                   <Button fx:id="ajouterButton" onAction="#handleAjouterButton" prefHeight="40" prefWidth="200" style="-fx-background-color: #3E92CC; -fx-text-fill: white;" text="Ajouter Université" />
                           
-                  <Button fx:id="fermerButton" onAction="#handleFermerButton" prefHeight="40" prefWidth="100" style="-fx-background-color: #D8315B; -fx-text-fill: white;" text="Fermer" />
+
               </HBox>
           </VBox>
       

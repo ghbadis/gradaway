@@ -44,6 +44,11 @@
             <artifactId>javafx-base</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
 
         <!-- FontAwesomeFX -->
         <dependency>
@@ -156,7 +161,7 @@
                     <mainClass>Main.Main</mainClass> <!-- Change to tests.MainFX if needed -->
                     <options>
                         <option>--add-modules</option>
-                        <option>javafx.controls,javafx.fxml</option>
+                        <option>javafx.controls,javafx.fxml,javafx.web</option>
                     </options>
                     <launcher>app</launcher>
                     <jlinkImageName>gradaway-app</jlinkImageName>
