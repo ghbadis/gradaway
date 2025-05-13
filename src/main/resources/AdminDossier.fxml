@@ -3,8 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="686.0" prefWidth="881.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminDossiercontroller">
+<AnchorPane prefHeight="686.0" prefWidth="1217.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminDossiercontroller">
    <children>
       <AnchorPane layoutY="-13.0" prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
          <children>
@@ -239,7 +239,7 @@
             <Label layoutX="46.0" layoutY="111.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="GRADAWAY" />
          </children>
       </AnchorPane>
-      <HBox alignment="CENTER" layoutX="275.0" layoutY="34.0" prefHeight="60.0" prefWidth="691.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10;">
+      <HBox alignment="CENTER" layoutX="392.0" layoutY="29.0" prefHeight="60.0" prefWidth="691.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10;">
          <children>
             <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="Dossier Users">
                <padding>
@@ -249,22 +249,16 @@
          </children>
       </HBox>
       
-      <TableView fx:id="dossierTable" layoutX="275.0" layoutY="104.0" prefHeight="582.0" prefWidth="710.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10;">
-         <columns>
-            <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
-            <TableColumn fx:id="nomColumn" prefWidth="100.0" text="Nom" />
-            <TableColumn fx:id="prenomColumn" prefWidth="100.0" text="Prénom" />
-            <TableColumn fx:id="cinColumn" prefWidth="120.0" text="CIN" />
-            <TableColumn fx:id="photoColumn" prefWidth="120.0" text="Photo" />
-            <TableColumn fx:id="diplomeBacColumn" prefWidth="120.0" text="Diplôme Bac" />
-            <TableColumn fx:id="releveNoteColumn" prefWidth="120.0" text="Relevé Notes" />
-            <TableColumn fx:id="diplomeObtenusColumn" prefWidth="120.0" text="Diplômes Obtenus" />
-            <TableColumn fx:id="lettreMotivationsColumn" prefWidth="120.0" text="Lettre Motivation" />
-            <TableColumn fx:id="dossierSanteColumn" prefWidth="120.0" text="Dossier Santé" />
-            <TableColumn fx:id="cvColumn" prefWidth="120.0" text="CV" />
-            <TableColumn fx:id="dateDepotColumn" prefWidth="120.0" text="Date Dépôt" />
-            <TableColumn fx:id="actionColumn" prefWidth="151.2000488281251" text="Action" />
-         </columns>
-      </TableView>
+      <ScrollPane fitToWidth="true" layoutX="275.0" layoutY="164.0" prefHeight="522.0" prefWidth="910.0" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+         <content>
+            <VBox fx:id="dossierContainer" spacing="15" style="-fx-background-color: transparent;">
+               <padding>
+                  <Insets bottom="15" left="15" right="15" top="15" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <TextField fx:id="rechercherdossier" layoutX="293.0" layoutY="131.0" prefHeight="26.0" prefWidth="231.0" promptText="taper email" />
+      <Button layoutX="542.0" layoutY="132.0" mnemonicParsing="false" onAction="#rechercherdossier" prefHeight="26.0" prefWidth="105.0" text="Rechercher" />
    </children>
 </AnchorPane>

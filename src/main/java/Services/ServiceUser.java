@@ -196,4 +196,33 @@ public class ServiceUser implements IService<User> {
         }
         return false;
     }
+
+    public User getUserByEmail(String email) throws SQLException {
+        String req = "SELECT * FROM user WHERE email = ?";
+        try (PreparedStatement ps = con.prepareStatement(req)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("id"),
+                    rs.getInt("age"),
+                    rs.getInt("cin"),
+                    rs.getInt("telephone"),
+                    rs.getInt("moyennes"),
+                    rs.getInt("annee_obtention_diplome"),
+                    rs.getString("nom"),
+                    rs.getString("prenom"),
+                    rs.getString("nationalite"),
+                    rs.getString("email"),
+                    rs.getString("domaine_etude"),
+                    rs.getString("universite_origine"),
+                    rs.getString("role"),
+                    rs.getDate("DateNaissance").toLocalDate(),
+                    rs.getString("mdp"),
+                    rs.getString("image")
+                );
+            }
+        }
+        return null;
+    }
 }

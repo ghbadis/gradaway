@@ -263,9 +263,9 @@
                   <PasswordField fx:id="oldPassword" style="-fx-background-radius: 5; -fx-border-radius: 5;" />
                   <Label style="-fx-font-weight: bold;" text="Nouveau mot de passe" />
                   <PasswordField fx:id="newPassword" style="-fx-background-radius: 5; -fx-border-radius: 5;" />
-                  <Button onAction="#changepassword" style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Change Password">
+                  <Button onAction="#changepassword" style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Modifier mot de passe">
                      <VBox.margin>
-                        <Insets left="47.0" top="10.0" />
+                        <Insets left="40.0" top="10.0" />
                      </VBox.margin>
                   <opaqueInsets>
                      <Insets />

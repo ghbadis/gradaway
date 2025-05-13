@@ -22,7 +22,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.Scene;
 
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -30,55 +36,20 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Optional;
 import java.io.File;
+import java.util.List;
+import java.util.ArrayList;
 
 public class AdminDossiercontroller implements Initializable {
 
     @FXML
-    private TableView<Dossier> dossierTable;
-    
-    @FXML
-    private TableColumn<Dossier, Integer> idColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> nomColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> prenomColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> cinColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> photoColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> diplomeBacColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> releveNoteColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> diplomeObtenusColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> lettreMotivationsColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> dossierSanteColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> cvColumn;
-    
-    @FXML
-    private TableColumn<Dossier, String> dateDepotColumn;
-
-    @FXML
-    private TableColumn<Dossier, Void> actionColumn;
+    private VBox dossierContainer;
 
     private ServiceDossier serviceDossier;
     private ServiceUser serviceUser;
     private ObservableList<Dossier> dossiers;
     private Map<Integer, User> userCache;
+    @FXML
+    private TextField rechercherdossier;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -86,106 +57,58 @@ public class AdminDossiercontroller implements Initializable {
         serviceUser = new ServiceUser();
         dossiers = FXCollections.observableArrayList();
         userCache = new HashMap<>();
-
-        // Hide ID column
-        idColumn.setVisible(false);
-        
-        // Initialize table columns
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id_dossier"));
-        
-        // Configuration des colonnes nom et prénom
-        nomColumn.setCellValueFactory(cellData -> {
-            Dossier dossier = cellData.getValue();
-            if (dossier != null) {
-                try {
-                    int userId = dossier.getId_etudiant();
-                    System.out.println("Tentative de récupération de l'utilisateur avec l'ID: " + userId);
-                    User user = getUserFromCache(userId);
-                    return new SimpleStringProperty(user != null ? user.getNom() : "N/A");
-                } catch (Exception e) {
-                    System.err.println("Erreur lors de la récupération du nom: " + e.getMessage());
-                    return new SimpleStringProperty("N/A");
-                }
-            }
-            return new SimpleStringProperty("N/A");
-        });
-        
-        prenomColumn.setCellValueFactory(cellData -> {
-            Dossier dossier = cellData.getValue();
-            if (dossier != null) {
-                try {
-                    int userId = dossier.getId_etudiant();
-                    System.out.println("Tentative de récupération de l'utilisateur avec l'ID: " + userId);
-                    User user = getUserFromCache(userId);
-                    return new SimpleStringProperty(user != null ? user.getPrenom() : "N/A");
-                } catch (Exception e) {
-                    System.err.println("Erreur lors de la récupération du prénom: " + e.getMessage());
-                    return new SimpleStringProperty("N/A");
-                }
-            }
-            return new SimpleStringProperty("N/A");
-        });
-
-        // Set cell value factories for image columns..
-        photoColumn.setCellValueFactory(new PropertyValueFactory<>("photo"));
-        cinColumn.setCellValueFactory(new PropertyValueFactory<>("cin"));
-        diplomeBacColumn.setCellValueFactory(new PropertyValueFactory<>("diplome_baccalauréat"));
-        releveNoteColumn.setCellValueFactory(new PropertyValueFactory<>("releve_note"));
-        diplomeObtenusColumn.setCellValueFactory(new PropertyValueFactory<>("diplome_obtenus"));
-        lettreMotivationsColumn.setCellValueFactory(new PropertyValueFactory<>("lettre_motivations"));
-        dossierSanteColumn.setCellValueFactory(new PropertyValueFactory<>("dossier_sante"));
-        cvColumn.setCellValueFactory(new PropertyValueFactory<>("cv"));
-        dateDepotColumn.setCellValueFactory(new PropertyValueFactory<>("datedepot"));
-
-        // Configuration de la colonne d'action (boutons modifier et supprimer)
-        actionColumn.setCellFactory(col -> new TableCell<>() {
-            private final Button modifyButton = new Button("Modifier");
-            private final Button deleteButton = new Button("Supprimer");
-            private final HBox buttonBox = new HBox(10); // 10 pixels spacing between buttons
-
-            {
-                modifyButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-                deleteButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: white;");
-                
-                modifyButton.setOnAction(event -> {
-                    Dossier dossier = getTableView().getItems().get(getIndex());
-                    showModifyDialog(dossier);
-                });
-                
-                deleteButton.setOnAction(event -> {
-                    Dossier dossier = getTableView().getItems().get(getIndex());
-                    try {
-                        serviceDossier.supprimer(dossier);
-                        dossiers.remove(dossier);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        System.err.println("Erreur lors de la suppression du dossier: " + e.getMessage());
-                    }
-                });
-
-                buttonBox.getChildren().addAll(modifyButton, deleteButton);
-                buttonBox.setAlignment(javafx.geometry.Pos.CENTER);
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : buttonBox);
-            }
-        });
-
-        // Configuration des colonnes d'images
-        configureImageColumn(photoColumn, "Photo");
-        configureImageColumn(cinColumn, "CIN");
-        configureImageColumn(diplomeBacColumn, "Diplôme Bac");
-        configureImageColumn(releveNoteColumn, "Relevé Notes");
-        configureImageColumn(diplomeObtenusColumn, "Diplômes Obtenus");
-        configureImageColumn(lettreMotivationsColumn, "Lettre Motivation");
-        configureImageColumn(dossierSanteColumn, "Dossier Santé");
-        configureImageColumn(cvColumn, "CV");
-
-        // Load data
         loadDossiers();
+    }
+
+    private void loadDossiers() {
+        try {
+            dossiers.clear();
+            userCache.clear();
+            
+            // Charger les dossiers
+            dossiers.addAll(serviceDossier.recuperer());
+            System.out.println("Nombre de dossiers chargés: " + dossiers.size());
+            
+            // Préchargement des utilisateurs
+            for (Dossier dossier : dossiers) {
+                try {
+                    int userId = dossier.getId_etudiant();
+                    System.out.println("Préchargement de l'utilisateur avec l'ID: " + userId);
+                    User user = getUserFromCache(userId);
+                    if (user != null) {
+                        System.out.println("Utilisateur préchargé: " + user.getNom() + " " + user.getPrenom());
+                    }
+                } catch (Exception e) {
+                    System.err.println("Erreur lors du préchargement de l'utilisateur: " + e.getMessage());
+                }
+            }
+            
+            dossierContainer.getChildren().clear();
+            for (Dossier dossier : dossiers) {
+                HBox card = createDossierCard(dossier);
+                dossierContainer.getChildren().add(card);
+            }
+            
+            // Log des données pour le débogage
+            for (Dossier dossier : dossiers) {
+                System.out.println("\nDossier ID: " + dossier.getId_dossier());
+                System.out.println("User ID: " + dossier.getId_etudiant());
+                User user = getUserFromCache(dossier.getId_etudiant());
+                System.out.println("User: " + (user != null ? user.getNom() + " " + user.getPrenom() : "N/A"));
+                System.out.println("Photo: " + dossier.getPhoto());
+                System.out.println("CIN: " + dossier.getCin());
+                System.out.println("Diplôme Bac: " + dossier.getDiplome_baccalauréat());
+                System.out.println("Relevé Notes: " + dossier.getReleve_note());
+                System.out.println("Diplômes Obtenus: " + dossier.getDiplome_obtenus());
+                System.out.println("Lettre Motivation: " + dossier.getLettre_motivations());
+                System.out.println("Dossier Santé: " + dossier.getDossier_sante());
+                System.out.println("CV: " + dossier.getCv());
+                System.out.println("------------------------");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Erreur lors du chargement des dossiers: " + e.getMessage());
+        }
     }
 
     private User getUserFromCache(int userId) {
@@ -218,253 +141,552 @@ public class AdminDossiercontroller implements Initializable {
         }
     }
 
-    private void configureImageColumn(TableColumn<Dossier, String> column, String labelText) {
-        column.setCellFactory(tc -> new TableCell<>() {
-            private final ImageView imageView = new ImageView();
-            private final Label label = new Label();
-            private final VBox vbox = new VBox(5);
+    private HBox createDossierCard(Dossier dossier) {
+        // Main card container
+        HBox card = new HBox(20);
+        card.setStyle("-fx-background-color: white; -fx-background-radius: 10; " +
+                "-fx-border-color: #e0e0e0; -fx-border-radius: 10; -fx-border-width: 1; " +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 10);");
+        card.setPadding(new Insets(15));
+        card.setPrefWidth(680);
 
-            {
-                imageView.setFitHeight(100);
-                imageView.setFitWidth(100);
-                imageView.setPreserveRatio(true);
-                vbox.setAlignment(javafx.geometry.Pos.CENTER);
-                vbox.getChildren().addAll(imageView, label);
-            }
+        // Get user information
+        User user = getUserFromCache(dossier.getId_etudiant());
+        String userName = user != null ? user.getNom() + " " + user.getPrenom() : "Utilisateur inconnu";
 
-            @Override
-            protected void updateItem(String imagePath, boolean empty) {
-                super.updateItem(imagePath, empty);
-                if (empty || imagePath == null) {
-                    setGraphic(null);
-                } else {
-                    try {
-                        String fullPath = imagePath.startsWith("file:") ? imagePath : "file:" + imagePath;
-                        System.out.println("Chargement de l'image: " + fullPath);
-                        Image image = new Image(fullPath);
-                        imageView.setImage(image);
-                        label.setText(labelText);
-                        setGraphic(vbox);
-                    } catch (Exception e) {
-                        System.err.println("Erreur lors du chargement de l'image " + labelText + ": " + imagePath);
-                        System.err.println("Message d'erreur: " + e.getMessage());
-                        label.setText("Image non disponible");
-                        imageView.setImage(null);
-                        setGraphic(vbox);
-                    }
-                }
-            }
-        });
+        // Middle section with dossier info
+        VBox infoBox = new VBox(15);
+        infoBox.setPadding(new Insets(10));
+
+        // Nouvelle section Informations Personnelles : nom, prénom, email
+        VBox personalInfo = createInfoSection("Informations Personnelles");
+        GridPane personalGrid = new GridPane();
+        personalGrid.setHgap(10);
+        personalGrid.setVgap(5);
+
+        String nom = user != null ? user.getNom() : "-";
+        String prenom = user != null ? user.getPrenom() : "-";
+        String email = user != null ? user.getEmail() : "-";
+
+        addInfoRow(personalGrid, 0, "Nom :", nom);
+        addInfoRow(personalGrid, 1, "Prénom :", prenom);
+        addInfoRow(personalGrid, 2, "Email :", email);
+        personalInfo.getChildren().clear(); // On retire le titre ajouté par createInfoSection
+        Label titleLabel = new Label("Informations Personnelles");
+        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #333333;");
+        personalInfo.getChildren().addAll(titleLabel, personalGrid);
+
+        // Documents Information with thumbnails
+        VBox documentsInfo = createInfoSection("Documents");
+        
+        // Create HBox for first 4 images
+        HBox thumbnailsRow = new HBox(15);
+        thumbnailsRow.setPadding(new Insets(10));
+        thumbnailsRow.setAlignment(javafx.geometry.Pos.CENTER);
+
+        // Create list of all document thumbnails
+        List<DocumentThumbnail> allThumbnails = new ArrayList<>();
+        allThumbnails.add(new DocumentThumbnail("Photo", dossier.getPhoto()));
+        allThumbnails.add(new DocumentThumbnail("CIN", dossier.getCin()));
+        allThumbnails.add(new DocumentThumbnail("Diplôme Bac", dossier.getDiplome_baccalauréat()));
+        allThumbnails.add(new DocumentThumbnail("Relevé Notes", dossier.getReleve_note()));
+        allThumbnails.add(new DocumentThumbnail("Diplômes Obtenus", dossier.getDiplome_obtenus()));
+        allThumbnails.add(new DocumentThumbnail("Lettre Motivation", dossier.getLettre_motivations()));
+        allThumbnails.add(new DocumentThumbnail("Dossier Santé", dossier.getDossier_sante()));
+        allThumbnails.add(new DocumentThumbnail("CV", dossier.getCv()));
+
+        // Add first 4 thumbnails to row
+        for (int i = 0; i < Math.min(4, allThumbnails.size()); i++) {
+            DocumentThumbnail doc = allThumbnails.get(i);
+            VBox thumbnailBox = createThumbnailBox(doc.title, doc.imagePath);
+            thumbnailsRow.getChildren().add(thumbnailBox);
+        }
+
+        // Add "See More" button if there are more than 4 documents
+        if (allThumbnails.size() > 4) {
+            Button seeMoreButton = new Button("Voir plus de documents");
+            seeMoreButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; " +
+                    "-fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;");
+            seeMoreButton.setOnAction(event -> showAllDocuments(allThumbnails));
+            
+            HBox buttonBox = new HBox(seeMoreButton);
+            buttonBox.setAlignment(javafx.geometry.Pos.CENTER);
+            buttonBox.setPadding(new Insets(10, 0, 0, 0));
+            
+            documentsInfo.getChildren().addAll(thumbnailsRow, buttonBox);
+        } else {
+            documentsInfo.getChildren().add(thumbnailsRow);
+        }
+
+        infoBox.getChildren().clear();
+        infoBox.getChildren().addAll(personalInfo, documentsInfo);
+
+        // Right section with action buttons
+        VBox actionBox = new VBox(10);
+        actionBox.setAlignment(javafx.geometry.Pos.CENTER);
+        actionBox.setPadding(new Insets(10));
+
+        Button editButton = createActionButton("Modifier le dossier", "#4CAF50", "✏️");
+        Button deleteButton = createActionButton("Supprimer le dossier", "#f44336", "🗑️");
+
+        // Add event handlers for buttons
+        editButton.setOnAction(event -> handleEditDossier(dossier));
+        deleteButton.setOnAction(event -> handleDeleteDossierWithConfirmation(dossier));
+
+        actionBox.getChildren().addAll(editButton, deleteButton);
+
+        // Add only infoBox and actionBox to card (plus rien à gauche)
+        card.getChildren().addAll(infoBox, actionBox);
+        return card;
     }
 
-    private void loadDossiers() {
+    private VBox createInfoSection(String title) {
+        VBox section = new VBox(10);
+        section.setPadding(new Insets(10));
+        section.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 5; " +
+                "-fx-border-color: #e0e0e0; -fx-border-radius: 5; -fx-border-width: 1;");
+
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #333333;");
+
+        section.getChildren().add(titleLabel);
+        return section;
+    }
+
+    private Button createActionButton(String text, String color, String icon) {
+        Button button = new Button(icon + " " + text);
+        button.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white; " +
+                "-fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5;" +
+                "-fx-cursor: hand;");
+        button.setMinWidth(150);
+        // Effet hover
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: derive(" + color + ", 20%); -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5; -fx-cursor: hand;"));
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5; -fx-cursor: hand;"));
+        return button;
+    }
+
+    private void addInfoRow(GridPane grid, int row, String label, String value) {
+        Label labelText = new Label(label);
+        labelText.setStyle("-fx-font-weight: bold; -fx-text-fill: #666666;");
+
+        Label valueText = new Label(value);
+        valueText.setStyle("-fx-text-fill: #333333;");
+
+        grid.add(labelText, 0, row);
+        grid.add(valueText, 1, row);
+    }
+
+    private void handleViewDossier(Dossier dossier) {
+        // Implement view dossier functionality
+    }
+
+    private void handleEditDossier(Dossier dossier) {
         try {
-            dossiers.clear();
-            userCache.clear();
-            
-            // Charger les dossiers
-            dossiers.addAll(serviceDossier.recuperer());
-            System.out.println("Nombre de dossiers chargés: " + dossiers.size());
-            
-            // Préchargement des utilisateurs
-            for (Dossier dossier : dossiers) {
-                try {
-                    int userId = dossier.getId_etudiant();
-                    System.out.println("Préchargement de l'utilisateur avec l'ID: " + userId);
-                    User user = getUserFromCache(userId);
-                    if (user != null) {
-                        System.out.println("Utilisateur préchargé: " + user.getNom() + " " + user.getPrenom());
-                    }
-                } catch (Exception e) {
-                    System.err.println("Erreur lors du préchargement de l'utilisateur: " + e.getMessage());
+            // Créer une boîte de dialogue pour la modification
+            Dialog<Dossier> dialog = new Dialog<>();
+            dialog.setTitle("Modifier le dossier");
+            dialog.setHeaderText("Modifier les informations du dossier");
+
+            // Configuration des boutons
+            ButtonType saveButtonType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+
+            // Création du formulaire
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(20, 150, 10, 10));
+
+            // Champ de modification pour la photo avec bouton choisir
+            TextField photoField = new TextField(dossier.getPhoto());
+            Button photoChooseButton = new Button("Choisir");
+            photoChooseButton.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Choisir une image");
+                fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif")
+                );
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    photoField.setText(selectedFile.getAbsolutePath());
                 }
-            }
-            
-            dossierTable.setItems(dossiers);
-            
-            // Log des données pour le débogage
-            for (Dossier dossier : dossiers) {
-                System.out.println("\nDossier ID: " + dossier.getId_dossier());
-                System.out.println("User ID: " + dossier.getId_etudiant());
-                User user = getUserFromCache(dossier.getId_etudiant());
-                System.out.println("User: " + (user != null ? user.getNom() + " " + user.getPrenom() : "N/A"));
-                System.out.println("Photo: " + dossier.getPhoto());
-                System.out.println("CIN: " + dossier.getCin());
-                System.out.println("Diplôme Bac: " + dossier.getDiplome_baccalauréat());
-                System.out.println("Relevé Notes: " + dossier.getReleve_note());
-                System.out.println("Diplômes Obtenus: " + dossier.getDiplome_obtenus());
-                System.out.println("Lettre Motivation: " + dossier.getLettre_motivations());
-                System.out.println("Dossier Santé: " + dossier.getDossier_sante());
-                System.out.println("CV: " + dossier.getCv());
-                System.out.println("------------------------");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Erreur lors du chargement des dossiers: " + e.getMessage());
+            });
+            HBox photoBox = new HBox(5, photoField, photoChooseButton);
+
+            // Champ de modification pour CIN avec bouton choisir
+            TextField cinField = new TextField(dossier.getCin());
+            Button cinChooseButton = new Button("Choisir");
+            cinChooseButton.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Choisir un fichier CIN");
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    cinField.setText(selectedFile.getAbsolutePath());
+                }
+            });
+            HBox cinBox = new HBox(5, cinField, cinChooseButton);
+
+            // Champ de modification pour Diplôme Bac avec bouton choisir
+            TextField diplomeBacField = new TextField(dossier.getDiplome_baccalauréat());
+            Button diplomeBacChooseButton = new Button("Choisir");
+            diplomeBacChooseButton.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Choisir un fichier Diplôme Bac");
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    diplomeBacField.setText(selectedFile.getAbsolutePath());
+                }
+            });
+            HBox diplomeBacBox = new HBox(5, diplomeBacField, diplomeBacChooseButton);
+
+            // Champ de modification pour Relevé Notes avec bouton choisir
+            TextField releveNoteField = new TextField(dossier.getReleve_note());
+            Button releveNoteChooseButton = new Button("Choisir");
+            releveNoteChooseButton.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Choisir un fichier Relevé Notes");
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    releveNoteField.setText(selectedFile.getAbsolutePath());
+                }
+            });
+            HBox releveNoteBox = new HBox(5, releveNoteField, releveNoteChooseButton);
+
+            // Champ de modification pour Diplômes Obtenus avec bouton choisir
+            TextField diplomeObtenusField = new TextField(dossier.getDiplome_obtenus());
+            Button diplomeObtenusChooseButton = new Button("Choisir");
+            diplomeObtenusChooseButton.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Choisir un fichier Diplômes Obtenus");
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    diplomeObtenusField.setText(selectedFile.getAbsolutePath());
+                }
+            });
+            HBox diplomeObtenusBox = new HBox(5, diplomeObtenusField, diplomeObtenusChooseButton);
+
+            // Champ de modification pour Lettre Motivation avec bouton choisir
+            TextField lettreMotivationsField = new TextField(dossier.getLettre_motivations());
+            Button lettreMotivationsChooseButton = new Button("Choisir");
+            lettreMotivationsChooseButton.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Choisir un fichier Lettre Motivation");
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    lettreMotivationsField.setText(selectedFile.getAbsolutePath());
+                }
+            });
+            HBox lettreMotivationsBox = new HBox(5, lettreMotivationsField, lettreMotivationsChooseButton);
+
+            // Champ de modification pour Dossier Santé avec bouton choisir
+            TextField dossierSanteField = new TextField(dossier.getDossier_sante());
+            Button dossierSanteChooseButton = new Button("Choisir");
+            dossierSanteChooseButton.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Choisir un fichier Dossier Santé");
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    dossierSanteField.setText(selectedFile.getAbsolutePath());
+                }
+            });
+            HBox dossierSanteBox = new HBox(5, dossierSanteField, dossierSanteChooseButton);
+
+            // Champ de modification pour CV avec bouton choisir
+            TextField cvField = new TextField(dossier.getCv());
+            Button cvChooseButton = new Button("Choisir");
+            cvChooseButton.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Choisir un fichier CV");
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    cvField.setText(selectedFile.getAbsolutePath());
+                }
+            });
+            HBox cvBox = new HBox(5, cvField, cvChooseButton);
+
+            // Ajout des champs au formulaire
+            grid.add(new Label("Photo:"), 0, 0);
+            grid.add(photoBox, 1, 0);
+            grid.add(new Label("CIN:"), 0, 1);
+            grid.add(cinBox, 1, 1);
+            grid.add(new Label("Diplôme Bac:"), 0, 2);
+            grid.add(diplomeBacBox, 1, 2);
+            grid.add(new Label("Relevé Notes:"), 0, 3);
+            grid.add(releveNoteBox, 1, 3);
+            grid.add(new Label("Diplômes Obtenus:"), 0, 4);
+            grid.add(diplomeObtenusBox, 1, 4);
+            grid.add(new Label("Lettre Motivation:"), 0, 5);
+            grid.add(lettreMotivationsBox, 1, 5);
+            grid.add(new Label("Dossier Santé:"), 0, 6);
+            grid.add(dossierSanteBox, 1, 6);
+            grid.add(new Label("CV:"), 0, 7);
+            grid.add(cvBox, 1, 7);
+
+            dialog.getDialogPane().setContent(grid);
+
+            // Conversion du résultat
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == saveButtonType) {
+                    dossier.setPhoto(photoField.getText());
+                    dossier.setCin(cinField.getText());
+                    dossier.setDiplome_baccalauréat(diplomeBacField.getText());
+                    dossier.setReleve_note(releveNoteField.getText());
+                    dossier.setDiplome_obtenus(diplomeObtenusField.getText());
+                    dossier.setLettre_motivations(lettreMotivationsField.getText());
+                    dossier.setDossier_sante(dossierSanteField.getText());
+                    dossier.setCv(cvField.getText());
+                    return dossier;
+                }
+                return null;
+            });
+
+            // Affichage de la boîte de dialogue et traitement du résultat
+            Optional<Dossier> result = dialog.showAndWait();
+            result.ifPresent(updatedDossier -> {
+                try {
+                    serviceDossier.modifier(updatedDossier);
+                    loadDossiers(); // Recharger la liste des dossiers
+                    showAlert(Alert.AlertType.INFORMATION, "Succès", "Le dossier a été modifié avec succès.");
+                } catch (SQLException e) {
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la modification du dossier: " + e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue: " + e.getMessage());
         }
     }
 
-    private void showModifyDialog(Dossier dossier) {
-        Dialog<Dossier> dialog = new Dialog<>();
-        dialog.setTitle("Modifier le Dossier");
-        dialog.setHeaderText("Modifier les informations du dossier");
+    private void handleDeleteDossier(Dossier dossier) {
+        try {
+            serviceDossier.supprimer(dossier);
+            loadDossiers(); // Recharger la liste des dossiers
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Le dossier a été supprimé avec succès.");
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la suppression du dossier: " + e.getMessage());
+        }
+    }
 
-        // Set the button types
-        ButtonType saveButtonType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+    private void handleDeleteDossierWithConfirmation(Dossier dossier) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation de suppression");
+        alert.setHeaderText("Êtes-vous sûr de vouloir supprimer ce dossier ?");
+        alert.setContentText("Cette action est irréversible.");
 
-        // Create the custom dialog content
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
+        ButtonType buttonOui = new ButtonType("Oui", ButtonBar.ButtonData.YES);
+        ButtonType buttonNon = new ButtonType("Non", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(buttonOui, buttonNon);
 
-        // Create text fields for each document
-        javafx.scene.control.TextField photoField = new javafx.scene.control.TextField(dossier.getPhoto());
-        javafx.scene.control.TextField cinField = new javafx.scene.control.TextField(dossier.getCin());
-        javafx.scene.control.TextField diplomeBacField = new javafx.scene.control.TextField(dossier.getDiplome_baccalauréat());
-        javafx.scene.control.TextField releveNoteField = new javafx.scene.control.TextField(dossier.getReleve_note());
-        javafx.scene.control.TextField diplomeObtenusField = new javafx.scene.control.TextField(dossier.getDiplome_obtenus());
-        javafx.scene.control.TextField lettreMotivationsField = new javafx.scene.control.TextField(dossier.getLettre_motivations());
-        javafx.scene.control.TextField dossierSanteField = new javafx.scene.control.TextField(dossier.getDossier_sante());
-        javafx.scene.control.TextField cvField = new javafx.scene.control.TextField(dossier.getCv());
+        alert.showAndWait().ifPresent(type -> {
+            if (type == buttonOui) {
+                handleDeleteDossier(dossier);
+            }
+        });
+    }
 
-        // Add fields to grid
-        grid.add(new Label("Photo:"), 0, 0);
-        grid.add(photoField, 1, 0);
-        grid.add(new Label("CIN:"), 0, 1);
-        grid.add(cinField, 1, 1);
-        grid.add(new Label("Diplôme Bac:"), 0, 2);
-        grid.add(diplomeBacField, 1, 2);
-        grid.add(new Label("Relevé Notes:"), 0, 3);
-        grid.add(releveNoteField, 1, 3);
-        grid.add(new Label("Diplômes Obtenus:"), 0, 4);
-        grid.add(diplomeObtenusField, 1, 4);
-        grid.add(new Label("Lettre Motivation:"), 0, 5);
-        grid.add(lettreMotivationsField, 1, 5);
-        grid.add(new Label("Dossier Santé:"), 0, 6);
-        grid.add(dossierSanteField, 1, 6);
-        grid.add(new Label("CV:"), 0, 7);
-        grid.add(cvField, 1, 7);
+    private void loadDefaultImage(ImageView imageView) {
+        try {
+            URL defaultImageUrl = getClass().getResource("/images/default-user.png");
+            if (defaultImageUrl != null) {
+                imageView.setImage(new Image(defaultImageUrl.toString()));
+            } else {
+                // If default image is not found, create a colored rectangle
+                imageView.setImage(null);
+                imageView.setStyle("-fx-background-color: #e0e0e0; -fx-background-radius: 60; " +
+                        "-fx-border-color: #cccccc; -fx-border-radius: 60; -fx-border-width: 2;");
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement de l'image par défaut: " + e.getMessage());
+            // If there's an error, create a colored rectangle
+            imageView.setImage(null);
+            imageView.setStyle("-fx-background-color: #e0e0e0; -fx-background-radius: 60; " +
+                    "-fx-border-color: #cccccc; -fx-border-radius: 60; -fx-border-width: 2;");
+        }
+    }
 
-        // Add file chooser buttons
-        Button photoButton = new Button("Parcourir");
-        Button cinButton = new Button("Parcourir");
-        Button diplomeBacButton = new Button("Parcourir");
-        Button releveNoteButton = new Button("Parcourir");
-        Button diplomeObtenusButton = new Button("Parcourir");
-        Button lettreMotivationsButton = new Button("Parcourir");
-        Button dossierSanteButton = new Button("Parcourir");
-        Button cvButton = new Button("Parcourir");
+    @FXML
+    public void rechercherdossier(javafx.event.ActionEvent actionEvent) {
+        String email = rechercherdossier.getText().trim();
+        dossierContainer.getChildren().clear();
 
-        // Add browse buttons to grid
-        grid.add(photoButton, 2, 0);
-        grid.add(cinButton, 2, 1);
-        grid.add(diplomeBacButton, 2, 2);
-        grid.add(releveNoteButton, 2, 3);
-        grid.add(diplomeObtenusButton, 2, 4);
-        grid.add(lettreMotivationsButton, 2, 5);
-        grid.add(dossierSanteButton, 2, 6);
-        grid.add(cvButton, 2, 7);
+        if (email.isEmpty()) {
+            // Si le champ est vide, recharger tous les dossiers
+            loadDossiers();
+            return;
+        }
 
-        // Configure file choosers
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg"),
-            new FileChooser.ExtensionFilter("PDF", "*.pdf"),
-            new FileChooser.ExtensionFilter("Tous les fichiers", "*.*")
-        );
+        try {
+            // Trouver l'utilisateur par email
+            User user = serviceUser.getUserByEmail(email);
+            if (user == null) {
+                showAlert(Alert.AlertType.WARNING, "Aucun résultat", "Aucun utilisateur trouvé avec cet email.");
+                return;
+            }
 
-        // Set up file chooser actions
-        photoButton.setOnAction(e -> {
-            File file = fileChooser.showOpenDialog(dialog.getDialogPane().getScene().getWindow());
-            if (file != null) {
-                photoField.setText(file.getAbsolutePath());
+            // Récupérer le(s) dossier(s) de cet utilisateur
+            List<Dossier> dossiersTrouves = new ArrayList<>();
+            for (Dossier dossier : serviceDossier.recuperer()) {
+                if (dossier.getId_etudiant() == user.getId()) {
+                    dossiersTrouves.add(dossier);
+                }
+            }
+
+            if (dossiersTrouves.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Aucun résultat", "Aucun dossier trouvé pour cet utilisateur.");
+                return;
+            }
+
+            // Afficher les dossiers trouvés
+            for (Dossier dossier : dossiersTrouves) {
+                HBox card = createDossierCard(dossier);
+                dossierContainer.getChildren().add(card);
+            }
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la recherche : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private static class DocumentThumbnail {
+        String title;
+        String imagePath;
+
+        DocumentThumbnail(String title, String imagePath) {
+            this.title = title;
+            this.imagePath = imagePath;
+        }
+    }
+
+    private VBox createThumbnailBox(String title, String imagePath) {
+        VBox thumbnailBox = new VBox(5);
+        thumbnailBox.setAlignment(javafx.geometry.Pos.CENTER);
+        thumbnailBox.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 5; " +
+                "-fx-border-color: #e0e0e0; -fx-border-radius: 5; -fx-border-width: 1;");
+        thumbnailBox.setPadding(new Insets(5));
+        thumbnailBox.setPrefWidth(150);  // Reduced width to fit 4 images in one row
+        thumbnailBox.setPrefHeight(180); // Adjusted height for better proportions
+
+        ImageView thumbnailView = new ImageView();
+        thumbnailView.setFitHeight(120);  // Adjusted image size
+        thumbnailView.setFitWidth(120);   // Adjusted image size
+        thumbnailView.setPreserveRatio(true);
+        thumbnailView.setStyle("-fx-background-color: white; -fx-background-radius: 5; " +
+                "-fx-border-color: #e0e0e0; -fx-border-radius: 5; -fx-border-width: 1;");
+
+        try {
+            if (imagePath != null && !imagePath.isEmpty()) {
+                if (imagePath.startsWith("file:")) {
+                    thumbnailView.setImage(new Image(imagePath));
+                } else {
+                    File imageFile = new File(imagePath);
+                    if (imageFile.exists()) {
+                        thumbnailView.setImage(new Image(imageFile.toURI().toString()));
+                    } else {
+                        loadDefaultImage(thumbnailView);
+                    }
+                }
+            } else {
+                loadDefaultImage(thumbnailView);
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement de la miniature " + title + ": " + e.getMessage());
+            loadDefaultImage(thumbnailView);
+        }
+
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666; -fx-font-weight: bold;");
+        titleLabel.setWrapText(true);
+        titleLabel.setAlignment(javafx.geometry.Pos.CENTER);
+
+        thumbnailBox.getChildren().addAll(thumbnailView, titleLabel);
+
+        // Add click handler to view full image
+        thumbnailBox.setOnMouseClicked(event -> {
+            if (imagePath != null && !imagePath.isEmpty()) {
+                showFullImage(title, imagePath);
             }
         });
 
-        cinButton.setOnAction(e -> {
-            File file = fileChooser.showOpenDialog(dialog.getDialogPane().getScene().getWindow());
-            if (file != null) {
-                cinField.setText(file.getAbsolutePath());
+        return thumbnailBox;
+    }
+
+    private void showAllDocuments(List<DocumentThumbnail> documents) {
+        Stage stage = new Stage();
+        VBox root = new VBox(20);
+        root.setAlignment(javafx.geometry.Pos.CENTER);
+        root.setStyle("-fx-background-color: white; -fx-padding: 20;");
+
+        Label titleLabel = new Label("Tous les documents");
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;");
+
+        FlowPane documentsPane = new FlowPane();
+        documentsPane.setHgap(20);
+        documentsPane.setVgap(20);
+        documentsPane.setPadding(new Insets(20));
+        documentsPane.setPrefWrapLength(800);
+
+        for (DocumentThumbnail doc : documents) {
+            VBox thumbnailBox = createThumbnailBox(doc.title, doc.imagePath);
+            documentsPane.getChildren().add(thumbnailBox);
+        }
+
+        Button closeButton = new Button("Fermer");
+        closeButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; " +
+                "-fx-padding: 10 20; -fx-background-radius: 5;");
+        closeButton.setOnAction(e -> stage.close());
+
+        root.getChildren().addAll(titleLabel, documentsPane, closeButton);
+
+        Scene scene = new Scene(root);
+        stage.setTitle("Tous les documents");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void showFullImage(String title, String imagePath) {
+        try {
+            Stage stage = new Stage();
+            VBox root = new VBox(10);
+            root.setAlignment(javafx.geometry.Pos.CENTER);
+            root.setStyle("-fx-background-color: white; -fx-padding: 20;");
+
+            ImageView fullImageView = new ImageView();
+            if (imagePath.startsWith("file:")) {
+                fullImageView.setImage(new Image(imagePath));
+            } else {
+                File imageFile = new File(imagePath);
+                if (imageFile.exists()) {
+                    fullImageView.setImage(new Image(imageFile.toURI().toString()));
+                }
             }
-        });
 
-        diplomeBacButton.setOnAction(e -> {
-            File file = fileChooser.showOpenDialog(dialog.getDialogPane().getScene().getWindow());
-            if (file != null) {
-                diplomeBacField.setText(file.getAbsolutePath());
-            }
-        });
+            fullImageView.setFitHeight(800);
+            fullImageView.setFitWidth(1000);
+            fullImageView.setPreserveRatio(true);
 
-        releveNoteButton.setOnAction(e -> {
-            File file = fileChooser.showOpenDialog(dialog.getDialogPane().getScene().getWindow());
-            if (file != null) {
-                releveNoteField.setText(file.getAbsolutePath());
-            }
-        });
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;");
 
-        diplomeObtenusButton.setOnAction(e -> {
-            File file = fileChooser.showOpenDialog(dialog.getDialogPane().getScene().getWindow());
-            if (file != null) {
-                diplomeObtenusField.setText(file.getAbsolutePath());
-            }
-        });
+            Button closeButton = new Button("Fermer");
+            closeButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; " +
+                    "-fx-padding: 10 20; -fx-background-radius: 5;");
+            closeButton.setOnAction(e -> stage.close());
 
-        lettreMotivationsButton.setOnAction(e -> {
-            File file = fileChooser.showOpenDialog(dialog.getDialogPane().getScene().getWindow());
-            if (file != null) {
-                lettreMotivationsField.setText(file.getAbsolutePath());
-            }
-        });
+            root.getChildren().addAll(titleLabel, fullImageView, closeButton);
 
-        dossierSanteButton.setOnAction(e -> {
-            File file = fileChooser.showOpenDialog(dialog.getDialogPane().getScene().getWindow());
-            if (file != null) {
-                dossierSanteField.setText(file.getAbsolutePath());
-            }
-        });
+            Scene scene = new Scene(root);
+            stage.setTitle(title);
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'affichage de l'image complète: " + e.getMessage());
+        }
+    }
 
-        cvButton.setOnAction(e -> {
-            File file = fileChooser.showOpenDialog(dialog.getDialogPane().getScene().getWindow());
-            if (file != null) {
-                cvField.setText(file.getAbsolutePath());
-            }
-        });
-
-        dialog.getDialogPane().setContent(grid);
-
-        // Convert the result to a Dossier when the save button is clicked
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == saveButtonType) {
-                dossier.setPhoto(photoField.getText());
-                dossier.setCin(cinField.getText());
-                dossier.setDiplome_baccalauréat(diplomeBacField.getText());
-                dossier.setReleve_note(releveNoteField.getText());
-                dossier.setDiplome_obtenus(diplomeObtenusField.getText());
-                dossier.setLettre_motivations(lettreMotivationsField.getText());
-                dossier.setDossier_sante(dossierSanteField.getText());
-                dossier.setCv(cvField.getText());
-                return dossier;
-            }
-            return null;
-        });
-
-        Optional<Dossier> result = dialog.showAndWait();
-
-        result.ifPresent(modifiedDossier -> {
-            try {
-                serviceDossier.modifier(modifiedDossier);
-                // Refresh the table
-                loadDossiers();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erreur");
-                alert.setHeaderText("Erreur lors de la modification");
-                alert.setContentText("Une erreur est survenue lors de la modification du dossier: " + e.getMessage());
-                alert.showAndWait();
-            }
-        });
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
