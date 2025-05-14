@@ -19,6 +19,7 @@
          <TextField fx:id="chercher_txtf" promptText="Chercher" styleClass="search" />
          <Button fx:id="ajouter_evenement_button" styleClass="add-btn" text="Ajouter un événement" />
          <Button fx:id="liste_reservation_button" styleClass="add-btn" text="Liste des réservations" />
+         <Button fx:id="statistiques_button" styleClass="add-btn" text="Statistiques" />
       </HBox>
 
       <VBox fx:id="formulaire_container" layoutX="57.0" layoutY="104.0" managed="false" spacing="10" styleClass="form-container" visible="false">

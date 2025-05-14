@@ -157,10 +157,10 @@ public class AjouterEvenementController {
 
                     function sendCoordsToJava(lat, lng) {
                         console.log('Sending coordinates to Java:', lat, lng);
-                        if (window.java && typeof window.java.setCoords === 'function') {
+                        try {
                             window.java.setCoords(lat + ', ' + lng);
-                        } else {
-                            console.error('Java bridge not available');
+                        } catch (e) {
+                            console.error('Error sending coordinates to Java:', e);
                         }
                     }
 
@@ -174,44 +174,65 @@ public class AjouterEvenementController {
                         document.getElementById('selectedCoords').innerHTML = '<strong>Coordonnées sélectionnées :</strong> ' + selectedLat + ', ' + selectedLng;
                         sendCoordsToJava(selectedLat, selectedLng);
                     });
+
+                    // Test the Java bridge
+                    window.onload = function() {
+                        console.log('Window loaded, testing Java bridge...');
+                        try {
+                            if (window.java) {
+                                console.log('Java bridge is available');
+                            } else {
+                                console.error('Java bridge is not available');
+                            }
+                        } catch (e) {
+                            console.error('Error testing Java bridge:', e);
+                        }
+                    };
                 </script>
             </body>
             </html>
             """;
 
         webEngine.loadContent(htmlContent);
+        System.out.println("WebView content loaded");
 
         // Bridge Java <-> JS pour remplir le champ dès le clic
         webEngine.getLoadWorker().stateProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == javafx.concurrent.Worker.State.SUCCEEDED) {
                 System.out.println("WebView loaded successfully");
-                JSObject window = (JSObject) webEngine.executeScript("window");
-                window.setMember("java", new Object() {
-                    @SuppressWarnings("unused")
-                    public void setCoords(String coords) {
-                        System.out.println("Received coordinates from JavaScript: " + coords);
-                        String[] parts = coords.split(", ");
-                        if (parts.length == 2) {
-                            String lat = parts[0];
-                            String lng = parts[1];
-                            // Appel à Nominatim en tâche de fond
-                            new Thread(() -> {
-                                String address = getAddressFromNominatim(lat, lng);
-                                javafx.application.Platform.runLater(() -> {
-                                    if (address != null && !address.isEmpty()) {
-                                        lieu_txtf.setText(address);
-                                        System.out.println("Address set in text field: " + address);
-                                    } else {
-                                        lieu_txtf.setText(coords);
-                                        System.out.println("Failed to get address, fallback to coords");
-                                        Alert alert = new Alert(Alert.AlertType.WARNING, "Impossible de récupérer l'adresse. Les coordonnées sont utilisées à la place.");
-                                        alert.showAndWait();
-                                    }
-                                });
-                            }).start();
+                try {
+                    JSObject window = (JSObject) webEngine.executeScript("window");
+                    window.setMember("java", new Object() {
+                        @SuppressWarnings("unused")
+                        public void setCoords(String coords) {
+                            System.out.println("Received coordinates from JavaScript: " + coords);
+                            String[] parts = coords.split(", ");
+                            if (parts.length == 2) {
+                                String lat = parts[0];
+                                String lng = parts[1];
+                                // Appel à LocationIQ en tâche de fond
+                                new Thread(() -> {
+                                    String address = getAddressFromLocationIQ(lat, lng);
+                                    javafx.application.Platform.runLater(() -> {
+                                        if (address != null && !address.isEmpty()) {
+                                            lieu_txtf.setText(address);
+                                            System.out.println("Address set in text field: " + address);
+                                        } else {
+                                            lieu_txtf.setText(coords);
+                                            System.out.println("Failed to get address, fallback to coords");
+                                            Alert alert = new Alert(Alert.AlertType.WARNING, "Impossible de récupérer l'adresse. Les coordonnées sont utilisées à la place.");
+                                            alert.showAndWait();
+                                        }
+                                    });
+                                }).start();
+                            }
                         }
-                    }
-                });
+                    });
+                    System.out.println("Java bridge initialized successfully");
+                } catch (Exception e) {
+                    System.err.println("Error initializing Java bridge: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -227,22 +248,24 @@ public class AjouterEvenementController {
         root.setAlignment(Pos.CENTER);
         Scene scene = new Scene(root, 800, 600);
         mapStage.setScene(scene);
-        mapStage.show();
+        mapStage.showAndWait();
     }
 
-    // Méthode pour obtenir l'adresse à partir des coordonnées avec Nominatim
-    private String getAddressFromNominatim(String lat, String lng) {
+    // Méthode pour obtenir l'adresse à partir des coordonnées avec LocationIQ
+    private String getAddressFromLocationIQ(String lat, String lng) {
         try {
             System.out.println("Requesting address for coordinates: " + lat + ", " + lng);
-            String url = String.format("https://nominatim.openstreetmap.org/reverse?format=json&lat=%s&lon=%s&zoom=18&addressdetails=1", lat, lng);
+            String apiKey = "pk.f837395c000e92811358ab1b5e5485d6";
+            String url = String.format("https://us1.locationiq.com/v1/reverse?key=%s&lat=%s&lon=%s&format=json", 
+                apiKey, lat, lng);
             
             java.net.HttpURLConnection conn = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", "JavaFXApp"); // Important pour respecter les conditions d'utilisation
+            conn.setRequestProperty("User-Agent", "JavaFXApp");
             conn.setConnectTimeout(5000);
             conn.setReadTimeout(5000);
             
-            System.out.println("Sending request to Nominatim...");
+            System.out.println("Sending request to LocationIQ...");
             if (conn.getResponseCode() == 200) {
                 java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
                 StringBuilder response = new StringBuilder();
@@ -252,7 +275,7 @@ public class AjouterEvenementController {
                 }
                 br.close();
                 
-                System.out.println("Response received from Nominatim");
+                System.out.println("Response received from LocationIQ");
                 org.json.JSONObject json = new org.json.JSONObject(response.toString());
                 if (json.has("display_name")) {
                     String address = json.getString("display_name");
@@ -260,10 +283,10 @@ public class AjouterEvenementController {
                     return address;
                 }
             } else {
-                System.out.println("Error response from Nominatim: " + conn.getResponseCode());
+                System.out.println("Error response from LocationIQ: " + conn.getResponseCode());
             }
         } catch (Exception e) {
-            System.err.println("Error getting address from Nominatim: " + e.getMessage());
+            System.err.println("Error getting address from LocationIQ: " + e.getMessage());
             e.printStackTrace();
         }
         System.out.println("Returning coordinates as fallback");

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="white-bg" stylesheets="@design.css" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StatistiquesEvenementsController">
+   <children>
+      <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+         <Label text="Statistiques des Événements" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+         
+         <BarChart fx:id="evenementsChart" title="Événements par Domaine" prefHeight="300" prefWidth="760">
+            <xAxis>
+               <CategoryAxis label="Domaine" />
+            </xAxis>
+            <yAxis>
+               <NumberAxis label="Nombre d'événements" />
+            </yAxis>
+         </BarChart>
+         
+         <PieChart fx:id="reservationsChart" title="Réservations par Événement" prefHeight="300" prefWidth="760" />
+      </VBox>
+   </children>
+</AnchorPane> 

@@ -55,6 +55,8 @@ public class Ajoutergestionevenementcontrolleur {
     private TextField image_txtf;
     @FXML
     private Button choisir_image_button;
+    @FXML
+    private Button statistiques_button;
 
     private ServiceEvenement serviceEvenement;
     private ObservableList<Evenement> evenementsList;
@@ -83,6 +85,9 @@ public class Ajoutergestionevenementcontrolleur {
         chercher_txtf.textProperty().addListener((observable, oldValue, newValue) -> {
             filterEvenements(newValue);
         });
+
+        // Ajout du gestionnaire d'événements pour le bouton statistiques
+        statistiques_button.setOnAction(e -> ouvrirStatistiques());
     }
 
     private void loadData() {
@@ -359,6 +364,18 @@ public class Ajoutergestionevenementcontrolleur {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Erreur", "Impossible d'ouvrir la liste des réservations", e.getMessage());
+        }
+    }
+
+    private void ouvrirStatistiques() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/statistiques_evenements.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) statistiques_button.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
