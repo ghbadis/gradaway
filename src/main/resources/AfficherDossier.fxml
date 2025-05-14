@@ -14,9 +14,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" prefHeight="706.0" prefWidth="1135.0" style="-fx-background-color: #e8f4f8;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AfficherDossierController">
+<AnchorPane fx:id="rootPane" prefHeight="682.0" prefWidth="1135.0" style="-fx-background-color: #e8f4f8;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AfficherDossierController">
     <children>
-        <VBox alignment="TOP_CENTER" layoutX="266.0" layoutY="58.0" prefHeight="590.0" prefWidth="584.0" spacing="20.0" AnchorPane.bottomAnchor="58.799999999999955" AnchorPane.leftAnchor="266.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="58.0">
+        <VBox alignment="TOP_CENTER" layoutX="267.2" layoutY="58.0" prefHeight="644.0" prefWidth="817.0" spacing="20.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="267.0" AnchorPane.rightAnchor="51.0" AnchorPane.topAnchor="58.0">
             <children>
                 <Label text="Mon Dossier" textFill="#0d47a1">
                     <font>
@@ -41,7 +41,7 @@
                                 <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
                                     <children>
                                         <ImageView fx:id="cinPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
-                                        <Label text="CIN" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="CIN" />
                                     </children>
                                 </VBox>
 
@@ -49,7 +49,7 @@
                                 <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="1">
                                     <children>
                                         <ImageView fx:id="photoPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
-                                        <Label text="Photo" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Photo" />
                                     </children>
                                 </VBox>
 
@@ -57,7 +57,7 @@
                                 <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="2">
                                     <children>
                                         <ImageView fx:id="diplomeBacPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
-                                        <Label text="Diplôme Baccalauréat" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Diplôme Baccalauréat" />
                                     </children>
                                 </VBox>
 
@@ -65,7 +65,7 @@
                                 <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="3">
                                     <children>
                                         <ImageView fx:id="releveNotePreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
-                                        <Label text="Relevé de Notes" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Relevé de Notes" />
                                     </children>
                                 </VBox>
 
@@ -73,7 +73,7 @@
                                 <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.rowIndex="1">
                                     <children>
                                         <ImageView fx:id="diplomeObtenuPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
-                                        <Label text="Diplômes Obtenus" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Diplômes Obtenus" />
                                     </children>
                                 </VBox>
 
@@ -81,7 +81,7 @@
                                 <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                     <children>
                                         <ImageView fx:id="lettreMotivationPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
-                                        <Label text="Lettre de Motivations" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Lettre de Motivations" />
                                     </children>
                                 </VBox>
 
@@ -89,7 +89,7 @@
                                 <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                     <children>
                                         <ImageView fx:id="dossierSantePreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
-                                        <Label text="Dossier Santé" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Dossier Santé" />
                                     </children>
                                 </VBox>
 
@@ -97,7 +97,7 @@
                                 <VBox alignment="CENTER" prefHeight="250.0" prefWidth="250.0" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                     <children>
                                         <ImageView fx:id="cvPreview" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;" />
-                                        <Label text="CV" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="CV" />
                                     </children>
                                 </VBox>
                             </children>
@@ -108,11 +108,11 @@
                     </content>
                 </ScrollPane>
 
-                <!-- Date de Dépôt -->
+                                              <!-- Date de Dépôt -->
                 <VBox alignment="CENTER" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
                     <children>
-                        <Label text="Date de Dépôt" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-                        <Label fx:id="dateDepotLabel" text="-" style="-fx-font-size: 14px;" />
+                        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Date de Dépôt" />
+                        <Label fx:id="dateDepotLabel" style="-fx-font-size: 14px;" text="-" />
                     </children>
                     <VBox.margin>
                         <Insets top="20.0" />
@@ -130,7 +130,7 @@
                 </Button>
             </children>
         </VBox>
-      <AnchorPane layoutX="10.0" layoutY="8.0" prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
+      <AnchorPane prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
          <children>
             <VBox alignment="CENTER" layoutY="157.0" prefHeight="536.0" prefWidth="250.0" style="-fx-background-color: #1a237e; -fx-background-radius: 0 15 15 0;">
                <children>

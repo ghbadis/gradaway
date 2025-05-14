@@ -140,8 +140,8 @@ public class Acceuilcontroller {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Gestion du Dossier");
-            stage.setMinWidth(1200); // Match the size from LoginViewcontroller or adjust
-            stage.setMinHeight(800);
+            stage.setMinWidth(1138); // Match the size from LoginViewcontroller or adjust
+            stage.setMinHeight(696);
             stage.setResizable(true);
             stage.centerOnScreen();
             stage.show();

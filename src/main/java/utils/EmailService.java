@@ -7,8 +7,8 @@ import java.util.Properties;
 import java.util.Random;
 
 public class EmailService {
-    private static final String EMAIL = "awaygrad@gmail.com"; // Remplacez par votre email
-    private static final String PASSWORD = "dmzq fnaw uglm glyn"; // Remplacez par votre mot de passe d'application Gmail
+    private static final String EMAIL = "awaygrad@gmail.com"; //
+    private static final String PASSWORD = "dmzq fnaw uglm glyn"; //
     private static final String HOST = "smtp.gmail.com";
     private static final String PORT = "587";
 

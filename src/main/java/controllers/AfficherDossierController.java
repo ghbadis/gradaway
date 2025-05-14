@@ -198,8 +198,8 @@ public class AfficherDossierController {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Modifier Mon Dossier");
-            stage.setMinWidth(1200);
-            stage.setMinHeight(800);
+            stage.setMinWidth(1144);
+            stage.setMinHeight(696);
             stage.setResizable(true);
             stage.centerOnScreen();
 

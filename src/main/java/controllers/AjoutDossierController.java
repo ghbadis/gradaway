@@ -256,17 +256,11 @@ public class AjoutDossierController {
             // Formater la date pour l'affichage
             String dateDepot = dossier.getDatedepot().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             
-            // Générer le contenu HTML de l'email
-            String emailContent = EmailSender.generateDossierConfirmationEmail(
-                dossier.getId_dossier(),
-                dateDepot
-            );
+            // Générer le contenu HTML de l'email sans l'ID du dossier
+            String emailContent = EmailSender.generateDossierConfirmationEmail(dateDepot);
             
-            // Générer le contenu du code QR
-            String qrContent = EmailSender.generateDossierQRContent(
-                dossier.getId_dossier(),
-                dateDepot
-            );
+            // Générer le contenu du code QR sans l'ID du dossier
+            String qrContent = EmailSender.generateDossierQRContent(dateDepot);
             
             // Nom du fichier QR code
             String qrFileName = "dossier_" + dossier.getId_dossier() + ".png";
