@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierReservationController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierReservationController">
     <VBox spacing="20" stylesheets="@design.css" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
         <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" styleClass="add-btn" stylesheets="@design.css" text="Modifier la Réservation" />
 
@@ -25,13 +25,13 @@
             </padding>
 
             <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <TextField fx:id="email_txtf" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <TextField fx:id="email_txtf" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
             <Label text="Nom:" GridPane.rowIndex="1" />
-            <TextField fx:id="nom_txtf" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="nom_txtf" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
             <Label text="Prénom:" GridPane.rowIndex="2" />
-            <TextField fx:id="prenom_txtf" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="prenom_txtf" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
             <Label text="Date:" GridPane.rowIndex="3" />
             <DatePicker fx:id="date_picker" GridPane.columnIndex="1" GridPane.rowIndex="3" />

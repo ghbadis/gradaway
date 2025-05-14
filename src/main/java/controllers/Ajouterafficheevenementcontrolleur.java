@@ -1,6 +1,7 @@
 package controllers;
 
 import entities.Evenement;
+import entities.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import Services.ServiceEvenement;
+import Services.ServiceUser;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -28,16 +30,23 @@ public class Ajouterafficheevenementcontrolleur {
     private ComboBox<String> domaine_comb;
     @FXML
     private GridPane affiche_even_grid;
+    @FXML
+    private Button liste_reservation_button;
 
-    private ServiceEvenement serviceEvenement;
+    private final ServiceEvenement serviceEvenement = new ServiceEvenement();
+    private final ServiceUser serviceUser = new ServiceUser();
+    private int currentUserId; // Pour stocker l'ID de l'utilisateur connecté
     private List<Evenement> evenements;
 
     @FXML
     public void initialize() {
-        serviceEvenement = new ServiceEvenement();
         chargerEvenements();
         initialiserComboBox();
         setupListeners();
+    }
+
+    public void setCurrentUserId(int userId) {
+        this.currentUserId = userId;
     }
 
     private void chargerEvenements() {
@@ -64,6 +73,7 @@ public class Ajouterafficheevenementcontrolleur {
     private void setupListeners() {
         domaine_comb.setOnAction(event -> filtrerParDomaine());
         chercher_button.setOnAction(event -> chercherEvenements());
+        liste_reservation_button.setOnAction(event -> ouvrirListeReservations());
     }
 
     private void filtrerParDomaine() {
@@ -100,7 +110,7 @@ public class Ajouterafficheevenementcontrolleur {
         for (Evenement evenement : evenements) {
             VBox eventBox = creerEventBox(evenement);
             affiche_even_grid.add(eventBox, colonne, ligne);
-            
+
             colonne++;
             if (colonne >= maxColonnes) {
                 colonne = 0;
@@ -138,7 +148,7 @@ public class Ajouterafficheevenementcontrolleur {
         // Informations de l'événement
         Label nomLabel = new Label(evenement.getNom());
         nomLabel.getStyleClass().add("event-title");
-        
+
         Label dateLabel = new Label("Date: " + evenement.getDate());
         Label lieuLabel = new Label("Lieu: " + evenement.getLieu());
         Label placesLabel = new Label("Places disponibles: " + evenement.getPlaces_disponibles());
@@ -147,7 +157,7 @@ public class Ajouterafficheevenementcontrolleur {
         HBox buttonBox = new HBox(10);
         Button reserverButton = new Button("Réserver");
         Button detailButton = new Button("Détail");
-        
+
         reserverButton.getStyleClass().add("update-btn");
         detailButton.getStyleClass().add("clear-btn");
 
@@ -164,18 +174,22 @@ public class Ajouterafficheevenementcontrolleur {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/reservation_evenement.fxml"));
             Parent root = loader.load();
-            
-            // Passer l'événement au contrôleur de réservation
+
+            // Récupérer l'utilisateur connecté
+            User currentUser = serviceUser.getUserById(currentUserId);
+
+            // Passer l'événement et l'utilisateur au contrôleur de réservation
             ReservationEvenementController controller = loader.getController();
             controller.setEvenement(evenement);
-            
+            controller.setCurrentUser(currentUser);
+
             Stage stage = new Stage();
             stage.setTitle("Réservation - " + evenement.getNom());
             stage.setScene(new Scene(root));
             stage.show();
-        } catch (IOException | RuntimeException e) {
-            e.printStackTrace(); // Affiche le stacktrace dans la console
-            showAlert("Erreur", "Erreur lors de l'ouverture de la fenêtre de réservation", e.toString() + "\n" + (e.getCause() != null ? e.getCause().toString() : ""));
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture de la fenêtre de réservation", e.getMessage());
         }
     }
 
@@ -184,13 +198,32 @@ public class Ajouterafficheevenementcontrolleur {
         alert.setTitle("Détails de l'événement");
         alert.setHeaderText(evenement.getNom());
         alert.setContentText(
-            "Description: " + evenement.getDescription() + "\n" +
-            "Date: " + evenement.getDate() + "\n" +
-            "Lieu: " + evenement.getLieu() + "\n" +
-            "Domaine: " + evenement.getDomaine() + "\n" +
-            "Places disponibles: " + evenement.getPlaces_disponibles()
+                "Description: " + evenement.getDescription() + "\n" +
+                        "Date: " + evenement.getDate() + "\n" +
+                        "Lieu: " + evenement.getLieu() + "\n" +
+                        "Domaine: " + evenement.getDomaine() + "\n" +
+                        "Places disponibles: " + evenement.getPlaces_disponibles()
         );
         alert.showAndWait();
+    }
+
+    private void ouvrirListeReservations() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/liste_reservation.fxml"));
+            Parent root = loader.load();
+            
+            // Passer l'ID de l'utilisateur au contrôleur de la liste des réservations
+            ListeReservationController controller = loader.getController();
+            controller.setCurrentUserId(currentUserId);
+            
+            Stage stage = new Stage();
+            stage.setTitle("Liste de mes réservations");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir la liste des réservations", e.getMessage());
+        }
     }
 
     private void showAlert(String title, String header, String content) {

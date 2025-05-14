@@ -42,6 +42,8 @@ public class Ajoutergestionevenementcontrolleur {
     @FXML
     private Button ajouter_evenement_button;
     @FXML
+    private Button liste_reservation_button;
+    @FXML
     private VBox formulaire_container;
     @FXML
     private Button valider_button;
@@ -53,6 +55,8 @@ public class Ajoutergestionevenementcontrolleur {
     private TextField image_txtf;
     @FXML
     private Button choisir_image_button;
+    @FXML
+    private Button statistiques_button;
 
     private ServiceEvenement serviceEvenement;
     private ObservableList<Evenement> evenementsList;
@@ -70,6 +74,7 @@ public class Ajoutergestionevenementcontrolleur {
         loadData();
         
         ajouter_evenement_button.setOnAction(event -> showFormAjout());
+        liste_reservation_button.setOnAction(event -> ouvrirListeReservations());
         valider_button.setOnAction(event -> validerFormulaire());
         annuler_button.setOnAction(event -> hideFormulaire());
         user_button.setOnAction(event -> ouvrirInterfaceUser());
@@ -80,6 +85,9 @@ public class Ajoutergestionevenementcontrolleur {
         chercher_txtf.textProperty().addListener((observable, oldValue, newValue) -> {
             filterEvenements(newValue);
         });
+
+        // Ajout du gestionnaire d'événements pour le bouton statistiques
+        statistiques_button.setOnAction(e -> ouvrirStatistiques());
     }
 
     private void loadData() {
@@ -342,6 +350,32 @@ public class Ajoutergestionevenementcontrolleur {
         java.io.File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             image_txtf.setText(selectedFile.toURI().toString());
+        }
+    }
+
+    private void ouvrirListeReservations() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/liste_reservation.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Liste des Réservations");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir la liste des réservations", e.getMessage());
+        }
+    }
+
+    private void ouvrirStatistiques() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/statistiques_evenements.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) statistiques_button.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

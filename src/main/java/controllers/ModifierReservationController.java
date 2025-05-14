@@ -37,6 +37,16 @@ public class ModifierReservationController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         serviceReservation = new ServiceReservationEvenement();
+
+        // Empêcher la sélection de dates passées
+        date_picker.setDayCellFactory(picker -> new javafx.scene.control.DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate today = LocalDate.now();
+                setDisable(empty || date.isBefore(today));
+            }
+        });
         
         // Configurer les actions des boutons
         annuler_button.setOnAction(event -> fermerFenetre());
@@ -67,11 +77,21 @@ public class ModifierReservationController implements Initializable {
 
     private void enregistrerModifications() {
         try {
+            // Contrôle de saisie : tous les champs doivent être remplis
+            String email = email_txtf.getText();
+            String nom = nom_txtf.getText();
+            String prenom = prenom_txtf.getText();
+            LocalDate dateValue = date_picker.getValue();
+            if (email.isEmpty() || nom.isEmpty() || prenom.isEmpty() || dateValue == null) {
+                showAlert("Erreur", "Champs obligatoires", "Veuillez remplir tous les champs avant d'enregistrer la réservation.");
+                return;
+            }
+
             // Mettre à jour les données de la réservation
-            reservation.setEmail(email_txtf.getText());
-            reservation.setNom(nom_txtf.getText());
-            reservation.setPrenom(prenom_txtf.getText());
-            reservation.setDate(date_picker.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            reservation.setEmail(email);
+            reservation.setNom(nom);
+            reservation.setPrenom(prenom);
+            reservation.setDate(dateValue.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
             // Sauvegarder les modifications
             serviceReservation.modifier(reservation);

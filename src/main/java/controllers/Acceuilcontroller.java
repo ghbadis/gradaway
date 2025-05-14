@@ -83,7 +83,7 @@ public class Acceuilcontroller {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
             Parent root = loader.load();
-            
+
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -235,6 +235,10 @@ public class Acceuilcontroller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
             Parent root = loader.load();
 
+            // Récupérer le contrôleur et lui passer l'ID de l'utilisateur connecté
+            Ajouterafficheevenementcontrolleur controller = loader.getController();
+            controller.setCurrentUserId(getCurrentUserId());
+
             Stage stage = new Stage();
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -254,6 +258,10 @@ public class Acceuilcontroller {
             showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
             e.printStackTrace();
         }
+    }
+
+    private int getCurrentUserId() {
+        return this.userId;
     }
 
     @FXML

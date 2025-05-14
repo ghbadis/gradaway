@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@design.css" xmlns="http://javafx.com/javafx/23.0.1"
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@design.css" xmlns="http://javafx.com/javafx/17.0.2"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReservationEvenementController">
     
     <VBox alignment="CENTER" layoutX="18.4" prefHeight="360.0" prefWidth="562.0" spacing="20" stylesheets="@design.css" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
