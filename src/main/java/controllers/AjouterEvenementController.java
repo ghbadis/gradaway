@@ -129,8 +129,8 @@ public class AjouterEvenementController {
             <html>
             <head>
                 <title>Leaflet Map</title>
-                <link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@0.7.7/dist/leaflet.css\" />
-                <script src=\"https://unpkg.com/leaflet@0.7.7/dist/leaflet.js\"></script>
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css" />
+                <script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"></script>
                 <style>
                     #map { height: 500px; width: 100%; background: #eaeaea; }
                     #selectedCoords {
@@ -144,8 +144,8 @@ public class AjouterEvenementController {
                 </style>
             </head>
             <body>
-                <div id=\"map\">Carte non chargée</div>
-                <div id=\"selectedCoords\">Aucune position sélectionnée</div>
+                <div id="map">Carte non chargée</div>
+                <div id="selectedCoords"></div>
                 <script>
                     var marker = null;
                     var selectedLat = '';
@@ -156,8 +156,11 @@ public class AjouterEvenementController {
                     }).addTo(map);
 
                     function sendCoordsToJava(lat, lng) {
+                        console.log('Sending coordinates to Java:', lat, lng);
                         if (window.java && typeof window.java.setCoords === 'function') {
                             window.java.setCoords(lat + ', ' + lng);
+                        } else {
+                            console.error('Java bridge not available');
                         }
                     }
 
@@ -181,11 +184,32 @@ public class AjouterEvenementController {
         // Bridge Java <-> JS pour remplir le champ dès le clic
         webEngine.getLoadWorker().stateProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == javafx.concurrent.Worker.State.SUCCEEDED) {
+                System.out.println("WebView loaded successfully");
                 JSObject window = (JSObject) webEngine.executeScript("window");
                 window.setMember("java", new Object() {
                     @SuppressWarnings("unused")
                     public void setCoords(String coords) {
-                        lieu_txtf.setText(coords);
+                        System.out.println("Received coordinates from JavaScript: " + coords);
+                        String[] parts = coords.split(", ");
+                        if (parts.length == 2) {
+                            String lat = parts[0];
+                            String lng = parts[1];
+                            // Appel à Nominatim en tâche de fond
+                            new Thread(() -> {
+                                String address = getAddressFromNominatim(lat, lng);
+                                javafx.application.Platform.runLater(() -> {
+                                    if (address != null && !address.isEmpty()) {
+                                        lieu_txtf.setText(address);
+                                        System.out.println("Address set in text field: " + address);
+                                    } else {
+                                        lieu_txtf.setText(coords);
+                                        System.out.println("Failed to get address, fallback to coords");
+                                        Alert alert = new Alert(Alert.AlertType.WARNING, "Impossible de récupérer l'adresse. Les coordonnées sont utilisées à la place.");
+                                        alert.showAndWait();
+                                    }
+                                });
+                            }).start();
+                        }
                     }
                 });
             }
@@ -193,7 +217,10 @@ public class AjouterEvenementController {
 
         Button validerButton = new Button("Valider");
         validerButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
-        validerButton.setOnAction(e -> mapStage.close());
+        validerButton.setOnAction(e -> {
+            System.out.println("Validating selected location...");
+            mapStage.close();
+        });
 
         VBox root = new VBox(10, webView, validerButton);
         root.setPadding(new Insets(10));
@@ -203,30 +230,43 @@ public class AjouterEvenementController {
         mapStage.show();
     }
 
-    // Méthode utilitaire pour géocodage inverse côté Java
-    private String getAddressFromCoordinates(String lat, String lng) {
+    // Méthode pour obtenir l'adresse à partir des coordonnées avec Nominatim
+    private String getAddressFromNominatim(String lat, String lng) {
         try {
-            java.net.URL url = new java.net.URL("https://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&lon=" + lng + "&zoom=18&addressdetails=1");
-            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+            System.out.println("Requesting address for coordinates: " + lat + ", " + lng);
+            String url = String.format("https://nominatim.openstreetmap.org/reverse?format=json&lat=%s&lon=%s&zoom=18&addressdetails=1", lat, lng);
+            
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", "JavaFXApp");
+            conn.setRequestProperty("User-Agent", "JavaFXApp"); // Important pour respecter les conditions d'utilisation
             conn.setConnectTimeout(5000);
             conn.setReadTimeout(5000);
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                java.io.InputStream is = conn.getInputStream();
-                java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                String result = s.hasNext() ? s.next() : "";
-                is.close();
-                System.out.println("Réponse Nominatim : " + result);
-                org.json.JSONObject obj = new org.json.JSONObject(result);
-                if (obj.has("display_name")) {
-                    return obj.getString("display_name");
+            
+            System.out.println("Sending request to Nominatim...");
+            if (conn.getResponseCode() == 200) {
+                java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    response.append(line);
                 }
+                br.close();
+                
+                System.out.println("Response received from Nominatim");
+                org.json.JSONObject json = new org.json.JSONObject(response.toString());
+                if (json.has("display_name")) {
+                    String address = json.getString("display_name");
+                    System.out.println("Address found: " + address);
+                    return address;
+                }
+            } else {
+                System.out.println("Error response from Nominatim: " + conn.getResponseCode());
             }
         } catch (Exception e) {
-            System.out.println("Erreur lors de la récupération de l'adresse : " + e.getMessage());
+            System.err.println("Error getting address from Nominatim: " + e.getMessage());
+            e.printStackTrace();
         }
-        return "Adresse non disponible, veuillez saisir manuellement";
+        System.out.println("Returning coordinates as fallback");
+        return lat + ", " + lng; // Retourne les coordonnées si l'adresse n'a pas pu être récupérée
     }
 } 
