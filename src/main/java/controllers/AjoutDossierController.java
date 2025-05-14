@@ -286,6 +286,7 @@ public class AjoutDossierController {
             } else {
                 System.err.println("Impossible de trouver l'email de l'étudiant avec l'ID: " + dossier.getId_etudiant());
             }
+
         } catch (Exception e) {
             System.err.println("Erreur lors de l'envoi de l'email: " + e.getMessage());
             e.printStackTrace();
