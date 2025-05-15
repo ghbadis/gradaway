@@ -7,8 +7,8 @@ import java.util.List;
 
 public class CandidatureService {
     private Connection connection;
-    private final int currentUserId = 31; // Example user ID
-    private final int currentDossierId = 37; // Example dossier ID
+    private int currentUserId;
+    private int currentDossierId;
 
     public CandidatureService() {
         try {
@@ -22,11 +22,32 @@ public class CandidatureService {
         }
     }
 
+    public void setCurrentUserId(int userId) {
+        this.currentUserId = userId;
+    }
+    public void setCurrentDossierId(int dossierId) {
+        this.currentDossierId = dossierId;
+    }
+
     public List<Candidature> getAllCandidatures() {
         List<Candidature> candidatures = new ArrayList<>();
         try {
-            String query = "SELECT * FROM candidature";
-            PreparedStatement statement = connection.prepareStatement(query);
+            String query;
+            PreparedStatement statement;
+            
+            if (currentUserId > 0) {
+                // If we have a current user ID, filter by it
+                query = "SELECT * FROM candidature WHERE user_id = ?";
+                statement = connection.prepareStatement(query);
+                statement.setInt(1, currentUserId);
+                System.out.println("[DEBUG] CandidatureService: Filtering candidatures for user ID: " + currentUserId);
+            } else {
+                // Otherwise get all candidatures
+                query = "SELECT * FROM candidature";
+                statement = connection.prepareStatement(query);
+                System.out.println("[DEBUG] CandidatureService: Getting all candidatures (no user filter)");
+            }
+            
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -37,6 +58,65 @@ public class CandidatureService {
                 candidature.setId_universite(resultSet.getInt("id_universite"));
                 candidature.setDate_de_remise_c(resultSet.getDate("date_de_remise_c"));
                 candidature.setDomaine(resultSet.getString("domaine"));
+                
+                // Get status if available
+                try {
+                    String status = resultSet.getString("status");
+                    candidature.setStatus(status != null ? status : "pending");
+                } catch (SQLException e) {
+                    // Column might not exist in older database schemas
+                    candidature.setStatus("pending");
+                }
+                
+                // Get acceptance date if available
+                try {
+                    java.sql.Date acceptationDate = resultSet.getDate("date_acceptation");
+                    candidature.setDate_acceptation(acceptationDate);
+                } catch (SQLException e) {
+                    // Column might not exist in older database schemas
+                }
+                
+                candidatures.add(candidature);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return candidatures;
+    }
+
+    public List<Candidature> getCandidaturesForUser(int userId) {
+        List<Candidature> candidatures = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM candidature WHERE user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Candidature candidature = new Candidature();
+                candidature.setId_c(resultSet.getInt("id_c"));
+                candidature.setId_dossier(resultSet.getInt("id_dossier"));
+                candidature.setUser_id(resultSet.getInt("user_id"));
+                candidature.setId_universite(resultSet.getInt("id_universite"));
+                candidature.setDate_de_remise_c(resultSet.getDate("date_de_remise_c"));
+                candidature.setDomaine(resultSet.getString("domaine"));
+                
+                // Get status if available
+                try {
+                    String status = resultSet.getString("status");
+                    candidature.setStatus(status != null ? status : "pending");
+                } catch (SQLException e) {
+                    // Column might not exist in older database schemas
+                    candidature.setStatus("pending");
+                }
+                
+                // Get acceptance date if available
+                try {
+                    java.sql.Date acceptationDate = resultSet.getDate("date_acceptation");
+                    candidature.setDate_acceptation(acceptationDate);
+                } catch (SQLException e) {
+                    // Column might not exist in older database schemas
+                }
                 
                 candidatures.add(candidature);
             }
@@ -61,6 +141,23 @@ public class CandidatureService {
                 candidature.setId_universite(resultSet.getInt("id_universite"));
                 candidature.setDate_de_remise_c(resultSet.getDate("date_de_remise_c"));
                 candidature.setDomaine(resultSet.getString("domaine"));
+                
+                // Get status if available
+                try {
+                    String status = resultSet.getString("status");
+                    candidature.setStatus(status != null ? status : "pending");
+                } catch (SQLException e) {
+                    // Column might not exist in older database schemas
+                    candidature.setStatus("pending");
+                }
+                
+                // Get acceptance date if available
+                try {
+                    java.sql.Date acceptationDate = resultSet.getDate("date_acceptation");
+                    candidature.setDate_acceptation(acceptationDate);
+                } catch (SQLException e) {
+                    // Column might not exist in older database schemas
+                }
                 
                 return candidature;
             }
@@ -306,6 +403,82 @@ public class CandidatureService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean candidatureExists(int userId, int universiteId) {
+        try {
+            String query = "SELECT COUNT(*) FROM candidature WHERE user_id = ? AND id_universite = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            statement.setInt(2, universiteId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Add new method to accept a candidature
+    public boolean acceptCandidature(int candidatureId) {
+        try {
+            // First check if candidature exists and if it's not already accepted
+            String checkQuery = "SELECT id_c, status FROM candidature WHERE id_c = ?";
+            PreparedStatement checkStatement = connection.prepareStatement(checkQuery);
+            checkStatement.setInt(1, candidatureId);
+            
+            ResultSet rs = checkStatement.executeQuery();
+            if (!rs.next() || "accepted".equals(rs.getString("status"))) {
+                System.out.println("Cannot accept candidature: ID " + candidatureId + 
+                                   " not found or already accepted");
+                return false;
+            }
+            
+            // Update the candidature status and set acceptance date
+            String query = "UPDATE candidature SET status = 'accepted', date_acceptation = ? WHERE id_c = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            
+            // Set today's date as acceptance date
+            java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
+            statement.setDate(1, today);
+            statement.setInt(2, candidatureId);
+            
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Add new method to reject a candidature
+    public boolean rejectCandidature(int candidatureId) {
+        try {
+            // First check if candidature exists and if it's not already rejected
+            String checkQuery = "SELECT id_c, status FROM candidature WHERE id_c = ?";
+            PreparedStatement checkStatement = connection.prepareStatement(checkQuery);
+            checkStatement.setInt(1, candidatureId);
+            
+            ResultSet rs = checkStatement.executeQuery();
+            if (!rs.next() || "rejected".equals(rs.getString("status"))) {
+                System.out.println("Cannot reject candidature: ID " + candidatureId + 
+                                   " not found or already rejected");
+                return false;
+            }
+            
+            // Update the candidature status
+            String query = "UPDATE candidature SET status = 'rejected' WHERE id_c = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, candidatureId);
+            
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 } 

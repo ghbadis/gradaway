@@ -618,7 +618,7 @@ public class AdminDossiercontroller implements Initializable {
     @FXML
     public void onuniversiteAdminButtonClick(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminuniversite.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/recupereruniversite.fxml"));
             Parent root = loader.load();
             
             Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();

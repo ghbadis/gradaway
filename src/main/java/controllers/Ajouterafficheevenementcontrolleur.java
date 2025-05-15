@@ -303,7 +303,7 @@ public class Ajouterafficheevenementcontrolleur {
     @FXML
     public void universitébutton(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listcandidaturecards.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();

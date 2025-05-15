@@ -103,17 +103,37 @@ public class Acceuilcontroller {
 
     @FXML
     public void onuniversiteButtonClick(ActionEvent actionEvent) {
+        if (this.userId <= 0) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "ID utilisateur invalide. Impossible d'ouvrir la vue des candidatures.");
+            return;
+        }
+
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            System.out.println("AcceuilController: Opening CandidatureCards view for User ID: " + this.userId);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listcandidaturecards.fxml"));
             Parent root = loader.load();
+            
+            // Get the controller and set the user ID
+            CandidatureCardsController controller = loader.getController();
+            controller.setUserId(this.userId);
+            
             Stage stage = new Stage();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             stage.setTitle("Gestion des Candidatures");
+            stage.setMinWidth(1059);
+            stage.setMinHeight(702);
+            stage.setResizable(true);
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {
-            System.err.println("AcceuilController: Error loading adminconditature.fxml: " + e.getMessage());
+            System.err.println("AcceuilController: Error loading listcandidaturecards.fxml: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des candidatures.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
             e.printStackTrace();
         }
     }
@@ -226,7 +246,7 @@ public class Acceuilcontroller {
             showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
             e.printStackTrace();
         }
-        
+
     }
 
     @FXML

@@ -256,7 +256,7 @@ public class SupprimerCondituresController implements Initializable {
     @FXML
     private void handleRetourButton() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/adminconditature.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/accueil.fxml"));
             Stage stage = (Stage) retourButton.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);

@@ -199,6 +199,11 @@ public class Ajoutergestionevenementcontrolleur implements Initializable {
 
         modifierBtn.setOnAction(event -> {
             try {
+                // Fermer la fenêtre actuelle
+                Stage currentStage = (Stage) modifierBtn.getScene().getWindow();
+                currentStage.close();
+
+                // Ouvrir la fenêtre de modification
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/modifier_evenement.fxml"));
                 Parent root = loader.load();
                 ModifierEvenementController controller = loader.getController();
@@ -206,8 +211,7 @@ public class Ajoutergestionevenementcontrolleur implements Initializable {
                 Stage stage = new Stage();
                 stage.setTitle("Modifier l'événement");
                 stage.setScene(new Scene(root));
-                stage.showAndWait();
-                loadData();
+                stage.show();
             } catch (Exception e) {
                 showAlert("Erreur", "Impossible d'ouvrir la fenêtre de modification", e.getMessage());
             }
@@ -471,7 +475,7 @@ public class Ajoutergestionevenementcontrolleur implements Initializable {
     @FXML
     public void onuniversiteAdminButtonClick(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminuniversite.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/recupereruniversite.fxml"));
             Parent root = loader.load();
             
             Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();

@@ -1,86 +1,341 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.ModifierDossierAdminController"
-            prefHeight="800.0" prefWidth="1000.0"
-            style="-fx-background-color: white;">
 
-    <VBox spacing="20">
-        <padding>
-            <Insets top="20" right="20" bottom="20" left="20"/>
-        </padding>
-        
-        <Label text="Modifier le Dossier" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-        
-        <GridPane hgap="10" vgap="10">
-            <!-- Photo -->
-            <Label text="Photo:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                <TextField fx:id="photoField" prefWidth="300"/>
-                <Button text="Choisir" onAction="#handlePhotoChoose"/>
-            </HBox>
-
-            <!-- CIN -->
-            <Label text="CIN:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                <TextField fx:id="cinField" prefWidth="300"/>
-                <Button text="Choisir" onAction="#handleCinChoose"/>
-            </HBox>
-
-            <!-- Diplôme Bac -->
-            <Label text="Diplôme Bac:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                <TextField fx:id="diplomeBacField" prefWidth="300"/>
-                <Button text="Choisir" onAction="#handleDiplomeBacChoose"/>
-            </HBox>
-
-            <!-- Relevé Notes -->
-            <Label text="Relevé Notes:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                <TextField fx:id="releveNoteField" prefWidth="300"/>
-                <Button text="Choisir" onAction="#handleReleveNoteChoose"/>
-            </HBox>
-
-            <!-- Diplômes Obtenus -->
-            <Label text="Diplômes Obtenus:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                <TextField fx:id="diplomeObtenusField" prefWidth="300"/>
-                <Button text="Choisir" onAction="#handleDiplomeObtenusChoose"/>
-            </HBox>
-
-            <!-- Lettre Motivation -->
-            <Label text="Lettre Motivation:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                <TextField fx:id="lettreMotivationsField" prefWidth="300"/>
-                <Button text="Choisir" onAction="#handleLettreMotivationsChoose"/>
-            </HBox>
-
-            <!-- Dossier Santé -->
-            <Label text="Dossier Santé:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                <TextField fx:id="dossierSanteField" prefWidth="300"/>
-                <Button text="Choisir" onAction="#handleDossierSanteChoose"/>
-            </HBox>
-
-            <!-- CV -->
-            <Label text="CV:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="7">
-                <TextField fx:id="cvField" prefWidth="300"/>
-                <Button text="Choisir" onAction="#handleCvChoose"/>
-            </HBox>
-        </GridPane>
-
-        <HBox spacing="10" alignment="CENTER">
-            <Button text="Enregistrer" onAction="#handleSave" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"/>
-            <Button text="Annuler" onAction="#handleCancel" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"/>
-        </HBox>
-    </VBox>
-</AnchorPane>
+<SplitPane dividerPositions="0.306502296350012" prefHeight="700.0" prefWidth="829.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierDossierAdminController">
+   <items>
+      <AnchorPane prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
+         <children>
+            <VBox alignment="CENTER" layoutY="157.0" prefHeight="536.0" prefWidth="250.0" style="-fx-background-color: #1a237e; -fx-background-radius: 0 15 15 0;">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #0d47a1; -fx-background-radius: 0 15 0 0;">
+                     <children>
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/acceuil.png" />
+                           </image>
+                        </ImageView>
+                        <Button mnemonicParsing="false" onAction="#onAccueilAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets left="-45.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
+                     <children>
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/icons8-user-24.png" />
+                           </image>
+                        </ImageView>
+                        <Button mnemonicParsing="false" onAction="#onUserAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets left="-45.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <VBox alignment="CENTER" prefWidth="250.0" spacing="10.0" style="-fx-padding: 20 0 0 0;">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-dossier-24.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#ondossierAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-university-24.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onuniversiteAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="46.0" prefWidth="238.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-video-call-24.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onentretienAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-event-accepted-32.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onevenementAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-house-24.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets left="4.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onhebergementAdminButtonClick" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/restaurant.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onrestaurantAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-plane-24.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onvolsAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-logout-24.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onlogoutAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="11.0" prefHeight="110.0" prefWidth="213.0">
+               <children>
+                  <ImageView fitHeight="173.0" fitWidth="138.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/logo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </VBox>
+            <Label layoutX="46.0" layoutY="111.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="GRADAWAY" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="698.0" prefWidth="568.0" style="-fx-background-color: white;">
+      
+          <VBox spacing="20">
+              <padding>
+                  <Insets bottom="20" left="20" right="20" top="20" />
+              </padding>
+              
+              <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Modifier le Dossier">
+               <VBox.margin>
+                  <Insets left="150.0" />
+               </VBox.margin>
+            </Label>
+              
+              <GridPane hgap="10" vgap="10">
+                  <!-- Photo -->
+                  <Label text="Photo:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                      <TextField fx:id="photoField" prefWidth="300" />
+                      <Button onAction="#handlePhotoChoose" text="Choisir" />
+                  </HBox>
+      
+                  <!-- CIN -->
+                  <Label text="CIN:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                      <TextField fx:id="cinField" prefWidth="300" />
+                      <Button onAction="#handleCinChoose" text="Choisir" />
+                  </HBox>
+      
+                  <!-- Diplôme Bac -->
+                  <Label text="Diplôme Bac:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                      <TextField fx:id="diplomeBacField" prefWidth="300" />
+                      <Button onAction="#handleDiplomeBacChoose" text="Choisir" />
+                  </HBox>
+      
+                  <!-- Relevé Notes -->
+                  <Label text="Relevé Notes:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                  <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                      <TextField fx:id="releveNoteField" prefWidth="300" />
+                      <Button onAction="#handleReleveNoteChoose" text="Choisir" />
+                  </HBox>
+      
+                  <!-- Diplômes Obtenus -->
+                  <Label text="Diplômes Obtenus:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                  <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                      <TextField fx:id="diplomeObtenusField" prefWidth="300" />
+                      <Button onAction="#handleDiplomeObtenusChoose" text="Choisir" />
+                  </HBox>
+      
+                  <!-- Lettre Motivation -->
+                  <Label text="Lettre Motivation:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                  <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                      <TextField fx:id="lettreMotivationsField" prefWidth="300" />
+                      <Button onAction="#handleLettreMotivationsChoose" text="Choisir" />
+                  </HBox>
+      
+                  <!-- Dossier Santé -->
+                  <Label text="Dossier Santé:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                  <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                      <TextField fx:id="dossierSanteField" prefWidth="300" />
+                      <Button onAction="#handleDossierSanteChoose" text="Choisir" />
+                  </HBox>
+      
+                  <!-- CV -->
+                  <Label text="CV:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                  <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                      <TextField fx:id="cvField" prefWidth="300" />
+                      <Button onAction="#handleCvChoose" text="Choisir" />
+                  </HBox>
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+               <VBox.margin>
+                  <Insets top="50.0" />
+               </VBox.margin>
+              </GridPane>
+      
+              <HBox alignment="CENTER" spacing="10">
+                  <Button onAction="#handleSave" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;" text="Enregistrer" />
+                  <Button onAction="#handleCancel" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;" text="Annuler" />
+              </HBox>
+          </VBox>
+      </AnchorPane>
+   </items>
+</SplitPane>
