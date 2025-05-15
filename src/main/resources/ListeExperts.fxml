@@ -2,74 +2,37 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 
-<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ListeExpertsController">
+<SplitPane dividerPositions="0.23977272727272725" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ListeExpertsController">
    <items>
-      <AnchorPane prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
+      <AnchorPane prefHeight="700.0" prefWidth="118.0">
          <children>
-            <VBox alignment="CENTER" layoutY="157.0" prefHeight="536.0" prefWidth="250.0" style="-fx-background-color: #1a237e; -fx-background-radius: 0 15 15 0;">
+            <AnchorPane layoutX="-1.0" layoutY="-2.0" prefHeight="703.0" prefWidth="220.0" style="-fx-background-color: #0d47a1;">
                <children>
-                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #0d47a1; -fx-background-radius: 0 15 0 0;">
+                  <VBox alignment="CENTER" layoutY="157.0" prefHeight="536.0" prefWidth="250.0" style="-fx-background-color: #1a237e; -fx-background-radius: 0 15 15 0;">
                      <children>
-                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@images/acceuil.png" />
-                           </image>
-                        </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
-                           <HBox.margin>
-                              <Insets left="-45.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
-                     <children>
-                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@images/icons8-user-24.png" />
-                           </image>
-                        </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="WHITE">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
-                           <HBox.margin>
-                              <Insets left="-45.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <VBox alignment="CENTER" prefWidth="250.0" spacing="10.0" style="-fx-padding: 20 0 0 0;">
-                     <children>
-                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #0d47a1; -fx-background-radius: 0 15 0 0;">
                            <children>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@images/icons8-dossier-24.png" />
+                                    <Image url="@images/acceuil.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -82,14 +45,14 @@
                               </Button>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
                            <children>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@images/icons8-university-24.png" />
+                                    <Image url="@images/icons8-user-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -102,174 +65,217 @@
                               </Button>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER" prefHeight="46.0" prefWidth="238.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                        <VBox alignment="CENTER" prefWidth="250.0" spacing="10.0" style="-fx-padding: 20 0 0 0;">
                            <children>
-                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@images/icons8-video-call-24.png" />
-                                 </image>
-                              </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                                 <HBox.margin>
-                                    <Insets left="-45.0" />
-                                 </HBox.margin>
-                              </Button>
+                              <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                 <children>
+                                    <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/icons8-dossier-24.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <HBox.margin>
+                                          <Insets left="-45.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                 <children>
+                                    <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/icons8-university-24.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <HBox.margin>
+                                          <Insets left="-45.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="46.0" prefWidth="238.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                 <children>
+                                    <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/icons8-video-call-24.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <HBox.margin>
+                                          <Insets left="-45.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                 <children>
+                                    <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/icons8-event-accepted-32.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <HBox.margin>
+                                          <Insets left="-45.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                 <children>
+                                    <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/icons8-house-24.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets left="4.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <HBox.margin>
+                                          <Insets left="-45.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                 <children>
+                                    <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/restaurant.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <HBox.margin>
+                                          <Insets left="-45.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                 <children>
+                                    <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/icons8-plane-24.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <HBox.margin>
+                                          <Insets left="-45.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                 <children>
+                                    <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/icons8-logout-24.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <HBox.margin>
+                                          <Insets left="-45.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
                            </children>
-                        </HBox>
-                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
-                           <children>
-                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@images/icons8-event-accepted-32.png" />
-                                 </image>
-                              </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                                 <HBox.margin>
-                                    <Insets left="-45.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
-                           <children>
-                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@images/icons8-house-24.png" />
-                                 </image>
-                                 <HBox.margin>
-                                    <Insets left="4.0" />
-                                 </HBox.margin>
-                              </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                                 <HBox.margin>
-                                    <Insets left="-45.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
-                           <children>
-                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@images/restaurant.png" />
-                                 </image>
-                              </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                                 <HBox.margin>
-                                    <Insets left="-45.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
-                           <children>
-                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@images/icons8-plane-24.png" />
-                                 </image>
-                              </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                                 <HBox.margin>
-                                    <Insets left="-45.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
-                           <children>
-                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@images/icons8-logout-24.png" />
-                                 </image>
-                              </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                                 <HBox.margin>
-                                    <Insets left="-45.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
+                        </VBox>
                      </children>
                   </VBox>
+                  <VBox alignment="CENTER" layoutX="11.0" prefHeight="110.0" prefWidth="213.0">
+                     <children>
+                        <ImageView fitHeight="173.0" fitWidth="138.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/logo.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </VBox>
+                  <Label layoutX="46.0" layoutY="111.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="GRADAWAY" />
                </children>
-            </VBox>
-            <VBox alignment="CENTER" layoutX="11.0" prefHeight="110.0" prefWidth="213.0">
-               <children>
-                  <ImageView fitHeight="173.0" fitWidth="138.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/logo.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </VBox>
-            <Label layoutX="46.0" layoutY="111.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="GRADAWAY" />
+            </AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #f8f9fa;">
-          <!-- Blue header bar -->
-          <VBox prefWidth="970.0" spacing="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0">
-              <HBox alignment="CENTER" prefHeight="83.0" prefWidth="1040.0" style="-fx-background-color: #3454d1;">
-                  <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" text="Gestion des Experts" />
-              </HBox>
-              <!-- Add button and header row -->
-              <VBox spacing="10" style="-fx-padding: 30 40 0 40;">
-                  <HBox alignment="CENTER_LEFT" spacing="10">
-                      <Button fx:id="ajouterButton" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 18;" text="Ajouter un Expert" />
-                  </HBox>
-              </VBox>
-               <!-- Header row for columns -->
-               <HBox prefHeight="48.0" prefWidth="1028.0" spacing="0" style="-fx-background-color: #fff; -fx-padding: 12 0 12 10; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 2 0;">
-                   <Label maxWidth="180" minWidth="180" style="-fx-font-weight: bold; -fx-font-size: 15px;" text="Nom complet" />
-                   <Label maxWidth="220" minWidth="220" style="-fx-font-weight: bold; -fx-font-size: 15px;" text="Email" />
-                   <Label maxWidth="140" minWidth="140" style="-fx-font-weight: bold; -fx-font-size: 15px;" text="Spécialité" />
-                   <Label maxWidth="120" minWidth="120" style="-fx-font-weight: bold; -fx-font-size: 15px;" text="Téléphone" />
-                   <Label maxWidth="120" minWidth="120" style="-fx-font-weight: bold; -fx-font-size: 15px;" text="Expérience" />
-                   <Region minWidth="0" HBox.hgrow="ALWAYS" />
-                   <Label alignment="CENTER_RIGHT" maxWidth="180" minWidth="180" style="-fx-font-weight: bold; -fx-font-size: 15px;" text="Actions" />
-               </HBox>
-              <!-- ListView for data rows -->
-              <ListView fx:id="expertsList" maxHeight="420" minHeight="420" style="-fx-background-color: #fff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;" VBox.vgrow="ALWAYS" />
-              <!-- Exit button at the bottom -->
-              <HBox alignment="CENTER" style="-fx-padding: 20 0 20 0;">
-                  <Button fx:id="fermerButton" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 32;" text="Quitter" />
-              </HBox>
-          </VBox>
-      </AnchorPane>
+      <VBox prefHeight="700.0" prefWidth="800.0" spacing="0" style="-fx-background-color: #f8f9fa;">
+          <!-- Header Bar -->
+          <HBox alignment="CENTER_LEFT" prefHeight="90.0" style="-fx-background-color: #0d47a1;">
+              <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 0 40;" text="Gestion des Experts" />
+              <Region HBox.hgrow="ALWAYS" />
+              <Button fx:id="ajouterButton" style="-fx-background-color: #1a237e; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 12 40; -fx-font-size: 18px; -fx-margin: 0 40 0 0;" text="Ajouter un Expert" />
+          </HBox>
+      
+                      <!-- Filters and Search -->
+          <HBox spacing="20" style="-fx-padding: 30 40 0 40;">
+              <TextField fx:id="searchField" promptText="Search expert" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #0d47a1; -fx-border-width: 2; -fx-padding: 12 20; -fx-font-size: 17px;" HBox.hgrow="ALWAYS" />
+              <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #0d47a1;" text="Filtres:" />
+              <ComboBox fx:id="specialiteComboBox" promptText="Spécialité" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #0d47a1; -fx-border-width: 2; -fx-padding: 12 20; -fx-font-size: 17px;" />
+          </HBox>
+      
+                      <!-- Cards grid -->
+          <ScrollPane fitToWidth="true" style="-fx-background-color:transparent;" VBox.vgrow="ALWAYS">
+              <FlowPane fx:id="cardsPane" hgap="24" prefHeight="500" prefWidth="700" style="-fx-background-color:transparent;" vgap="24">
+                  <padding>
+                      <Insets bottom="30" left="30" right="30" top="30" />
+                  </padding>
+              </FlowPane>
+          </ScrollPane>
+      
+                      <!-- Exit button at the bottom -->
+          <HBox alignment="BOTTOM_LEFT" style="-fx-padding: 30 0 30 40;">
+              <Button fx:id="fermerButton" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 12 40; -fx-font-size: 18px;" text="Quitter" />
+          </HBox>
+      </VBox>
    </items>
 </SplitPane>

@@ -15,70 +15,67 @@ import javafx.collections.ObservableList;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.geometry.Pos;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.io.FileInputStream;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.FlowPane;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ListeExpertsController {
     @FXML
-    private ListView<Expert> expertsList;
+    private FlowPane cardsPane;
     @FXML
     private Button ajouterButton;
     @FXML
     private Button fermerButton;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> specialiteComboBox;
+    @FXML
+    private Button searchButton;
 
     private final ServiceExpert serviceExpert = new ServiceExpert();
     private ObservableList<Expert> expertsData = FXCollections.observableArrayList();
+    private ObservableList<Expert> allExperts = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
+        try {
+            // Load specialties from database for filter
+            List<String> domaines = serviceExpert.recupererDomaines();
+            specialiteComboBox.getItems().add("Toutes"); // Keep the "All" option
+            specialiteComboBox.getItems().addAll(domaines);
+            specialiteComboBox.setValue("Toutes");
+        } catch (SQLException e) {
+            System.err.println("Error loading domains: " + e.getMessage());
+            // Fallback to default values if database load fails
+            specialiteComboBox.getItems().add("Toutes");
+            specialiteComboBox.getItems().addAll(
+                "Java",
+                "Python",
+                "JavaScript",
+                "DevOps",
+                "Base de données",
+                "Web",
+                "Mobile",
+                "Cloud",
+                "Sécurité"
+            );
+            specialiteComboBox.setValue("Toutes");
+        }
+
+        // Configure event handlers
+        specialiteComboBox.setOnAction(e -> filterExperts());
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> filterExperts());
+
         // Configurer les boutons
         ajouterButton.setOnAction(event -> ouvrirFenetreAjout());
         fermerButton.setOnAction(event -> fermerFenetre());
-
-        // Configurer la ListView
-        expertsList.setCellFactory(lv -> new ListCell<Expert>() {
-            @Override
-            protected void updateItem(Expert expert, boolean empty) {
-                super.updateItem(expert, empty);
-                
-                if (empty || expert == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    HBox row = new HBox(0);
-                    row.setAlignment(Pos.CENTER_LEFT);
-                    row.setStyle("-fx-padding: 10 0 10 10; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0; -fx-background-color: #fff;");
-                    
-                    Label nomLabel = new Label(expert.getNom_expert() + " " + expert.getPrenom_expert());
-                    nomLabel.setMinWidth(180); nomLabel.setMaxWidth(180);
-                    Label emailLabel = new Label(expert.getEmail());
-                    emailLabel.setMinWidth(220); emailLabel.setMaxWidth(220);
-                    Label specialiteLabel = new Label(expert.getSpecialite());
-                    specialiteLabel.setMinWidth(140); specialiteLabel.setMaxWidth(140);
-                    Label telephoneLabel = new Label(expert.getTelephone());
-                    telephoneLabel.setMinWidth(120); telephoneLabel.setMaxWidth(120);
-                    Label experienceLabel = new Label(String.valueOf(expert.getAnneeExperience()));
-                    experienceLabel.setMinWidth(120); experienceLabel.setMaxWidth(120);
-                    
-                    // Spacer before actions
-                    Region spacer = new Region();
-                    HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
-                    
-                    Button modifierBtn = new Button("Modifier");
-                    modifierBtn.setStyle("-fx-background-color: #ffc107; -fx-text-fill: #222; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 4 18;");
-                    modifierBtn.setOnAction(event -> ouvrirFenetreModification(expert));
-                    
-                    Button supprimerBtn = new Button("Supprimer");
-                    supprimerBtn.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 4 18;");
-                    supprimerBtn.setOnAction(event -> supprimerExpert(expert));
-                    
-                    row.getChildren().addAll(
-                        nomLabel, emailLabel, specialiteLabel, telephoneLabel, experienceLabel, spacer, modifierBtn, supprimerBtn
-                    );
-                    
-                    setGraphic(row);
-                    setText(null);
-                }
-            }
-        });
 
         // Charger les données
         chargerDonnees();
@@ -87,11 +84,158 @@ public class ListeExpertsController {
     private void chargerDonnees() {
         try {
             List<Expert> experts = serviceExpert.recuperer();
+            allExperts.clear();
+            allExperts.addAll(experts);
             expertsData.setAll(experts);
-            expertsList.setItems(expertsData);
+            refreshCards(expertsData);
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors du chargement des experts: " + e.getMessage());
         }
+    }
+
+    private void refreshCards(List<Expert> experts) {
+        cardsPane.getChildren().clear();
+        int count = 0;
+        for (Expert expert : experts) {
+            VBox card = createExpertCard(expert);
+            cardsPane.getChildren().add(card);
+            count++;
+        }
+    }
+
+    private VBox createExpertCard(Expert expert) {
+        VBox card = new VBox(10);
+        card.setStyle("-fx-background-color: #1a237e; -fx-background-radius: 16; -fx-padding: 18; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 10);");
+        card.setPrefWidth(320);
+        card.setMaxWidth(320);
+        card.setMinWidth(320);
+        card.setAlignment(Pos.TOP_CENTER);
+
+        // Create a container for the photo with rounded corners
+        VBox photoContainer = new VBox();
+        photoContainer.setStyle("-fx-background-color: white; -fx-background-radius: 8;");
+        photoContainer.setPrefHeight(200);
+        photoContainer.setMaxHeight(200);
+        photoContainer.setAlignment(Pos.CENTER);
+
+        // Photo view with proper sizing and clipping
+        ImageView photoView = new ImageView();
+        photoView.setFitHeight(180);
+        photoView.setFitWidth(280);
+        photoView.setPreserveRatio(true);
+        photoView.setSmooth(true);
+
+        // Create clip for rounded corners
+        javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(
+            280, 180
+        );
+        clip.setArcWidth(16);
+        clip.setArcHeight(16);
+        photoView.setClip(clip);
+
+        // Default image path
+        String defaultImagePath = "/images/default-avatar.png";
+        boolean imageSet = false;
+
+        // Try to load the expert's photo if available
+        if (expert.getPhotoPath() != null && !expert.getPhotoPath().isEmpty()) {
+            try {
+                Path photoPath;
+                if (Paths.get(expert.getPhotoPath()).isAbsolute()) {
+                    // If it's an absolute path, use it directly
+                    photoPath = Paths.get(expert.getPhotoPath());
+                } else {
+                    // If it's a relative path, resolve it against the current working directory
+                    photoPath = Paths.get(System.getProperty("user.dir"), expert.getPhotoPath());
+                }
+
+                if (Files.exists(photoPath)) {
+                    System.out.println("[DEBUG] Loading photo from: " + photoPath);
+                    Image expertImage = new Image(photoPath.toUri().toString());
+                            if (!expertImage.isError()) {
+                                photoView.setImage(expertImage);
+                                imageSet = true;
+                                System.out.println("[DEBUG] Successfully loaded photo from file");
+                    } else {
+                        System.err.println("[ERROR] Failed to load image: " + photoPath);
+                    }
+                } else {
+                    System.err.println("[ERROR] Photo file not found: " + photoPath);
+                }
+            } catch (Exception e) {
+                System.err.println("[ERROR] Error loading expert photo: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        // Load default image if no photo was set
+        if (!imageSet) {
+            try {
+                java.net.URL defaultUrl = getClass().getResource("/images/default-avatar.png");
+                if (defaultUrl != null) {
+                    System.out.println("[DEBUG] Loading default avatar");
+                    Image defaultImage = new Image(defaultUrl.toExternalForm());
+                    photoView.setImage(defaultImage);
+                } else {
+                    System.err.println("[ERROR] Default avatar resource not found");
+                }
+            } catch (Exception e) {
+                System.err.println("[ERROR] Error loading default avatar: " + e.getMessage());
+            }
+        }
+
+        photoContainer.getChildren().add(photoView);
+
+        // Name bold and centered
+        Label nameLabel = new Label(expert.getNom_expert() + " " + expert.getPrenom_expert());
+        nameLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 10 0 0 0;");
+        nameLabel.setAlignment(Pos.CENTER);
+        nameLabel.setMaxWidth(Double.MAX_VALUE);
+
+        // Info below
+        Label specialiteLabel = new Label("Spécialité: " + (expert.getSpecialite() != null ? expert.getSpecialite() : "-"));
+        specialiteLabel.setStyle("-fx-font-size: 15px; -fx-text-fill: #e3e3e3;");
+        Label emailLabel = new Label("Email: " + (expert.getEmail() != null ? expert.getEmail() : "-"));
+        emailLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #e3e3e3;");
+        Label telephoneLabel = new Label("Téléphone: " + (expert.getTelephone() != null ? expert.getTelephone() : "-"));
+        telephoneLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #e3e3e3;");
+        Label experienceLabel = new Label("Expérience: " + (expert.getAnneeExperience() > 0 ? expert.getAnneeExperience() + " ans" : "-"));
+        experienceLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #e3e3e3;");
+
+        VBox infoBox = new VBox(2, specialiteLabel, emailLabel, telephoneLabel, experienceLabel);
+        infoBox.setAlignment(Pos.CENTER_LEFT);
+        infoBox.setStyle("-fx-padding: 8 0 8 0;");
+
+        // Buttons at the bottom
+        HBox buttonBox = new HBox(12);
+        buttonBox.setAlignment(Pos.CENTER);
+        Button modifierBtn = new Button("Modifier");
+        modifierBtn.setStyle("-fx-background-color: #1976d2; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 6 24;");
+        modifierBtn.setOnAction(event -> ouvrirFenetreModification(expert));
+        Button supprimerBtn = new Button("Supprimer");
+        supprimerBtn.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 6 24;");
+        supprimerBtn.setOnAction(event -> supprimerExpert(expert));
+        buttonBox.getChildren().addAll(modifierBtn, supprimerBtn);
+
+        card.getChildren().setAll(photoContainer, nameLabel, infoBox, buttonBox);
+        card.setSpacing(12);
+        return card;
+    }
+
+    private void filterExperts() {
+        String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
+        String specialite = specialiteComboBox.getValue();
+        expertsData.setAll(
+            allExperts.filtered(expert ->
+                (search.isEmpty() ||
+                    (expert.getNom_expert() != null && expert.getNom_expert().toLowerCase().contains(search)) ||
+                    (expert.getPrenom_expert() != null && expert.getPrenom_expert().toLowerCase().contains(search)) ||
+                    (expert.getEmail() != null && expert.getEmail().toLowerCase().contains(search))
+                ) &&
+                (specialite == null || specialite.equals("Toutes") || specialite.isEmpty() || specialite.equals(expert.getSpecialite()))
+            )
+        );
+        refreshCards(expertsData);
     }
 
     private void ouvrirFenetreAjout() {

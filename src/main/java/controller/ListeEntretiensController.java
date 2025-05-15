@@ -20,6 +20,12 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.Region;
 import Services.ServiceExpert;
 import entities.Expert;
+import java.util.Comparator;
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import utils.MyDatabase;
 
 public class ListeEntretiensController {
     @FXML
@@ -30,10 +36,15 @@ public class ListeEntretiensController {
     private Button fermerButton;
     @FXML
     private Button voirDemandesButton;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> dateFilterComboBox;
 
     private final ServiceEntretien serviceEntretien = new ServiceEntretien();
     private final ServiceExpert serviceExpert = new ServiceExpert();
     private ObservableList<Entretien> entretiensData = FXCollections.observableArrayList();
+    private ObservableList<Entretien> allEntretiens = FXCollections.observableArrayList();
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -44,6 +55,17 @@ public class ListeEntretiensController {
         fermerButton.setOnAction(event -> fermerFenetre());
         voirDemandesButton.setOnAction(event -> ouvrirDemandesEntretien());
 
+        // Configure date filter combobox
+        dateFilterComboBox.getItems().addAll(
+            "Ordre croissant",
+            "Ordre décroissant"
+        );
+        dateFilterComboBox.setValue("Ordre croissant");
+        dateFilterComboBox.setOnAction(e -> filterEntretiens());
+
+        // Add search field listener
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> filterEntretiens());
+
         // Configurer la ListView
         entretiensList.setCellFactory(lv -> new ListCell<Entretien>() {
             @Override
@@ -52,10 +74,36 @@ public class ListeEntretiensController {
                 if (empty || entretien == null) {
                     setText(null);
                     setGraphic(null);
+                    setStyle("");
                 } else {
                     HBox row = new HBox(0);
                     row.setAlignment(Pos.CENTER_LEFT);
                     row.setStyle("-fx-padding: 10 0 10 10; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0; -fx-background-color: #fff;");
+
+                    // Fetch candidature name and domaine
+                    String candidatureName = "";
+                    String candidatureDomaine = "";
+                    try {
+                        Connection con = MyDatabase.getInstance().getCnx();
+                        String sql = "SELECT u.nom, u.prenom, c.domaine FROM candidature c JOIN user u ON c.user_id = u.id WHERE c.id_c = ?";
+                        PreparedStatement ps = con.prepareStatement(sql);
+                        ps.setInt(1, entretien.getId_candidature());
+                        ResultSet rs = ps.executeQuery();
+                        if (rs.next()) {
+                            candidatureName = rs.getString("nom") + " " + rs.getString("prenom");
+                            candidatureDomaine = rs.getString("domaine");
+                        } else {
+                            candidatureName = "-";
+                            candidatureDomaine = "-";
+                        }
+                    } catch (Exception e) {
+                        candidatureName = "-";
+                        candidatureDomaine = "-";
+                    }
+                    Label candidatureLabel = new Label(candidatureName);
+                    candidatureLabel.setMinWidth(180); candidatureLabel.setMaxWidth(180);
+                    Label domaineLabel = new Label(candidatureDomaine);
+                    domaineLabel.setMinWidth(160); domaineLabel.setMaxWidth(160);
 
                     // Get expert's full name
                     String expertName = "";
@@ -73,10 +121,8 @@ public class ListeEntretiensController {
                     expertLabel.setMinWidth(220); expertLabel.setMaxWidth(220);
                     Label dateLabel = new Label(entretien.getDate_entretien().format(dateFormatter));
                     dateLabel.setMinWidth(120); dateLabel.setMaxWidth(120);
-                    Label heureLabel = new Label(entretien.getHeure_entretien().format(timeFormatter));
-                    heureLabel.setMinWidth(100); heureLabel.setMaxWidth(100);
-                    Label etatLabel = new Label(entretien.getEtat_entretien());
-                    etatLabel.setMinWidth(100); etatLabel.setMaxWidth(100);
+                    Label plageHoraireLabel = new Label(getTimeRangeForHour(entretien.getHeure_entretien()));
+                    plageHoraireLabel.setMinWidth(140); plageHoraireLabel.setMaxWidth(140);
                     Label typeLabel = new Label(entretien.getType_entretien());
                     typeLabel.setMinWidth(120); typeLabel.setMaxWidth(120);
                     Label offreLabel = new Label(entretien.getOffre());
@@ -84,10 +130,10 @@ public class ListeEntretiensController {
 
                     // Spacer before actions
                     Region spacer = new Region();
-                    HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+                    HBox.setHgrow(spacer, Priority.ALWAYS);
 
                     Button modifierBtn = new Button("Modifier");
-                    modifierBtn.setStyle("-fx-background-color: #ffc107; -fx-text-fill: #222; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 4 18;");
+                    modifierBtn.setStyle("-fx-background-color: #0d47a1; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 4 18;");
                     modifierBtn.setOnAction(event -> ouvrirFenetreModification(entretien));
 
                     Button supprimerBtn = new Button("Supprimer");
@@ -95,23 +141,82 @@ public class ListeEntretiensController {
                     supprimerBtn.setOnAction(event -> supprimerEntretien(entretien));
 
                     row.getChildren().addAll(
-                        expertLabel, dateLabel, heureLabel, etatLabel, typeLabel, offreLabel, spacer, modifierBtn, supprimerBtn
+                        candidatureLabel, domaineLabel, expertLabel, dateLabel, plageHoraireLabel, typeLabel, offreLabel, spacer, modifierBtn, supprimerBtn
                     );
                     setGraphic(row);
                     setText(null);
+
+                    // Highlight on hover
+                    row.setOnMouseEntered(e -> row.setStyle("-fx-padding: 10 0 10 10; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0; -fx-background-color: #e3f0fa;"));
+                    row.setOnMouseExited(e -> row.setStyle("-fx-padding: 10 0 10 10; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0; -fx-background-color: #fff;"));
                 }
             }
         });
+
+        // Prevent selection from causing blanking
+        entretiensList.setOnMousePressed(event -> entretiensList.getSelectionModel().clearSelection());
 
         // Charger les données
         chargerDonnees();
     }
 
+    private void filterEntretiens() {
+        String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
+        String dateFilter = dateFilterComboBox.getValue();
+
+        // Filter by expert name OR candidature name
+        ObservableList<Entretien> filteredList = allEntretiens.filtered(entretien -> {
+            boolean match = false;
+            try {
+                // Expert name
+                Expert expert = serviceExpert.recuperer().stream()
+                    .filter(e -> e.getId_expert() == entretien.getId_expert())
+                    .findFirst().orElse(null);
+                String expertName = expert != null ? (expert.getNom_expert() + " " + expert.getPrenom_expert()).toLowerCase() : "";
+
+                // Candidature name
+                String candidatureName = "";
+                try {
+                    Connection con = MyDatabase.getInstance().getCnx();
+                    String sql = "SELECT u.nom, u.prenom FROM candidature c JOIN user u ON c.user_id = u.id WHERE c.id_c = ?";
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    ps.setInt(1, entretien.getId_candidature());
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        candidatureName = (rs.getString("nom") + " " + rs.getString("prenom")).toLowerCase();
+                    }
+                } catch (Exception e) { /* ignore */ }
+
+                match = expertName.contains(search) || candidatureName.contains(search);
+            } catch (Exception e) {
+                // ignore
+            }
+            return match;
+        });
+
+        // Sort by date
+        if (dateFilter != null) {
+            Comparator<Entretien> dateComparator = Comparator.comparing(Entretien::getDate_entretien);
+            if (dateFilter.equals("Ordre décroissant")) {
+                dateComparator = dateComparator.reversed();
+            }
+            // Create a new modifiable list for sorting
+            List<Entretien> sortedList = new ArrayList<>(filteredList);
+            sortedList.sort(dateComparator);
+            filteredList = FXCollections.observableArrayList(sortedList);
+        }
+
+        entretiensData.setAll(filteredList);
+        entretiensList.setItems(entretiensData);
+    }
+
     private void chargerDonnees() {
         try {
             List<Entretien> entretiens = serviceEntretien.recuperer();
-            entretiensData.setAll(entretiens);
+            allEntretiens.setAll(entretiens);
+            entretiensData.setAll(allEntretiens);
             entretiensList.setItems(entretiensData);
+            filterEntretiens(); // Apply initial sorting
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors du chargement des entretiens: " + e.getMessage());
         }
@@ -194,5 +299,12 @@ public class ListeEntretiensController {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    private String getTimeRangeForHour(java.time.LocalTime heure) {
+        if (heure.isAfter(java.time.LocalTime.of(7, 59)) && heure.isBefore(java.time.LocalTime.of(10, 1))) return "08h00-10h00";
+        if (heure.isAfter(java.time.LocalTime.of(13, 59)) && heure.isBefore(java.time.LocalTime.of(16, 1))) return "14h00-16h00";
+        if (heure.isAfter(java.time.LocalTime.of(19, 59)) && heure.isBefore(java.time.LocalTime.of(22, 1))) return "20h00-22h00";
+        return "08h00-10h00";
     }
 } 

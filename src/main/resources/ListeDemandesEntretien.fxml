@@ -241,7 +241,7 @@
             <Label layoutX="46.0" layoutY="111.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="GRADAWAY" />
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #f8f9fa;">
+      <AnchorPane prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #e3f0fa;">
       
           <VBox spacing="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
               <HBox alignment="CENTER" prefHeight="83.0" prefWidth="1040.0" style="-fx-background-color: #3454d1;">
@@ -249,10 +249,9 @@
               </HBox>
               <VBox spacing="10" style="-fx-padding: 30 40 0 40;">
                   <ListView fx:id="demandesListView" maxHeight="420" minHeight="420" style="-fx-background-color: #fff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;" VBox.vgrow="ALWAYS" />
-                  <TextArea fx:id="objetTextArea" editable="false" prefRowCount="3" promptText="Objet de l'entretien" style="-fx-background-color: white; -fx-prompt-text-fill: gray;" />
               </VBox>
               <HBox alignment="CENTER" style="-fx-padding: 20 0 20 0;">
-                  <Button fx:id="fermerButton" onAction="#fermer" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 32;" text="Quitter" />
+                  <Button fx:id="fermerButton" onAction="#fermer" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 16 48; -fx-font-size: 22px;" text="Quitter" />
               </HBox>
           </VBox>
       </AnchorPane>

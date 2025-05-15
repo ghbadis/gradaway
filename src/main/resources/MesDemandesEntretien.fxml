@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MesDemandesEntretienController">
+    <padding>
+        <Insets top="20" right="40" bottom="20" left="40"/>
+    </padding>
+    <HBox alignment="CENTER" prefHeight="60.0" style="-fx-background-color: #3454d1;">
+        <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="Mes Demandes d'Entretien" />
+    </HBox>
+    <VBox spacing="10" style="-fx-padding: 20 0 0 0;">
+        <ListView fx:id="demandesListView" maxHeight="420" minHeight="420" style="-fx-background-color: #fff; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;" VBox.vgrow="ALWAYS" />
+    </VBox>
+    <HBox alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+        <Button fx:id="fermerButton" onAction="#fermer" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 32;" text="Fermer" />
+    </HBox>
+</VBox> 

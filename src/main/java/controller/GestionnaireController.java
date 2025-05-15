@@ -25,21 +25,44 @@ public class GestionnaireController {
 
     @FXML
     public void initialize() {
-        // Load images
-        logoImageView.setImage(new Image(getClass().getResourceAsStream("/images/logo.png")));
-        expertIcon.setImage(new Image(getClass().getResourceAsStream("/images/expert.png")));
-        entretienIcon.setImage(new Image(getClass().getResourceAsStream("/images/entretien.png")));
+        try {
+            // Load images if they exist
+            if (logoImageView != null) {
+                Image logoImage = new Image(getClass().getResourceAsStream("/images/logo.png"));
+                if (logoImage != null) {
+                    logoImageView.setImage(logoImage);
+                }
+            }
+            
+            if (expertIcon != null) {
+                Image expertImage = new Image(getClass().getResourceAsStream("/images/expert.png"));
+                if (expertImage != null) {
+                    expertIcon.setImage(expertImage);
+                }
+            }
+            
+            if (entretienIcon != null) {
+                Image entretienImage = new Image(getClass().getResourceAsStream("/images/entretien.png"));
+                if (entretienImage != null) {
+                    entretienIcon.setImage(entretienImage);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading images: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         // Set button text
         btnGestionExperts.setText("Gestion des Experts");
         btnGestionEntretiens.setText("Gestion des Entretiens");
 
         // Set button actions
-        btnGestionExperts.setOnAction(event -> openListeExperts());
-        btnGestionEntretiens.setOnAction(event -> openListeEntretiens());
+        btnGestionExperts.setOnAction(event -> handleGestionExperts());
+        btnGestionEntretiens.setOnAction(event -> handleGestionEntretiens());
     }
 
-    private void openListeExperts() {
+    @FXML
+    private void handleGestionExperts() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ListeExperts.fxml"));
             Parent root = fxmlLoader.load();
@@ -52,7 +75,8 @@ public class GestionnaireController {
         }
     }
 
-    private void openListeEntretiens() {
+    @FXML
+    private void handleGestionEntretiens() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ListeEntretiens.fxml"));
             Parent root = fxmlLoader.load();

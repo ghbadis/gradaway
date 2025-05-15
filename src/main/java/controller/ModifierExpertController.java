@@ -7,10 +7,18 @@ import entities.Expert;
 import Services.ServiceExpert;
 import java.util.regex.Pattern;
 import java.sql.SQLException;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class ModifierExpertController {
-    @FXML
-    private TextField idField;
     @FXML
     private TextField nomField;
     @FXML
@@ -27,11 +35,18 @@ public class ModifierExpertController {
     private Button modifierButton;
     @FXML
     private Button annulerButton;
+    @FXML
+    private ImageView photoPreview;
+    @FXML
+    private Button uploadPhotoButton;
+    @FXML
+    private Label photoStatusLabel;
 
     private final ServiceExpert serviceExpert = new ServiceExpert();
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9]{8}$");
     private Expert expertAModifier;
+    private String photoPath;
 
     @FXML
     public void initialize() {
@@ -51,17 +66,89 @@ public class ModifierExpertController {
         // Configurer les boutons
         modifierButton.setOnAction(event -> modifierExpert());
         annulerButton.setOnAction(event -> fermerFenetre());
+        uploadPhotoButton.setOnAction(event -> uploadPhoto());
     }
 
     public void setExpert(Expert expert) {
         this.expertAModifier = expert;
-        idField.setText(String.valueOf(expert.getId_expert()));
         nomField.setText(expert.getNom_expert());
         prenomField.setText(expert.getPrenom_expert());
         emailField.setText(expert.getEmail());
         telephoneField.setText(expert.getTelephone());
         specialiteComboBox.setValue(expert.getSpecialite());
         experienceField.setText(String.valueOf(expert.getAnneeExperience()));
+        // Show current photo
+        try {
+            String defaultImagePath = "/images/default-avatar.png";
+            boolean imageSet = false;
+            if (expert.getPhotoPath() != null && !expert.getPhotoPath().isEmpty()) {
+                try {
+                    java.net.URL photoUrl = getClass().getResource("/" + expert.getPhotoPath());
+                    if (photoUrl != null) {
+                        Image expertImage = new Image(photoUrl.toExternalForm());
+                        photoPreview.setImage(expertImage);
+                        imageSet = true;
+                    } else {
+                        File photoFile = new File(expert.getPhotoPath());
+                        if (photoFile.exists()) {
+                            Image expertImage = new Image(photoFile.toURI().toString());
+                            photoPreview.setImage(expertImage);
+                            imageSet = true;
+                        }
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error loading expert photo: " + e.getMessage());
+                }
+            }
+            if (!imageSet) {
+                java.net.URL defaultUrl = getClass().getResource(defaultImagePath);
+                if (defaultUrl != null) {
+                    Image defaultImage = new Image(defaultUrl.toExternalForm());
+                    photoPreview.setImage(defaultImage);
+                }
+            }
+        } catch (Exception e) {
+            photoPreview.setStyle("-fx-background-color: white;");
+        }
+    }
+
+    @FXML
+    private void uploadPhoto() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Sélectionner une photo");
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
+        );
+        File selectedFile = fileChooser.showOpenDialog(photoPreview.getScene().getWindow());
+        if (selectedFile != null) {
+            try {
+                Path photosDir = Paths.get("photos");
+                if (!Files.exists(photosDir)) {
+                    Files.createDirectory(photosDir);
+                }
+                
+                // Copy file to photos directory with unique name
+                String fileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                Path targetPath = photosDir.resolve(fileName);
+                Files.copy(selectedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+                // Update photoPath with relative path
+                photoPath = "photos/" + fileName;
+
+                // Update preview using the file we just copied
+                Image image = new Image(targetPath.toUri().toString());
+                photoPreview.setImage(image);
+                
+                photoStatusLabel.setText("Photo ajoutée avec succès");
+                photoStatusLabel.setStyle("-fx-text-fill: #4CAF50;");
+                
+                System.out.println("[DEBUG] Photo saved to: " + photoPath);
+            } catch (IOException e) {
+                photoStatusLabel.setText("Erreur lors de l'ajout de la photo");
+                photoStatusLabel.setStyle("-fx-text-fill: #f44336;");
+                e.printStackTrace();
+            }
+        }
     }
 
     private void modifierExpert() {
@@ -70,28 +157,23 @@ public class ModifierExpertController {
         }
 
         try {
-            // Créer un nouvel expert avec le nouvel ID
-            Expert expertModifie = new Expert();
-            expertModifie.setId_expert(Integer.parseInt(idField.getText().trim()));
-            expertModifie.setNom_expert(nomField.getText().trim());
-            expertModifie.setPrenom_expert(prenomField.getText().trim());
-            expertModifie.setEmail(emailField.getText().trim());
-            expertModifie.setSpecialite(specialiteComboBox.getValue());
-            
+            expertAModifier.setNom_expert(nomField.getText().trim());
+            expertAModifier.setPrenom_expert(prenomField.getText().trim());
+            expertAModifier.setEmail(emailField.getText().trim());
+            expertAModifier.setSpecialite(specialiteComboBox.getValue());
             String telephone = telephoneField.getText().trim();
             if (!telephone.isEmpty()) {
-                expertModifie.setTelephone(telephone);
+                expertAModifier.setTelephone(telephone);
             }
-            
             String experience = experienceField.getText().trim();
             if (!experience.isEmpty()) {
-                expertModifie.setAnneeExperience(Integer.parseInt(experience));
+                expertAModifier.setAnneeExperience(Integer.parseInt(experience));
             }
-
-            // Supprimer l'ancien expert et ajouter le nouveau
-            serviceExpert.supprimer(expertAModifier);
-            serviceExpert.ajouter(expertModifie);
-
+            // Save photo path if changed
+            if (photoPath != null) {
+                expertAModifier.setPhotoPath(photoPath);
+            }
+            serviceExpert.modifier(expertAModifier);
             showAlert(Alert.AlertType.INFORMATION, "Succès", "L'expert a été modifié avec succès");
             fermerFenetre();
         } catch (SQLException e) {
@@ -102,18 +184,6 @@ public class ModifierExpertController {
     }
 
     private boolean validateFields() {
-        // Vérifier que l'ID est un nombre valide
-        try {
-            int newId = Integer.parseInt(idField.getText().trim());
-            if (newId <= 0) {
-                showAlert(Alert.AlertType.ERROR, "Erreur", "L'ID doit être un nombre positif");
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "L'ID doit être un nombre valide");
-            return false;
-        }
-
         if (nomField.getText().trim().isEmpty() ||
             prenomField.getText().trim().isEmpty() ||
             emailField.getText().trim().isEmpty() ||
@@ -129,7 +199,7 @@ public class ModifierExpertController {
 
         String telephone = telephoneField.getText().trim();
         if (!telephone.isEmpty() && !PHONE_PATTERN.matcher(telephone).matches()) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Le numéro de téléphone doit contenir 10 chiffres");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Le numéro de téléphone doit contenir 8 chiffres");
             return false;
         }
 

@@ -3,6 +3,7 @@ package entities;
 public class Expert {
     private int id_user,id_expert, anneeExperience;
     private String nom_expert,prenom_expert,email, specialite, telephone;
+    private String photoPath;
 
     // Constructeur par défaut
     public Expert() {
@@ -91,6 +92,10 @@ public class Expert {
     public void setAnneeExperience(int anneeExperience) {
         this.anneeExperience = anneeExperience;
     }
+
+    public String getPhotoPath() {return photoPath;}
+
+    public void setPhotoPath(String photoPath) {this.photoPath = photoPath;}
 
     @Override
     public String toString() {

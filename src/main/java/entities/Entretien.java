@@ -7,16 +7,18 @@ public class Entretien {
     private int id_entretien;
     private int id_expert;
     private int id_user;
+    private int id_candidature;
     private LocalDate date_entretien;
     private LocalTime heure_entretien;
     private String etat_entretien;
     private String type_entretien;
     private String offre;
 
-    public Entretien(int id_entretien, int id_expert, int id_user, LocalDate date_entretien, LocalTime heure_entretien, String etat_entretien, String type_entretien, String offre) {
+    public Entretien(int id_entretien, int id_expert, int id_user, int id_candidature, LocalDate date_entretien, LocalTime heure_entretien, String etat_entretien, String type_entretien, String offre) {
         this.id_entretien = id_entretien;
         this.id_expert = id_expert;
         this.id_user = id_user;
+        this.id_candidature = id_candidature;
         this.date_entretien = date_entretien;
         this.heure_entretien = heure_entretien;
         this.etat_entretien = etat_entretien;
@@ -24,9 +26,10 @@ public class Entretien {
         this.offre = offre;
     }
 
-    public Entretien(int id_expert, int id_user, LocalDate date_entretien, LocalTime heure_entretien, String etat_entretien, String type_entretien, String offre) {
+    public Entretien(int id_expert, int id_user, int id_candidature, LocalDate date_entretien, LocalTime heure_entretien, String etat_entretien, String type_entretien, String offre) {
         this.id_expert = id_expert;
         this.id_user = id_user;
+        this.id_candidature = id_candidature;
         this.date_entretien = date_entretien;
         this.heure_entretien = heure_entretien;
         this.etat_entretien = etat_entretien;
@@ -98,17 +101,26 @@ public class Entretien {
         this.offre = offre;
     }
 
+    public int getId_candidature() {
+        return id_candidature;
+    }
+
+    public void setId_candidature(int id_candidature) {
+        this.id_candidature = id_candidature;
+    }
+
     @Override
     public String toString() {
         return "Entretien{" +
                 "id_entretien=" + id_entretien +
                 ", id_expert=" + id_expert +
                 ", id_user=" + id_user +
+                ", id_candidature=" + id_candidature +
                 ", date_entretien=" + date_entretien +
                 ", heure_entretien=" + heure_entretien +
-                ", etat_entretien='" + etat_entretien +
-                ", type_entretien='" + type_entretien +
-                ", offre='" + offre +
+                ", etat_entretien='" + etat_entretien + '\'' +
+                ", type_entretien='" + type_entretien + '\'' +
+                ", offre='" + offre + '\'' +
                 '}';
     }
 }
