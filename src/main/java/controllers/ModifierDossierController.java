@@ -377,7 +377,7 @@ public class ModifierDossierController {
     @FXML
     public void universitébutton(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listcandidaturecards.fxml"));
             Parent root = loader.load();
 
             // Get the current stage and update its scene

@@ -200,7 +200,7 @@ public class ModifierDossierAdminController implements Initializable {
     @FXML
     public void onuniversiteAdminButtonClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminuniversite.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/recupereruniversite.fxml"));
             Parent root = loader.load();
             
             Stage stage = (Stage) photoField.getScene().getWindow();

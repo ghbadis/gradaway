@@ -62,7 +62,7 @@ public class ModifierEvenementController implements Initializable {
         date_picker.setValue(LocalDate.now());
 
         valider_button.setOnAction(event -> validerModification());
-        annuler_button.setOnAction(event -> annulerModification());
+        annuler_button.setOnAction(event -> handleCancelButton());
         choisir_image_button.setOnAction(event -> choisirImage());
     }
 
@@ -117,9 +117,23 @@ public class ModifierEvenementController implements Initializable {
         }
     }
 
-    private void annulerModification() {
-        Stage stage = (Stage) annuler_button.getScene().getWindow();
-        stage.close();
+    @FXML
+    private void handleCancelButton() {
+        try {
+            // Fermer la fenêtre actuelle
+            Stage currentStage = (Stage) annuler_button.getScene().getWindow();
+            currentStage.close();
+
+            // Ouvrir l'interface gestion_evenement.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion_evenement.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Gestion des Événements");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            //showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la gestion des événements", e.getMessage());
+        }
     }
 
     private void choisirImage() {
@@ -196,7 +210,7 @@ public class ModifierEvenementController implements Initializable {
     @FXML
     public void onuniversiteAdminButtonClick(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminuniversite.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/recupereruniversite.fxml"));
             Parent root = loader.load();
             
             Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();

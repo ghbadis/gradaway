@@ -205,7 +205,7 @@ public class ModifierReservationController implements Initializable {
     @FXML
     public void onuniversiteButtonClick(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listcandidaturecards.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();

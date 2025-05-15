@@ -147,8 +147,8 @@ public class AcceuilAdmincontroller {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Gestion des Universités");
-            stage.setMinWidth(1200);
-            stage.setMinHeight(800);
+            stage.setMinWidth(1256);
+            stage.setMinHeight(702);
             stage.setResizable(true);
             stage.centerOnScreen();
         } catch (IOException e) {

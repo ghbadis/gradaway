@@ -68,10 +68,25 @@ public class GestionCandidaturesController implements Initializable {
     private Button retour_button;
     
     @FXML
-    private Button accueil_btn;
-    
+    private Button accueilButton;
     @FXML
-    private Button universite_btn;
+    private Button userButton;
+    @FXML
+    private Button dossierButton;
+    @FXML
+    private Button universiteButton;
+    @FXML
+    private Button entretienButton;
+    @FXML
+    private Button evenementButton;
+    @FXML
+    private Button hebergementButton;
+    @FXML
+    private Button restaurantButton;
+    @FXML
+    private Button volsButton;
+    @FXML
+    private Button logoutButton;
 
     private final CandidatureService candidatureService = new CandidatureService();
     private final ServiceUniversite universiteService = new ServiceUniversite();
@@ -150,12 +165,6 @@ public class GestionCandidaturesController implements Initializable {
         
         // Retour à l'écran précédent
         retour_button.setOnAction(event -> handleRetourButton());
-        
-        // Navigation vers l'accueil
-        accueil_btn.setOnAction(event -> navigateToAccueil());
-        
-        // Navigation vers la liste des universités
-        universite_btn.setOnAction(event -> navigateToUniversites());
     }
 
     private void loadCandidatures() {
@@ -573,33 +582,143 @@ public class GestionCandidaturesController implements Initializable {
         }
     }
 
-    private void navigateToAccueil() {
+    @FXML
+    private void handleAccueilButton() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AcceuilAdmin.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) accueil_btn.getScene().getWindow();
+            Stage stage = (Stage) accueilButton.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Accueil Admin");
             stage.show();
-        } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", 
-                    "Impossible de naviguer vers l'accueil", e.getMessage());
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir l'accueil admin: " + e.getMessage());
         }
     }
 
-    private void navigateToUniversites() {
+    @FXML
+    private void handleUserButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminUser.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) userButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Utilisateurs");
+            stage.show();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la gestion des utilisateurs: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDossierButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminDossier.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) dossierButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Dossiers");
+            stage.show();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la gestion des dossiers: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleUniversiteButton() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/recupereruniversite.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) universite_btn.getScene().getWindow();
+            Stage stage = (Stage) universiteButton.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des Universités");
+            stage.setTitle("Gestion des Universités");
             stage.show();
-        } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", 
-                    "Impossible de naviguer vers la liste des universités", e.getMessage());
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la gestion des universités: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleEntretienButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Gestionnaire.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) entretienButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Entretiens");
+            stage.show();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la gestion des entretiens: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleEvenementButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion_evenement.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) evenementButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Événements");
+            stage.show();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la gestion des événements: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleHebergementButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterFoyer.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) hebergementButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Foyers");
+            stage.show();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la gestion des foyers: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleRestaurantButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterRestaurant.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) restaurantButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Restaurants");
+            stage.show();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la gestion des restaurants: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleVolsButton() {
+        showAlert(Alert.AlertType.INFORMATION, "Information", null, "La fonctionnalité des vols sera bientôt disponible.");
+    }
+
+    @FXML
+    private void handleLogoutButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login - GradAway");
+            stage.show();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Déconnexion", "Impossible de se déconnecter: " + e.getMessage());
         }
     }
 
@@ -609,5 +728,10 @@ public class GestionCandidaturesController implements Initializable {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    // Helper overload for convenience
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        showAlert(alertType, title, null, content);
     }
 } 

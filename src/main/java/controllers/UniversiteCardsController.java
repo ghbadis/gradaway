@@ -57,6 +57,26 @@ public class UniversiteCardsController implements Initializable {
     private Button closeButton;
     @FXML
     private Button retourButton;
+    @FXML
+    private Button accueilButton;
+    @FXML
+    private Button userButton;
+    @FXML
+    private Button dossierButton;
+    @FXML
+    private Button universiteButton;
+    @FXML
+    private Button entretienButton;
+    @FXML
+    private Button evenementButton;
+    @FXML
+    private Button hebergementButton;
+    @FXML
+    private Button restaurantButton;
+    @FXML
+    private Button volsButton;
+    @FXML
+    private Button logoutButton;
 
     private final ServiceUniversite serviceUniversite = new ServiceUniversite();
     private final ServiceConditature serviceConditature = new ServiceConditature();
@@ -362,9 +382,13 @@ public class UniversiteCardsController implements Initializable {
 
                 // Get user information from database
                 final String userEmail = getUserEmail(currentUserId);
+                if (userEmail == null || userEmail.isEmpty()) {
+                    showAlert(Alert.AlertType.ERROR, "Erreur", 
+                        "Impossible de soumettre la candidature", 
+                        "Aucune adresse email trouvée pour votre compte. Veuillez mettre à jour votre profil avec une adresse email valide.");
+                    return;
+                }
                 final String userName = getUserName(currentUserId);
-                final String email = (userEmail == null || userEmail.isEmpty()) ? 
-                    "mnbettaieb@gmail.com" : userEmail; // Default fallback email
                 final String name = (userName == null || userName.isEmpty()) ? 
                     "Étudiant" : userName; // Default fallback name
 
@@ -384,8 +408,8 @@ public class UniversiteCardsController implements Initializable {
 
                 // Send email notification with PDF
                 try {
-                    EmailService.sendCandidatureConfirmationEmail(email, universiteName, domaine, formattedDate);
-                    System.out.println("Email sent to: " + email);
+                    EmailService.sendCandidatureConfirmationEmail(userEmail, universiteName, domaine, formattedDate);
+                    System.out.println("Email sent to: " + userEmail);
                 } catch (Exception e) {
                     System.err.println("Error sending email: " + e.getMessage());
                     e.printStackTrace();
@@ -407,12 +431,24 @@ public class UniversiteCardsController implements Initializable {
                 alert.showAndWait().ifPresent(buttonType -> {
                     if (buttonType == viewQRCodeButton) {
                         try {
-                            // Show QR code in a new window
-                            showQRCodeWindow(name, universiteName, domaine, formattedDate, universityImagePath);
+                            // Générer le PDF avec QR code
+                            String pdfPath = utils.PDFGenerator.generateCandidatureCard(
+                                name, universiteName, domaine, formattedDate, universityImagePath
+                            );
+                            File pdfFile = new File(pdfPath);
+                            if (pdfFile.exists()) {
+                                if (Desktop.isDesktopSupported()) {
+                                    Desktop.getDesktop().open(pdfFile);
+                                } else {
+                                    showAlert(Alert.AlertType.INFORMATION, "PDF généré", "Le PDF a été généré ici : " + pdfFile.getAbsolutePath(), "");
+                                }
+                            } else {
+                                showAlert(Alert.AlertType.ERROR, "Erreur", "Le PDF n'a pas pu être généré.", "");
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             showAlert(Alert.AlertType.ERROR, "Erreur", 
-                                      "Impossible d'afficher le QR code", e.getMessage());
+                                      "Impossible de générer ou d'ouvrir le PDF", e.getMessage());
                         }
                     }
                 });
@@ -525,7 +561,7 @@ public class UniversiteCardsController implements Initializable {
     private String getUserEmail(int userId) {
         String email = null;
         try {
-            String query = "SELECT email FROM utilisateur WHERE id_utilisateur = ?";
+            String query = "SELECT email FROM user WHERE id = ?";
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
@@ -607,6 +643,157 @@ public class UniversiteCardsController implements Initializable {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error", 
                      "Failed to send test email", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleAccueilButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Acceuil.fxml"));
+            Parent root = loader.load();
+            Acceuilcontroller controller = loader.getController();
+            controller.setUserId(this.getCurrentUserId());
+            Stage stage = (Stage) accueilButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Accueil");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir l'accueil", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleUserButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditProfile.fxml"));
+            Parent root = loader.load();
+            EditProfileController controller = loader.getController();
+            controller.setUserId(this.getCurrentUserId());
+            Stage stage = (Stage) userButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Mon Profil");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir le profil", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDossierButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
+            Parent root = loader.load();
+            AjoutDossierController controller = loader.getController();
+            controller.setEtudiantId(this.getCurrentUserId());
+            Stage stage = (Stage) dossierButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion du Dossier");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la gestion du dossier", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleUniversiteButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listuniversitecards.fxml"));
+            Parent root = loader.load();
+            UniversiteCardsController controller = loader.getController();
+            controller.setUserId(this.getCurrentUserId());
+            Stage stage = (Stage) universiteButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Universités");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la liste des universités", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleEntretienButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) entretienButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Demander Entretien");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la vue entretien", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleEvenementButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+            Ajouterafficheevenementcontrolleur controller = loader.getController();
+            controller.setCurrentUserId(this.getCurrentUserId());
+            Stage stage = (Stage) evenementButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Événements");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la vue des événements", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleHebergementButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) hebergementButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Foyers");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la vue des foyers", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleRestaurantButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) restaurantButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Restaurants");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la vue des restaurants", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleVolsButton() {
+        // TODO: Implement navigation for Vols if needed
+        showAlert(Alert.AlertType.INFORMATION, "Info", null, "La fonctionnalité Vols n'est pas encore disponible.");
+    }
+
+    @FXML
+    private void handleLogoutButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login - GradAway");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Déconnexion", "Impossible de se déconnecter", e.getMessage());
         }
     }
 }

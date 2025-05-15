@@ -49,6 +49,26 @@ public class CandidatureCardsController implements Initializable {
     private Button ajouterButton;
     @FXML
     private ComboBox<String> statusFilterComboBox;
+    @FXML
+    private Button accueilButton;
+    @FXML
+    private Button userButton;
+    @FXML
+    private Button dossierButton;
+    @FXML
+    private Button universiteButton;
+    @FXML
+    private Button entretienButton;
+    @FXML
+    private Button evenementButton;
+    @FXML
+    private Button hebergementButton;
+    @FXML
+    private Button restaurantButton;
+    @FXML
+    private Button volsButton;
+    @FXML
+    private Button logoutButton;
     
     private CandidatureService candidatureService;
     private ServiceUniversite universiteService;
@@ -569,5 +589,156 @@ public class CandidatureCardsController implements Initializable {
 
     public int getCurrentUserId() {
         return this.currentUserId;
+    }
+
+    @FXML
+    private void handleAccueilButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Acceuil.fxml"));
+            Parent root = loader.load();
+            Acceuilcontroller controller = loader.getController();
+            controller.setUserId(this.getCurrentUserId());
+            Stage stage = (Stage) accueilButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Accueil");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir l'accueil", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleUserButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditProfile.fxml"));
+            Parent root = loader.load();
+            EditProfileController controller = loader.getController();
+            controller.setUserId(this.getCurrentUserId());
+            Stage stage = (Stage) userButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Mon Profil");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir le profil", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDossierButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
+            Parent root = loader.load();
+            AjoutDossierController controller = loader.getController();
+            controller.setEtudiantId(this.getCurrentUserId());
+            Stage stage = (Stage) dossierButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion du Dossier");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la gestion du dossier", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleUniversiteButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/listuniversitecards.fxml"));
+            Parent root = loader.load();
+            UniversiteCardsController controller = loader.getController();
+            controller.setUserId(this.getCurrentUserId());
+            Stage stage = (Stage) universiteButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Universités");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la liste des universités", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleEntretienButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) entretienButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Demander Entretien");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la vue entretien", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleEvenementButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+            Ajouterafficheevenementcontrolleur controller = loader.getController();
+            controller.setCurrentUserId(this.getCurrentUserId());
+            Stage stage = (Stage) evenementButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Événements");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la vue des événements", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleHebergementButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) hebergementButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Foyers");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la vue des foyers", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleRestaurantButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) restaurantButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Restaurants");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Navigation", "Impossible d'ouvrir la vue des restaurants", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleVolsButton() {
+        // TODO: Implement navigation for Vols if needed
+        showAlert(Alert.AlertType.INFORMATION, "Info", null, "La fonctionnalité Vols n'est pas encore disponible.");
+    }
+
+    @FXML
+    private void handleLogoutButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login - GradAway");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de Déconnexion", "Impossible de se déconnecter", e.getMessage());
+        }
     }
 } 
