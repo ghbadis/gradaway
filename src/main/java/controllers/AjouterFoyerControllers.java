@@ -48,18 +48,48 @@ public class AjouterFoyerControllers {
     @FXML
     private Button btnListeReservation;
 
+    // Dashboard navigation buttons
+    @FXML private Button accueilButton;
+    @FXML private Button userButton;
+    @FXML private Button dossierButton;
+    @FXML private Button universiteButton;
+    @FXML private Button entretienButton;
+    @FXML private Button evenementButton;
+    @FXML private Button hebergementButton;
+    @FXML private Button restaurantButton;
+    @FXML private Button volsButton;
+    @FXML private Button logoutButton;
+
     private ServiceFoyer serviceFoyer = new ServiceFoyer();
 
     @FXML
     void AjouterFoyer(ActionEvent event) {
         try {
             // Lire les valeurs entrées par l'utilisateur
-            String nom = tf_nom.getText();
-            String adresse = tf_adresse.getText();
-            String ville = tf_ville.getText();
-            String pays = tf_pays.getText();
-            int nombreDeChambre = Integer.parseInt(tf_nombre_de_chambre.getText());
-            int capacite = Integer.parseInt(tf_capacite.getText());
+            String nom = tf_nom.getText().trim();
+            String adresse = tf_adresse.getText().trim();
+            String ville = tf_ville.getText().trim();
+            String pays = tf_pays.getText().trim();
+            String nombreDeChambreText = tf_nombre_de_chambre.getText().trim();
+            String capaciteText = tf_capacite.getText().trim();
+            
+            // Vérifier que tous les champs texte sont remplis
+            if (nom.isEmpty() || adresse.isEmpty() || ville.isEmpty() || pays.isEmpty() || 
+                nombreDeChambreText.isEmpty() || capaciteText.isEmpty()) {
+                showAlert("Champs obligatoires", "Tous les champs sont obligatoires. Veuillez remplir tous les champs.", Alert.AlertType.WARNING);
+                return;
+            }
+            
+            // Convertir les valeurs numériques
+            int nombreDeChambre = Integer.parseInt(nombreDeChambreText);
+            int capacite = Integer.parseInt(capaciteText);
+            
+            // Vérifier que les valeurs numériques sont positives
+            if (nombreDeChambre <= 0 || capacite <= 0) {
+                showAlert("Valeurs invalides", "Le nombre de chambres et la capacité doivent être des nombres positifs.", Alert.AlertType.WARNING);
+                return;
+            }
+            
             String image = null;
             if (imageUploaded.getImage() != null) {
                 image = imageUploaded.getImage().getUrl();
@@ -77,31 +107,12 @@ public class AjouterFoyerControllers {
             alert.setHeaderText(null);
             alert.setContentText("Foyer ajouté avec succès !");
             alert.showAndWait();
-
-            // Rediriger vers la liste des restaurants après l'ajout
-            try {
-                Parent root = FXMLLoader.load(getClass().getResource("/ListRestaurant.fxml"));
-                Scene scene = new Scene(root);
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                
-                // Transition de fondu
-                FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-                fadeIn.setFromValue(0.0);
-                fadeIn.setToValue(1.0);
-                
-                stage.setScene(scene);
-                fadeIn.play();
-            } catch (IOException e) {
-                e.printStackTrace();
-                showAlert("Erreur", "Erreur lors de la redirection: " + e.getMessage(), Alert.AlertType.ERROR);
-            }
+            
+            // Réinitialiser les champs du formulaire pour permettre l'ajout d'un autre foyer
+            resetFormFields();
 
         } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText(null);
-            alert.setContentText("Veuillez entrer des nombres valides pour nombre de chambres et capacité.");
-            alert.showAndWait();
+            showAlert("Format incorrect", "Veuillez entrer des nombres valides pour le nombre de chambres et la capacité.", Alert.AlertType.ERROR);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -158,10 +169,14 @@ public class AjouterFoyerControllers {
     @FXML
     void ListFoyer(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyer.fxml"));
-            Parent root = loader.load();
+            // Obtenir la fenêtre actuelle
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+            
+            // Utiliser la méthode qui configure la scène en plein écran
+            Scene scene = ListFoyerControllers.loadFXMLAndSetFullScreen(stage);
+            
+            // Appliquer la scène à la fenêtre
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -210,5 +225,111 @@ public class AjouterFoyerControllers {
         assert tf_ville != null : "fx:id=\"tf_ville\" was not injected: check your FXML file 'AjouterFoyer.fxml'.";
         assert imageUploaded != null : "fx:id=\"imageUploaded\" was not injected: check your FXML file 'AjouterFoyer.fxml'.";
         btnListeReservation.setOnAction(e -> navigateToListeReservation(e));
+        setupNavigationButtons();
+    }
+    
+    private void setupNavigationButtons() {
+        accueilButton.setOnAction(this::onAccueilButtonClick);
+        userButton.setOnAction(this::onUserButtonClick);
+        dossierButton.setOnAction(this::ondossierButtonClick);
+        universiteButton.setOnAction(this::onuniversiteButtonClick);
+        entretienButton.setOnAction(this::onentretienButtonClick);
+        evenementButton.setOnAction(this::onevenementButtonClick);
+        hebergementButton.setOnAction(this::onhebergementButtonClick);
+        restaurantButton.setOnAction(this::onrestaurantButtonClick);
+        volsButton.setOnAction(this::onvolsButtonClick);
+        logoutButton.setOnAction(this::onlogoutButtonClick);
+    }
+
+    private void navigateToScene(String fxmlPath, ActionEvent event, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle(title);
+            // Add fade transition
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onAccueilButtonClick(ActionEvent event) {
+        navigateToScene("/AcceuilAdmin.fxml", event, "Accueil Admin");
+    }
+
+    @FXML
+    private void onUserButtonClick(ActionEvent event) {
+        navigateToScene("/AdminUser.fxml", event, "Gestion des Utilisateurs");
+    }
+
+    @FXML
+    private void ondossierButtonClick(ActionEvent event) {
+        navigateToScene("/AdminDossier.fxml", event, "Gestion des Dossiers");
+    }
+
+    @FXML
+    private void onuniversiteButtonClick(ActionEvent event) {
+        navigateToScene("/adminuniversite.fxml", event, "Gestion des Universités");
+    }
+
+    @FXML
+    private void onentretienButtonClick(ActionEvent event) {
+        navigateToScene("/Gestionnaire.fxml", event, "Gestion des Entretiens");
+    }
+
+    @FXML
+    private void onevenementButtonClick(ActionEvent event) {
+        navigateToScene("/gestion_evenement.fxml", event, "Gestion des Événements");
+    }
+
+    @FXML
+    private void onhebergementButtonClick(ActionEvent event) {
+        navigateToScene("/AjouterFoyer.fxml", event, "Gestion des Foyers");
+    }
+
+    @FXML
+    private void onrestaurantButtonClick(ActionEvent event) {
+        navigateToScene("/AjouterRestaurant.fxml", event, "Gestion des Restaurants");
+    }
+
+    @FXML
+    private void onvolsButtonClick(ActionEvent event) {
+        // À implémenter si besoin
+    }
+
+    @FXML
+    private void onlogoutButtonClick(ActionEvent event) {
+        navigateToScene("/login-view.fxml", event, "Login - GradAway");
+    }
+
+    /**
+     * Réinitialise tous les champs du formulaire après un ajout réussi
+     */
+    private void resetFormFields() {
+        // Vider tous les champs texte
+        tf_nom.clear();
+        tf_adresse.clear();
+        tf_ville.clear();
+        tf_pays.clear();
+        tf_nombre_de_chambre.clear();
+        tf_capacite.clear();
+        
+        // Réinitialiser l'image avec l'image par défaut
+        try {
+            Image defaultImage = new Image(getClass().getResourceAsStream("/placeholder/placeholder.png"));
+            imageUploaded.setImage(defaultImage);
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement de l'image par défaut: " + e.getMessage());
+        }
+        
+        // Remettre le focus sur le premier champ
+        tf_nom.requestFocus();
     }
 }

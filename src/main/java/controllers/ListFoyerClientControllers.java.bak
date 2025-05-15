@@ -4,7 +4,6 @@ import Services.ServiceFoyer;
 import entities.Foyer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,7 +17,6 @@ import javafx.animation.SequentialTransition;
 import javafx.util.Duration;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Priority;
-import javafx.event.ActionEvent;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -32,206 +30,28 @@ public class ListFoyerClientControllers {
     @FXML private TextField searchField;
     @FXML private Button btnSearch;
     @FXML private MenuButton locationMenu;
-    @FXML private Button mesReservationsBtn;
+    @FXML
+    private Button mesReservationsBtn;
+    @FXML
+    private Button restaurantButton;
     @FXML private Label noResultsLabel;
-    @FXML private Button accueilButton;
-    @FXML private Button userButton;
-    @FXML private Button dossierButton;
-    @FXML private Button universiteButton;
-    @FXML private Button entretienButton;
-    @FXML private Button evenementButton;
-    @FXML private Button hebergementButton;
-    @FXML private Button restaurantButton;
-    @FXML private Button volsButton;
-    @FXML private Button logoutButton;
 
     private ServiceFoyer serviceFoyer = new ServiceFoyer();
 
     @FXML
     public void initialize() {
-        loadFoyers();
-        setupSearch();
-        setupNavigationButton();
-        setupLocationMenu();
-        setupNavigationButtons();
         animateReservationsButton();
-    }
-
-    private void setupNavigationButtons() {
-        // Setup action handlers for all navigation buttons
-        accueilButton.setOnAction(this::onAccueilButtonClick);
-        userButton.setOnAction(this::onProfileButtonClick);
-        dossierButton.setOnAction(this::ondossierButtonClick);
-        universiteButton.setOnAction(this::onuniversiteButtonClick);
-        entretienButton.setOnAction(this::onentretienButtonClick);
-        evenementButton.setOnAction(this::onevenementButtonClick);
-        hebergementButton.setOnAction(this::onhebergementButtonClick);
-        restaurantButton.setOnAction(this::onrestaurantButtonClick);
-        volsButton.setOnAction(this::onvolsButtonClick);
-        logoutButton.setOnAction(this::onlogoutButtonClick);
-    }
-
-    @FXML
-    private void onAccueilButtonClick(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/acceuil.fxml"));
-            Parent root = loader.load();
-            navigateToScene(root, event);
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de la navigation vers l'accueil: " + e.getMessage(), Alert.AlertType.ERROR);
+            loadFoyers();
+            setupSearch();
+            setupLocationMenu();
+            setupNavigationButtons();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors du chargement des foyers: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-
-    @FXML
-    private void onProfileButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditProfile.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Modifier Mon Profil");
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture du profil: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void ondossierButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Gestion du Dossier");
-            stage.setMinWidth(1200);
-            stage.setMinHeight(800);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture du dossier: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onuniversiteButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Gestion des Candidatures");
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture des candidatures: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onentretienButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
-            Parent root = loader.load();
-            navigateToScene(root, event);
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture de l'entretien: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onevenementButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Événements");
-            stage.setMinWidth(1133);
-            stage.setMinHeight(691);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture des événements: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onhebergementButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
-            Parent root = loader.load();
-            navigateToScene(root, event);
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture des foyers: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onrestaurantButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Liste des Restaurants");
-            stage.setMinWidth(1200);
-            stage.setMinHeight(800);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture des restaurants: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onvolsButtonClick(ActionEvent event) {
-        // Implement when needed
-    }
-
-    @FXML
-    private void onlogoutButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
-            Parent root = loader.load();
-            Stage loginStage = new Stage();
-            Scene scene = new Scene(root);
-            loginStage.setScene(scene);
-            loginStage.setTitle("Login - GradAway");
-            loginStage.setResizable(true);
-            loginStage.centerOnScreen();
-            loginStage.show();
-            
-            // Close current window
-            Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            currentStage.close();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de la déconnexion: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    private void navigateToScene(Parent root, ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        
-        // Add fade transition
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-        fadeIn.setFromValue(0.0);
-        fadeIn.setToValue(1.0);
-        fadeIn.play();
-    }
-
+    
     /**
      * Anime le bouton Mes Réservations pour attirer l'attention
      */
@@ -415,81 +235,49 @@ public class ListFoyerClientControllers {
         
         return card;
     }
+    
+    private void loadFoyers() {
+        try {
+            List<Foyer> foyers = serviceFoyer.recuperer();
+            foyerContainer.getChildren().clear();
+            
+            // Configurer le TilePane pour avoir exactement 3 colonnes
+            foyerContainer.setPrefColumns(3);
+            foyerContainer.setMaxWidth(900); // Limiter la largeur pour garantir 3 colonnes
+            foyerContainer.setMinWidth(900);
+            foyerContainer.setPrefWidth(900);
+            
+            // Configurer les dimensions des tuiles
+            double tileWidth = 280;
+            double tileHeight = 320;
+            foyerContainer.setPrefTileWidth(tileWidth);
+            foyerContainer.setPrefTileHeight(tileHeight);
+            foyerContainer.setHgap(15);
+            foyerContainer.setVgap(15);
+            foyerContainer.setAlignment(javafx.geometry.Pos.CENTER);
+            foyerContainer.setTileAlignment(javafx.geometry.Pos.CENTER);
+            
+            // Calculer le nombre de lignes nécessaires
+            int numRows = (int) Math.ceil(foyers.size() / 3.0);
+            foyerContainer.setPrefRows(numRows);
+            foyerContainer.setPrefHeight(numRows * (tileHeight + 15) + 15); // hauteur = (hauteur de tuile + vgap) * nombre de lignes + vgap
 
-    private void setupSearch() {
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.trim().isEmpty()) {
-                try {
-                    List<Foyer> foyers = serviceFoyer.recuperer();
-                    foyerContainer.getChildren().clear();
-                    boolean foyerFound = false;
-
-                    for (Foyer foyer : foyers) {
-                        if (matchesSearch(foyer, newValue.toLowerCase())) {
-                            foyerContainer.getChildren().add(createFoyerCard(foyer));
-                            foyerFound = true;
-                        }
-                    }
-
-                    // Afficher ou masquer le message en fonction des résultats
-                    noResultsLabel.setVisible(!foyerFound);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    showAlert("Erreur", "Erreur lors de la recherche: " + e.getMessage(), Alert.AlertType.ERROR);
-                }
+            // Cacher le message "Aucun résultat" par défaut
+            noResultsLabel.setVisible(false);
+            
+            if (foyers.isEmpty()) {
+                // Afficher le message si aucun foyer n'est disponible
+                noResultsLabel.setVisible(true);
             } else {
-                // Si le champ de recherche est vide, afficher tous les foyers
-                try {
-                    loadFoyers();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    showAlert("Erreur", "Erreur lors du chargement des foyers: " + e.getMessage(), Alert.AlertType.ERROR);
+                // Sinon, ajouter les cartes de foyers
+                for (Foyer foyer : foyers) {
+                    foyerContainer.getChildren().add(createFoyerCard(foyer));
                 }
             }
-        });
-    }
-
-    private boolean matchesSearch(Foyer foyer, String searchTerm) {
-        return foyer.getNom().toLowerCase().contains(searchTerm) ||
-                foyer.getVille().toLowerCase().contains(searchTerm) ||
-                foyer.getPays().toLowerCase().contains(searchTerm);
-    }
-
-    private void setupNavigationButton() {
-        btnSearch.setOnAction(e -> {
-            String searchTerm = searchField.getText().trim();
-            if (!searchTerm.isEmpty()) {
-                try {
-                    List<Foyer> foyers = serviceFoyer.recuperer();
-                    foyerContainer.getChildren().clear();
-                    boolean foyerFound = false;
-
-                    for (Foyer foyer : foyers) {
-                        if (matchesSearch(foyer, searchTerm.toLowerCase())) {
-                            foyerContainer.getChildren().add(createFoyerCard(foyer));
-                            foyerFound = true;
-                        }
-                    }
-
-                    // Afficher le message dans l'interface plutôt qu'une alerte
-                    noResultsLabel.setVisible(!foyerFound);
-                    if (!foyerFound) {
-                        // Personnaliser le message avec le terme recherché
-                        noResultsLabel.setText("Aucun foyer ne correspond à votre recherche : '" + searchTerm + "'");
-                    }
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                    showAlert("Erreur", "Erreur lors de la recherche: " + e1.getMessage(), Alert.AlertType.ERROR);
-                }
-            } else {
-                try {
-                    loadFoyers(); // Recharger tous les foyers si le champ de recherche est vide
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    showAlert("Erreur", "Erreur lors du chargement des foyers: " + ex.getMessage(), Alert.AlertType.ERROR);
-                }
-            }
-        });
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors du chargement des foyers: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void setupLocationMenu() {
@@ -551,7 +339,103 @@ public class ListFoyerClientControllers {
             showAlert("Erreur", "Erreur lors du chargement des locations: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+    
+    private void setupSearch() {
+        // Configuration de la recherche en temps réel avec le champ de texte
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.trim().isEmpty()) {
+                try {
+                    List<Foyer> foyers = serviceFoyer.recuperer();
+                    foyerContainer.getChildren().clear();
+                    boolean foyerFound = false;
 
+                    for (Foyer foyer : foyers) {
+                        if (matchesSearch(foyer, newValue.toLowerCase())) {
+                            foyerContainer.getChildren().add(createFoyerCard(foyer));
+                            foyerFound = true;
+                        }
+                    }
+
+                    // Afficher le message dans l'interface plutôt qu'une alerte
+                    noResultsLabel.setVisible(!foyerFound);
+                    if (!foyerFound) {
+                        // Personnaliser le message avec le terme recherché
+                        noResultsLabel.setText("Aucun foyer ne correspond à votre recherche : '" + newValue + "'");
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    showAlert("Erreur", "Erreur lors de la recherche: " + e1.getMessage(), Alert.AlertType.ERROR);
+                }
+            } else {
+                // Si le champ de recherche est vide, afficher tous les foyers
+                try {
+                    loadFoyers(); // Recharger tous les foyers si le champ de recherche est vide
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    showAlert("Erreur", "Erreur lors du chargement des foyers: " + ex.getMessage(), Alert.AlertType.ERROR);
+                }
+            }
+        });
+        
+        // Configuration du bouton de recherche
+        btnSearch.setOnAction(e -> {
+            String searchTerm = searchField.getText().trim();
+            if (!searchTerm.isEmpty()) {
+                try {
+                    List<Foyer> foyers = serviceFoyer.recuperer();
+                    foyerContainer.getChildren().clear();
+                    boolean foyerFound = false;
+
+                    for (Foyer foyer : foyers) {
+                        if (matchesSearch(foyer, searchTerm.toLowerCase())) {
+                            foyerContainer.getChildren().add(createFoyerCard(foyer));
+                            foyerFound = true;
+                        }
+                    }
+
+                    // Afficher le message dans l'interface plutôt qu'une alerte
+                    noResultsLabel.setVisible(!foyerFound);
+                    if (!foyerFound) {
+                        // Personnaliser le message avec le terme recherché
+                        noResultsLabel.setText("Aucun foyer ne correspond à votre recherche : '" + searchTerm + "'");
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                    showAlert("Erreur", "Erreur lors de la recherche: " + e1.getMessage(), Alert.AlertType.ERROR);
+                }
+            } else {
+                // Si le champ de recherche est vide, afficher tous les foyers
+                try {
+                    loadFoyers();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    showAlert("Erreur", "Erreur lors du chargement des foyers: " + ex.getMessage(), Alert.AlertType.ERROR);
+                }
+            }
+        });
+    }
+    
+    private boolean matchesSearch(Foyer foyer, String searchTerm) {
+        return foyer.getNom().toLowerCase().contains(searchTerm) ||
+                foyer.getVille().toLowerCase().contains(searchTerm) ||
+                foyer.getPays().toLowerCase().contains(searchTerm);
+    }
+    
+    /**
+     * Configure les boutons de navigation dans le menu latéral
+     */
+    private void setupNavigationButtons() {
+        // Configuration du bouton Mes Réservations
+        if (mesReservationsBtn != null) {
+            mesReservationsBtn.setOnAction(e -> Mes_Reservations());
+        }
+        
+        // Configuration du bouton restaurant pour naviguer vers l'interface des restaurants
+        if (restaurantButton != null) {
+            restaurantButton.setOnAction(e -> navigateToRestaurants());
+        }
+    }
+    
     private void navigateToReservation(Foyer foyer) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ReserverFoyer.fxml"));
@@ -617,6 +501,30 @@ public class ListFoyerClientControllers {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    /**
+     * Navigue vers l'interface des restaurants
+     */
+    private void navigateToRestaurants() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) foyerContainer.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+
+            // Ajouter une transition de fondu pour une navigation plus fluide
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la navigation vers les restaurants: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 

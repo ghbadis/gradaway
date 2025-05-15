@@ -164,14 +164,13 @@ public class EmailSender {
      * @param nomFoyer Nom du foyer
      * @param dateDebut Date de début
      * @param dateFin Date de fin
-     * @param idEtudiant ID de l'étudiant
+     * @param idEtudiant ID de l'étudiant (non inclus dans le contenu QR)
      * @param ville Ville du foyer
      * @return Contenu du code QR
      */
     public static String generateQRContent(String nomFoyer, String dateDebut, 
                                         String dateFin, int idEtudiant, String ville) {
         return "Réservation Foyer\n" +
-                "ID Étudiant: " + idEtudiant + "\n" +
                 "Foyer: " + nomFoyer + "\n" +
                 "Ville: " + ville + "\n" +
                 "Date début: " + dateDebut + "\n" +
@@ -208,7 +207,6 @@ public class EmailSender {
              + "            <p>Nous sommes heureux de vous confirmer que votre réservation au foyer a été confirmée.</p>"
              + "            <h2>Détails de la réservation :</h2>"
              + "            <table>"
-             + "                <tr><th>ID Étudiant</th><td>" + idEtudiant + "</td></tr>"
              + "                <tr><th>Foyer</th><td>" + nomFoyer + "</td></tr>"
              + "                <tr><th>Ville</th><td>" + ville + "</td></tr>"
              + "                <tr><th>Date de début</th><td>" + dateDebut + "</td></tr>"

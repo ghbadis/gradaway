@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import utils.EmailSender;
 import utils.QRCodeGenerator;
+import utils.SessionManager;
 
 public class ReserverRestaurantController {
 
@@ -42,6 +43,17 @@ public class ReserverRestaurantController {
     
     @FXML private Button reserverButton;
     @FXML private Button annulerButton;
+    // Dashboard navigation buttons
+    @FXML private Button accueilButton;
+    @FXML private Button userButton;
+    @FXML private Button dossierButton;
+    @FXML private Button universiteButton;
+    @FXML private Button entretienButton;
+    @FXML private Button evenementButton;
+    @FXML private Button hebergementButton;
+    @FXML private Button restaurantButton;
+    @FXML private Button volsButton;
+    @FXML private Button logoutButton;
     
     private Restaurant restaurant;
     private ServiceReservationRestaurant serviceReservation;
@@ -53,6 +65,185 @@ public class ReserverRestaurantController {
         // Configuration du spinner pour le nombre de personnes (1-20 par défaut)
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 2);
         personnesSpinner.setValueFactory(valueFactory);
+        
+        // Récupérer l'email de l'utilisateur connecté depuis le SessionManager
+        String userEmail = SessionManager.getInstance().getUserEmail();
+        if (userEmail != null && !userEmail.isEmpty()) {
+            // Afficher l'email dans le champ et le rendre non modifiable
+            emailField.setText(userEmail);
+            emailField.setEditable(false);
+            emailField.setDisable(true);
+            emailField.setStyle("-fx-opacity: 0.8; -fx-background-color: #e9ecef;");
+            System.out.println("ReserverRestaurantController: Email utilisateur récupéré depuis SessionManager: " + userEmail);
+        } else {
+            System.out.println("ReserverRestaurantController: Aucun email utilisateur trouvé dans SessionManager");
+        }
+        // Setup dashboard navigation
+        setupNavigationButtons();
+    }
+    
+    private void setupNavigationButtons() {
+        accueilButton.setOnAction(this::onAccueilButtonClick);
+        userButton.setOnAction(this::onProfileButtonClick);
+        dossierButton.setOnAction(this::ondossierButtonClick);
+        universiteButton.setOnAction(this::onuniversiteButtonClick);
+        entretienButton.setOnAction(this::onentretienButtonClick);
+        evenementButton.setOnAction(this::onevenementButtonClick);
+        hebergementButton.setOnAction(this::onhebergementButtonClick);
+        restaurantButton.setOnAction(this::onrestaurantButtonClick);
+        volsButton.setOnAction(this::onvolsButtonClick);
+        logoutButton.setOnAction(this::onlogoutButtonClick);
+    }
+
+    private void navigateToScene(Parent root, ActionEvent event) {
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        // Add fade transition
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+        fadeIn.play();
+    }
+
+    @FXML
+    private void onAccueilButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/acceuil.fxml"));
+            Parent root = loader.load();
+            navigateToScene(root, event);
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de la navigation vers l'accueil: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onProfileButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditProfile.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Modifier Mon Profil");
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture du profil: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void ondossierButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion du Dossier");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture du dossier: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onuniversiteButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion des Candidatures");
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des candidatures: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onentretienButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
+            Parent root = loader.load();
+            navigateToScene(root, event);
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture de l'entretien: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onevenementButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Événements");
+            stage.setMinWidth(1133);
+            stage.setMinHeight(691);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des événements: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onhebergementButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            Parent root = loader.load();
+            navigateToScene(root, event);
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des foyers: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onrestaurantButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+            navigateToScene(root, event);
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des restaurants: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onvolsButtonClick(ActionEvent event) {
+        // Implement when needed
+    }
+
+    @FXML
+    private void onlogoutButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            Scene scene = new Scene(root);
+            loginStage.setScene(scene);
+            loginStage.setTitle("Login - GradAway");
+            loginStage.setResizable(true);
+            loginStage.centerOnScreen();
+            loginStage.show();
+            // Close current window
+            Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de la déconnexion: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
     
     /**
@@ -178,6 +369,13 @@ public class ReserverRestaurantController {
             
             // Créer une copie finale de l'ID de l'étudiant pour l'utiliser dans le lambda
             final int idEtudiantFinal = idEtudiantValue;
+            
+            // Gérer la fermeture de la boîte de dialogue (croix rouge)
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.setOnCloseRequest(windowEvent -> {
+                // Retourner à la liste des restaurants quand on clique sur la croix
+                retournerALaListe();
+            });
             
             // Attendre la réponse de l'utilisateur
             alert.showAndWait().ifPresent(buttonType -> {

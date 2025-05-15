@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import utils.MyDatabase;
+import utils.SessionManager;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -121,6 +122,10 @@ public class LoginViewcontroller {
                 int userId = resultSet.getInt("id");
                 String role = resultSet.getString("role");
                 System.out.println("LoginViewcontroller: Login successful for user ID: " + userId + " with role: " + role);
+                
+                // Stocker les informations de l'utilisateur dans le SessionManager
+                SessionManager.getInstance().setUserInfo(userId, email, role);
+                System.out.println("LoginViewcontroller: User info stored in SessionManager");
                 
                 Stage loginStage = (Stage) loginEmail.getScene().getWindow();
                 loginStage.close();

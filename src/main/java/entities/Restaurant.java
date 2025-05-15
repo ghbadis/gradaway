@@ -30,7 +30,7 @@ public class Restaurant {
         this.email = email;
         this.image = image;
     }
-    
+
     // Constructeur complet sans image
     public Restaurant(int idRestaurant, String nom, String adresse, String ville, String pays,
                       int capaciteTotale, String horaireOuverture, String horaireFermeture,
@@ -62,7 +62,7 @@ public class Restaurant {
         this.email = email;
         this.image = image;
     }
-    
+
     // Constructeur sans ID et sans image
     public Restaurant(String nom, String adresse, String ville, String pays,
                       int capaciteTotale, String horaireOuverture, String horaireFermeture,
@@ -162,7 +162,7 @@ public class Restaurant {
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
     public String getImage() {
         return image;
     }
@@ -186,5 +186,13 @@ public class Restaurant {
                 ", email='" + email + '\'' +
                 ", image='" + image + '\'' +
                 '}';
+    }
+
+    public Restaurant getId() {
+        return null;
+    }
+
+    public String getCapacite() {
+        return String.valueOf(capaciteTotale);
     }
 }

@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
@@ -45,6 +46,16 @@ public class ModifierRestaurantController {
     @FXML private Button btnUploadImage;
     @FXML private StackPane statusMessagePane;
     @FXML private Label statusMessage;
+    @FXML private Button accueilButton;
+    @FXML private Button userButton;
+    @FXML private Button dossierButton;
+    @FXML private Button universiteButton;
+    @FXML private Button entretienButton;
+    @FXML private Button evenementButton;
+    @FXML private Button hebergementButton;
+    @FXML private Button restaurantButton;
+    @FXML private Button volsButton;
+    @FXML private Button logoutButton;
 
     private final ServiceRestaurant serviceRestaurant = new ServiceRestaurant();
     private Restaurant currentRestaurant;
@@ -408,5 +419,140 @@ public class ModifierRestaurantController {
             },
             delayMillis
         );
+    }
+
+    /**
+     * Navigation vers la page d'accueil
+     */
+    @FXML
+    private void navigateToAccueil() {
+        navigateTo("/AcceuilAdmin.fxml", "Accueil Admin");
+    }
+    
+    /**
+     * Navigation vers la page Admin
+     */
+    @FXML
+    private void navigateToAdmin() {
+        navigateTo("/AdminUser.fxml", "Gestion des Utilisateurs");
+    }
+    
+    /**
+     * Navigation vers la page Dossier
+     */
+    @FXML
+    private void navigateToDossier() {
+        navigateTo("/AdminDossier.fxml", "Gestion des Dossiers");
+    }
+    
+    /**
+     * Navigation vers la page Université
+     */
+    @FXML
+    private void navigateToUniversite() {
+        navigateTo("/adminuniversite.fxml", "Gestion des Universités");
+    }
+    
+    /**
+     * Navigation vers la page Entretien
+     */
+    @FXML
+    private void navigateToEntretien() {
+        navigateTo("/Gestionnaire.fxml", "Gestion des Entretiens");
+    }
+    
+    /**
+     * Navigation vers la page Événement
+     */
+    @FXML
+    private void navigateToEvenement() {
+        navigateTo("/gestion_evenement.fxml", "Gestion des Événements");
+    }
+    
+    /**
+     * Navigation vers la page Hébergement
+     */
+    @FXML
+    private void navigateToHebergement() {
+        navigateTo("/ListFoyer.fxml", "Liste des Foyers");
+    }
+    
+    /**
+     * Navigation vers la page Restaurant
+     */
+    @FXML
+    private void navigateToRestaurant() {
+        navigateTo("/ListRestaurant.fxml", "Liste des Restaurants");
+    }
+    
+    /**
+     * Navigation vers la page Vols
+     */
+    @FXML
+    private void navigateToVols() {
+        // À implémenter si besoin
+    }
+    
+    /**
+     * Méthode de déconnexion
+     */
+    @FXML
+    private void logout() {
+        navigateTo("/login-view.fxml", "Login - GradAway");
+    }
+    
+    /**
+     * Méthode générique pour la navigation
+     */
+    private void navigateTo(String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            
+            // Récupérer la fenêtre principale
+            Stage stage = (Stage) tf_nom.getScene().getWindow();
+            
+            // Créer une nouvelle scène avec le contenu chargé
+            Scene scene = new Scene(root);
+            
+            // Configurer la fenêtre en plein écran
+            stage.setMaximized(true);
+            
+            // Ajouter une transition de fondu pour une navigation plus fluide
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            
+            // Définir la nouvelle scène dans la fenêtre principale
+            stage.setScene(scene);
+            stage.setTitle(title);
+            
+            // Jouer l'animation de fondu
+            fadeIn.play();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    /**
+     * Méthode pour ouvrir une nouvelle fenêtre modale
+     */
+    private void openModalWindow(String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture de la fenêtre: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 } 

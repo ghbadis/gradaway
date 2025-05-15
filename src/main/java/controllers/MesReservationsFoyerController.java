@@ -23,6 +23,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
+import javafx.scene.Node;
+import javafx.event.ActionEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +37,18 @@ import java.util.List;
 public class MesReservationsFoyerController {
 
     @FXML private TilePane reservationsContainer;
+    
+    // Navigation buttons
+    @FXML private Button accueilButton;
+    @FXML private Button userButton;
+    @FXML private Button dossierButton;
+    @FXML private Button universiteButton;
+    @FXML private Button entretienButton;
+    @FXML private Button evenementButton;
+    @FXML private Button hebergementButton;
+    @FXML private Button restaurantButton;
+    @FXML private Button volsButton;
+    @FXML private Button logoutButton;
     
     private ServiceReservationFoyer serviceReservation;
     private ServiceFoyer serviceFoyer;
@@ -50,6 +64,181 @@ public class MesReservationsFoyerController {
         
         // Les réservations seront chargées après l'initialisation du userId
         loadReservations();
+        setupNavigationButtons();
+    }
+
+    private void setupNavigationButtons() {
+        accueilButton.setOnAction(this::onAccueilButtonClick);
+        userButton.setOnAction(this::onProfileButtonClick);
+        dossierButton.setOnAction(this::ondossierButtonClick);
+        universiteButton.setOnAction(this::onuniversiteButtonClick);
+        entretienButton.setOnAction(this::onentretienButtonClick);
+        evenementButton.setOnAction(this::onevenementButtonClick);
+        hebergementButton.setOnAction(this::onhebergementButtonClick);
+        restaurantButton.setOnAction(this::onrestaurantButtonClick);
+        volsButton.setOnAction(this::onvolsButtonClick);
+        logoutButton.setOnAction(this::onlogoutButtonClick);
+    }
+
+    @FXML
+    private void onAccueilButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/acceuil.fxml"));
+            Parent root = loader.load();
+            navigateToScene(root, event);
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de la navigation vers l'accueil: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onProfileButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditProfile.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Modifier Mon Profil");
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture du profil: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void ondossierButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion du Dossier");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture du dossier: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onuniversiteButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion des Candidatures");
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des candidatures: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onentretienButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
+            Parent root = loader.load();
+            navigateToScene(root, event);
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture de l'entretien: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onevenementButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Événements");
+            stage.setMinWidth(1133);
+            stage.setMinHeight(691);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des événements: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onhebergementButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            Parent root = loader.load();
+            navigateToScene(root, event);
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des foyers: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onrestaurantButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Restaurants");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des restaurants: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onvolsButtonClick(ActionEvent event) {
+        // Implement when needed
+    }
+
+    @FXML
+    private void onlogoutButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            Scene scene = new Scene(root);
+            loginStage.setScene(scene);
+            loginStage.setTitle("Login - GradAway");
+            loginStage.setResizable(true);
+            loginStage.centerOnScreen();
+            loginStage.show();
+            
+            // Close current window
+            Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de la déconnexion: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void navigateToScene(Parent root, ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        
+        // Add fade transition
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+        fadeIn.play();
     }
     
     /**
@@ -82,19 +271,22 @@ public class MesReservationsFoyerController {
                 return;
             }
             
-            // Configurer le TilePane
-            reservationsContainer.setPrefColumns(3);
-            reservationsContainer.setPrefTileWidth(280);
-            reservationsContainer.setPrefTileHeight(320);
-            reservationsContainer.setHgap(15);
-            reservationsContainer.setVgap(15);
+            // Configurer le TilePane pour afficher exactement 3 foyers par ligne
+            reservationsContainer.setPrefColumns(3); // Force 3 colonnes
+            reservationsContainer.setMinWidth(900); // Largeur minimale pour contenir 3 cartes et leurs espacements
+            reservationsContainer.setPrefTileWidth(270); // Largeur légèrement réduite pour s'assurer que 3 cartes tiennent
+            reservationsContainer.setPrefTileHeight(380);//uteur ajustée
+            reservationsContainer.setHgap(15); // Espacement horizontal réduit
+            reservationsContainer.setVgap(30);//ecement vertical réduit
             reservationsContainer.setAlignment(Pos.CENTER);
             reservationsContainer.setTileAlignment(Pos.CENTER);
+            reservationsContainer.setPadding(new Insets(20, 10, 20, 10)); // Padding réduit
             
             // Calculer le nombre de lignes nécessaires
             int numRows = (int) Math.ceil(reservations.size() / 3.0);
             reservationsContainer.setPrefRows(numRows);
-            reservationsContainer.setPrefHeight(numRows * (320 + 15) + 15);
+            // Ajuster la hauteur totale en tenant compte du grand espacement vertical
+            reservationsContainer.setPrefHeight(numRows * (400 + 50) + 60);
             
             // Afficher chaque réservation
             for (ReservationFoyer reservation : reservations) {
@@ -131,16 +323,19 @@ public class MesReservationsFoyerController {
     private VBox createReservationCard(ReservationFoyer reservation, Foyer foyer) {
         VBox card = new VBox();
         card.setStyle("-fx-background-color: white; -fx-background-radius: 8px; "
-                + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);");
-        card.setPrefHeight(320);
-        card.setPrefWidth(280);
-        card.setSpacing(10);
-        card.setPadding(new Insets(10));
+                + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3); -fx-border-color: #e0e0e0; -fx-border-radius: 8px;");
+        card.setPrefHeight(380); // Hauteur ajustée pour s'adapter au TilePane
+        card.setMaxHeight(380); // Hauteur maximale réduite
+        card.setMinHeight(380); // Hauteur minimale réduite
+        card.setPrefWidth(270); // Largeur ajustée pour permettre 3 cartes par ligne
+        card.setMaxWidth(270); // Largeur maximale ajustée
+        card.setSpacing(8); // Réduction de l'espacement entre les éléments pour gagner de la place
+        card.setPadding(new Insets(15, 15, 15, 15)); // Padding uniforme
         card.setAlignment(Pos.TOP_CENTER);
 
         ImageView imageView = new ImageView();
-        imageView.setFitHeight(150);
-        imageView.setFitWidth(260);
+        imageView.setFitHeight(140);
+        imageView.setFitWidth(250);
         imageView.setPreserveRatio(true);
 
         try {
@@ -175,26 +370,49 @@ public class MesReservationsFoyerController {
             }
         }
 
+        // Afficher le nom du foyer clairement et en plus grand
         Label nomLabel = new Label(foyer.getNom());
-        nomLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        nomLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a237e;");
+        nomLabel.setWrapText(true);
+        nomLabel.setAlignment(Pos.CENTER);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         Label dateLabel = new Label("Du " + reservation.getDateDebut().format(formatter)
                 + " au " + reservation.getDateFin().format(formatter));
         dateLabel.setStyle("-fx-font-size: 14px;");
 
-        Label adresseLabel = new Label(foyer.getAdresse() + ", " + foyer.getVille());
-        adresseLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #757575;");
+        // Afficher la localisation (ville et pays) avec une icône
+        Label localisationLabel = new Label("📍 " + foyer.getVille() + ", " + foyer.getPays());
+        localisationLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #2196F3; -fx-font-weight: bold;");
+        localisationLabel.setWrapText(true);
+        localisationLabel.setAlignment(Pos.CENTER);
+        
+        // Afficher l'adresse complète du foyer avec une icône
+        Label adresseLabel = new Label("🏠 " + foyer.getAdresse());
+        adresseLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #757575;");
+        adresseLabel.setWrapText(true);
+        adresseLabel.setAlignment(Pos.CENTER);
+        
+        // Afficher la capacité du foyer avec une icône
+        Label capaciteLabel = new Label("👥 Capacité: " + foyer.getCapacite() + " personnes");
+        capaciteLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #4CAF50; -fx-font-weight: bold;");
+        capaciteLabel.setWrapText(true);
+        capaciteLabel.setAlignment(Pos.CENTER);
 
         Button cancelButton = new Button("Annuler la réservation");
-        cancelButton.setStyle("-fx-background-color: #FF5722; -fx-text-fill: white; -fx-background-radius: 4px;");
-        cancelButton.setPrefWidth(200);
+        cancelButton.setStyle("-fx-background-color: #1565C0; -fx-text-fill: white; -fx-background-radius: 4px; -fx-font-weight: bold;");
+        cancelButton.setPrefWidth(240);
+        cancelButton.setMaxWidth(240);
+        cancelButton.setPrefHeight(35);
         cancelButton.setOnAction(e -> cancelReservation(reservation));
+        
+        // Ajouter un padding en bas pour s'assurer que le bouton reste à l'intérieur de la carte
+        VBox.setMargin(cancelButton, new Insets(0, 0, 10, 0));
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
 
-        card.getChildren().addAll(imageView, nomLabel, dateLabel, adresseLabel, spacer, cancelButton);
+        card.getChildren().addAll(imageView, nomLabel, localisationLabel, adresseLabel, capaciteLabel, dateLabel, spacer, cancelButton);
 
         card.setOnMouseEntered(e -> {
             FadeTransition ft = new FadeTransition(Duration.millis(100), card);
@@ -237,37 +455,21 @@ public class MesReservationsFoyerController {
     }
     
     /**
-     * Retourne à l'accueil
+     * Affiche une alerte
      */
-    @FXML
-    public void retourAccueil() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/Accueil.fxml"));
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) reservationsContainer.getScene().getWindow();
-            
-            // Transition de fondu
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            
-            stage.setScene(scene);
-            fadeIn.play();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors du chargement de l'accueil: " + e.getMessage(), Alert.AlertType.ERROR);
-            e.printStackTrace();
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
         }
-    }
-    
-    /**
-     * Retourne à la liste des foyers
-     */
+
     @FXML
     private void retourListeFoyer() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
             Parent root = loader.load();
-
             Stage stage = (Stage) reservationsContainer.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -282,16 +484,5 @@ public class MesReservationsFoyerController {
             e.printStackTrace();
             showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
         }
-    }
-    
-    /**
-     * Affiche une alerte
-     */
-    private void showAlert(String title, String message, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

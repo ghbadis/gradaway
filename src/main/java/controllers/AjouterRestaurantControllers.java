@@ -63,6 +63,17 @@ public class AjouterRestaurantControllers {
     @FXML private Label statusMessage;
     @FXML private Button submitButton;
 
+    @FXML private Button accueilButton;
+    @FXML private Button userButton;
+    @FXML private Button dossierButton;
+    @FXML private Button universiteButton;
+    @FXML private Button entretienButton;
+    @FXML private Button evenementButton;
+    @FXML private Button hebergementButton;
+    @FXML private Button restaurantButton;
+    @FXML private Button volsButton;
+    @FXML private Button logoutButton;
+
     private ServiceRestaurant serviceRestaurant = new ServiceRestaurant();
     private String imagePath;
 
@@ -184,21 +195,24 @@ public class AjouterRestaurantControllers {
                 tf_telephone.setText(newValue.replaceAll("[^\\d]", ""));
             }
             
-            // Show error if not empty and less than 8 digits
-            boolean isEmpty = newValue.isEmpty();
-            boolean isValid = isEmpty || newValue.length() >= 8;
-            telephoneErrorLabel.setVisible(!isEmpty && !isValid);
-            telephoneErrorLabel.setManaged(!isEmpty && !isValid);
-            updateFieldStyle(tf_telephone, isEmpty || isValid);
+            // Toujours montrer l'erreur si vide ou moins de 8 chiffres
+            boolean isValid = !newValue.isEmpty() && newValue.length() >= 8;
+            telephoneErrorLabel.setText(newValue.isEmpty() ? "Le numéro de téléphone est requis" : 
+                                      "Le numéro doit contenir au moins 8 chiffres");
+            telephoneErrorLabel.setVisible(!isValid);
+            telephoneErrorLabel.setManaged(!isValid);
+            updateFieldStyle(tf_telephone, isValid);
         });
         
         // Validation pour le champ email (format visuel)
         tf_email.textProperty().addListener((observable, oldValue, newValue) -> {
-            boolean isEmpty = newValue.isEmpty();
-            boolean isValid = isEmpty || isValidEmail(newValue);
-            emailErrorLabel.setVisible(!isEmpty && !isValid);
-            emailErrorLabel.setManaged(!isEmpty && !isValid);
-            updateFieldStyle(tf_email, isEmpty || isValid);
+            // Toujours montrer l'erreur si vide ou format invalide
+            boolean isValid = !newValue.isEmpty() && isValidEmail(newValue);
+            emailErrorLabel.setText(newValue.isEmpty() ? "L'email est requis" : 
+                                  "Format d'email invalide");
+            emailErrorLabel.setVisible(!isValid);
+            emailErrorLabel.setManaged(!isValid);
+            updateFieldStyle(tf_email, isValid);
         });
         
         // Required fields validation
@@ -456,8 +470,15 @@ public class AjouterRestaurantControllers {
             }
         }
         
-        // Validation du format de l'email s'il est renseigné
-        if (!tf_email.getText().trim().isEmpty() && !isValidEmail(tf_email.getText().trim())) {
+        // Validation de l'email (obligatoire)
+        if (tf_email.getText().trim().isEmpty()) {
+            emailErrorLabel.setText("L'email est requis");
+            emailErrorLabel.setVisible(true);
+            emailErrorLabel.setManaged(true);
+            updateFieldStyle(tf_email, false);
+            isValid = false;
+        } else if (!isValidEmail(tf_email.getText().trim())) {
+            emailErrorLabel.setText("Format d'email invalide");
             emailErrorLabel.setVisible(true);
             emailErrorLabel.setManaged(true);
             updateFieldStyle(tf_email, false);
@@ -466,6 +487,25 @@ public class AjouterRestaurantControllers {
             emailErrorLabel.setVisible(false);
             emailErrorLabel.setManaged(false);
             updateFieldStyle(tf_email, true);
+        }
+        
+        // Validation du téléphone (obligatoire)
+        if (tf_telephone.getText().trim().isEmpty()) {
+            telephoneErrorLabel.setText("Le numéro de téléphone est requis");
+            telephoneErrorLabel.setVisible(true);
+            telephoneErrorLabel.setManaged(true);
+            updateFieldStyle(tf_telephone, false);
+            isValid = false;
+        } else if (tf_telephone.getText().trim().length() < 8) {
+            telephoneErrorLabel.setText("Le numéro doit contenir au moins 8 chiffres");
+            telephoneErrorLabel.setVisible(true);
+            telephoneErrorLabel.setManaged(true);
+            updateFieldStyle(tf_telephone, false);
+            isValid = false;
+        } else {
+            telephoneErrorLabel.setVisible(false);
+            telephoneErrorLabel.setManaged(false);
+            updateFieldStyle(tf_telephone, true);
         }
         
         // Validation des horaires
@@ -504,6 +544,17 @@ public class AjouterRestaurantControllers {
                     isValid = false;
                 }
             }
+        }
+        
+        // Validation de l'image (obligatoire)
+        if (imagePath == null || imagePath.isEmpty()) {
+            imageErrorLabel.setText("Une image est requise");
+            imageErrorLabel.setVisible(true);
+            imageErrorLabel.setManaged(true);
+            isValid = false;
+        } else {
+            imageErrorLabel.setVisible(false);
+            imageErrorLabel.setManaged(false);
         }
         
         return isValid;
@@ -546,6 +597,12 @@ public class AjouterRestaurantControllers {
 
     @FXML
     void addimages(ActionEvent event) {
+        // Cacher le message d'erreur d'image au début
+        if (imageErrorLabel != null) {
+            imageErrorLabel.setVisible(false);
+            imageErrorLabel.setManaged(false);
+        }
+        
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir une image");
         fileChooser.getExtensionFilters().addAll(
@@ -681,6 +738,112 @@ public class AjouterRestaurantControllers {
     public void Ajouter(ActionEvent actionEvent) {
     }
 
-   // public void listresto(ActionEvent actionEvent) {
+    /**
+     * Navigation vers la page d'accueil
+     */
+    @FXML
+    private void navigateToAccueil() {
+        navigateTo("/AcceuilAdmin.fxml", "Accueil Admin");
     }
-//}
+    
+    /**
+     * Navigation vers la page Admin
+     */
+    @FXML
+    private void navigateToAdmin() {
+        navigateTo("/AdminUser.fxml", "Gestion des Utilisateurs");
+    }
+    
+    /**
+     * Navigation vers la page Dossier
+     */
+    @FXML
+    private void navigateToDossier() {
+        navigateTo("/AdminDossier.fxml", "Gestion des Dossiers");
+    }
+    
+    /**
+     * Navigation vers la page Université
+     */
+    @FXML
+    private void navigateToUniversite() {
+        navigateTo("/adminuniversite.fxml", "Gestion des Universités");
+    }
+    
+    /**
+     * Navigation vers la page Entretien
+     */
+    @FXML
+    private void navigateToEntretien() {
+        navigateTo("/Gestionnaire.fxml", "Gestion des Entretiens");
+    }
+    
+    /**
+     * Navigation vers la page Événement
+     */
+    @FXML
+    private void navigateToEvenement() {
+        navigateTo("/gestion_evenement.fxml", "Gestion des Événements");
+    }
+    
+    /**
+     * Navigation vers la page Hébergement
+     */
+    @FXML
+    private void navigateToHebergement() {
+        navigateTo("/ListFoyer.fxml", "Liste des Foyers");
+    }
+    
+    /**
+     * Navigation vers la page Restaurant
+     */
+    @FXML
+    private void navigateToRestaurant() {
+        navigateTo("/ListRestaurant.fxml", "Liste des Restaurants");
+    }
+    
+    /**
+     * Navigation vers la page Vols
+     */
+    @FXML
+    private void navigateToVols() {
+        // À implémenter si besoin
+    }
+    
+    /**
+     * Méthode de déconnexion
+     */
+    @FXML
+    private void logout() {
+        navigateTo("/login-view.fxml", "Login - GradAway");
+    }
+    
+    /**
+     * Méthode générique pour la navigation
+     */
+    private void navigateTo(String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) tf_nom.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle(title);
+            
+            // Configurer la fenêtre en plein écran
+            stage.setMaximized(true);
+            
+            // Ajouter une transition de fondu pour une navigation plus fluide
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
+            
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la navigation", Alert.AlertType.ERROR);
+        }
+    }
+}

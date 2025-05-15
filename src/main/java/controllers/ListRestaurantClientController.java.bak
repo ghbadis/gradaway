@@ -42,17 +42,6 @@ public class ListRestaurantClientController {
     @FXML private MenuButton locationMenu;
     @FXML private TilePane restaurantsContainer;
     @FXML private Label noResultsLabel;
-    // Dashboard navigation buttons
-    @FXML private Button accueilButton;
-    @FXML private Button userButton;
-    @FXML private Button dossierButton;
-    @FXML private Button universiteButton;
-    @FXML private Button entretienButton;
-    @FXML private Button evenementButton;
-    @FXML private Button hebergementButton;
-    @FXML private Button restaurantButton;
-    @FXML private Button volsButton;
-    @FXML private Button logoutButton;
     
     private ServiceRestaurant serviceRestaurant;
     private ObservableList<Restaurant> restaurantList;
@@ -63,6 +52,9 @@ public class ListRestaurantClientController {
     @FXML
     public void initialize() {
         serviceRestaurant = new ServiceRestaurant();
+        
+        // Initialiser le message d'erreur (caché par défaut)
+        noResultsLabel.setVisible(false);
         
         // Charger les restaurants
         loadRestaurants();
@@ -75,9 +67,6 @@ public class ListRestaurantClientController {
         
         // Animer le bouton Mes Réservations pour attirer l'attention
         animateReservationsButton();
-        
-        // Setup dashboard navigation
-        setupNavigationButtons();
     }
     
     /**
@@ -178,7 +167,7 @@ public class ListRestaurantClientController {
     private void applyFilters() {
         filteredRestaurants.setPredicate(createPredicate(currentFilter, currentLocation));
         
-        // Personnaliser le message en fonction des filtres appliqués
+        // Personnaliser le message d'erreur en fonction des filtres actifs
         if (!currentFilter.isEmpty() && !currentLocation.isEmpty()) {
             noResultsLabel.setText("Aucun restaurant ne correspond à '" + currentFilter + "' dans " + currentLocation);
         } else if (!currentFilter.isEmpty()) {
@@ -223,13 +212,13 @@ public class ListRestaurantClientController {
         restaurantsContainer.getChildren().clear();
         
         if (restaurants.isEmpty()) {
-            // Afficher le message d'erreur stylisé
+            // Afficher le message d'erreur stylé
             noResultsLabel.setVisible(true);
             return;
+        } else {
+            // Cacher le message d'erreur
+            noResultsLabel.setVisible(false);
         }
-        
-        // Cacher le message d'erreur s'il y a des résultats
-        noResultsLabel.setVisible(false);
         
         // Configurer le TilePane pour avoir exactement 3 colonnes
         restaurantsContainer.setPrefColumns(3);
@@ -391,28 +380,16 @@ public class ListRestaurantClientController {
         }
     }
     
-    /**
-     * Méthode appelée par le bouton de recherche
-     */
-    @FXML
-    private void search(ActionEvent event) {
-        currentFilter = tf_search.getText().toLowerCase();
-        
-        // Personnaliser le message pour la recherche par bouton
-        if (!currentFilter.isEmpty()) {
-            noResultsLabel.setText("Aucun restaurant ne correspond à '" + currentFilter + "'");
-        } else {
-            noResultsLabel.setText("Aucun restaurant disponible");
-        }
-        
-        applyFilters();
-    }
+    // Conteneur pour les informations
+    VBox infoContainer = new VBox();
+    infoContainer.setSpacing(5);
+    infoContainer.setPrefWidth(260);
+    infoContainer.setAlignment(Pos.CENTER_LEFT);
     
-    /**
-     * Méthode appelée par le bouton de filtrage par ville
-     */
-    @FXML
-    void filterByLocation(ActionEvent event) {
+    // Nom du restaurant
+    Label nameLabel = new Label(restaurant.getNom());
+    nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #3b82f6;");
+    nameLabel.setWrapText(true);
         // Mais on peut l'utiliser pour rafraîchir la liste des villes
         setupLocationFilter();
     }
@@ -462,23 +439,6 @@ public class ListRestaurantClientController {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-    
-    /**
-     * Méthode pour retourner à l'accueil
-     */
-    @FXML
-    void retourAccueil(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/Accueil.fxml"));
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            
-            // Transition de fondu
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-            fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
             
             stage.setScene(scene);
@@ -489,167 +449,4 @@ public class ListRestaurantClientController {
         }
     }
     
-    private void setupNavigationButtons() {
-        accueilButton.setOnAction(this::onAccueilButtonClick);
-        userButton.setOnAction(this::onProfileButtonClick);
-        dossierButton.setOnAction(this::ondossierButtonClick);
-        universiteButton.setOnAction(this::onuniversiteButtonClick);
-        entretienButton.setOnAction(this::onentretienButtonClick);
-        evenementButton.setOnAction(this::onevenementButtonClick);
-        hebergementButton.setOnAction(this::onhebergementButtonClick);
-        restaurantButton.setOnAction(this::onrestaurantButtonClick);
-        volsButton.setOnAction(this::onvolsButtonClick);
-        logoutButton.setOnAction(this::onlogoutButtonClick);
-    }
-
-    private void navigateToScene(Parent root, ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        // Add fade transition
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-        fadeIn.setFromValue(0.0);
-        fadeIn.setToValue(1.0);
-        fadeIn.play();
-    }
-
-    @FXML
-    private void onAccueilButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/acceuil.fxml"));
-            Parent root = loader.load();
-            navigateToScene(root, event);
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de la navigation vers l'accueil: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onProfileButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditProfile.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Modifier Mon Profil");
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture du profil: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void ondossierButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Gestion du Dossier");
-            stage.setMinWidth(1200);
-            stage.setMinHeight(800);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture du dossier: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onuniversiteButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Gestion des Candidatures");
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture des candidatures: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onentretienButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
-            Parent root = loader.load();
-            navigateToScene(root, event);
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture de l'entretien: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onevenementButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Événements");
-            stage.setMinWidth(1133);
-            stage.setMinHeight(691);
-            stage.setResizable(true);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture des événements: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onhebergementButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
-            Parent root = loader.load();
-            navigateToScene(root, event);
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture des foyers: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onrestaurantButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
-            Parent root = loader.load();
-            navigateToScene(root, event);
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de l'ouverture des restaurants: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
-    private void onvolsButtonClick(ActionEvent event) {
-        // Implement when needed
-    }
-
-    @FXML
-    private void onlogoutButtonClick(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
-            Parent root = loader.load();
-            Stage loginStage = new Stage();
-            Scene scene = new Scene(root);
-            loginStage.setScene(scene);
-            loginStage.setTitle("Login - GradAway");
-            loginStage.setResizable(true);
-            loginStage.centerOnScreen();
-            loginStage.show();
-            // Close current window
-            Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            currentStage.close();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors de la déconnexion: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
 }

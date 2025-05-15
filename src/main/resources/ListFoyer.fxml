@@ -18,9 +18,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListFoyerControllers">
+<SplitPane dividerPositions="0.22" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListFoyerControllers">
    <items>
-      <AnchorPane prefHeight="723.0" prefWidth="168.0" style="-fx-background-color: #0d47a1;">
+      <AnchorPane minWidth="200.0" prefHeight="800.0" prefWidth="220.0" style="-fx-background-color: #0d47a1;">
          <children>
             <VBox alignment="CENTER" layoutY="157.0" prefHeight="536.0" prefWidth="250.0" style="-fx-background-color: #1a237e; -fx-background-radius: 0 15 15 0;">
                <children>
@@ -31,7 +31,7 @@
                               <Image url="@images/acceuil.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE">
+                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE" fx:id="accueilButton">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -51,7 +51,7 @@
                               <Image url="@images/icons8-user-24.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE">
+                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE" fx:id="userButton">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -73,7 +73,7 @@
                                     <Image url="@images/icons8-dossier-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE" fx:id="dossierButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -93,7 +93,7 @@
                                     <Image url="@images/icons8-university-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE" fx:id="universiteButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -113,7 +113,7 @@
                                     <Image url="@images/icons8-video-call-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE" fx:id="entretienButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -133,7 +133,7 @@
                                     <Image url="@images/icons8-event-accepted-32.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE" fx:id="evenementButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -156,7 +156,7 @@
                                     <Insets left="4.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE" fx:id="hebergementButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -176,7 +176,7 @@
                                     <Image url="@images/restaurant.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE" fx:id="restaurantButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -196,7 +196,7 @@
                                     <Image url="@images/icons8-plane-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE" fx:id="volsButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -216,7 +216,7 @@
                                     <Image url="@images/icons8-logout-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE" fx:id="logoutButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -245,69 +245,90 @@
             <Label layoutX="46.0" layoutY="111.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="GRADAWAY" />
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane prefHeight="800.0" prefWidth="980.0" style="-fx-background-color: #2c3e50;">
          <children>
-            <!-- Foyers List Section -->
-            <ScrollPane fitToWidth="true" layoutX="72.0" layoutY="-9.0" style="-fx-background: white; -fx-background-color: white;">
-               <content>
-                  <VBox>
+            <VBox spacing="20" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <!-- Titre et barre de recherche -->
+                  <VBox alignment="CENTER" spacing="15">
                      <children>
-                        <AnchorPane prefHeight="76.0" prefWidth="870.0">
+                        <Label text="Liste des Foyers" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="28.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" spacing="10">
                            <children>
-                              <ButtonBar layoutX="70.0" layoutY="16.0" prefHeight="40.0" prefWidth="247.0">
-                                 <buttons>
-                                    <TextField fx:id="searchField" prefHeight="26.0" prefWidth="122.0" />
-                                    <Button minWidth="58.0" mnemonicParsing="false" onAction="#search" prefHeight="26.0" prefWidth="78.0" text="search " />
-                                    <ImageView fitHeight="18.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@iamge/604a0294-7130-4b23-b112-c80f6de4690d_removalai_preview.png" />
-                                       </image>
-                                    </ImageView>
-                                 </buttons>
-                              </ButtonBar>
-                              <MenuButton fx:id="locationMenu" layoutX="508.0" layoutY="27.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="135.0" text="Location">
-                                <items>
-                                  <MenuItem mnemonicParsing="false" text="Spain" />
-                                  <MenuItem mnemonicParsing="false" text="Brazil" />
-                                  <MenuItem mnemonicParsing="false" text="Portugal" />
-                                  <MenuItem mnemonicParsing="false" text="Italy" />
-                                  <MenuItem mnemonicParsing="false" text="Canada" />
-                                  <MenuItem mnemonicParsing="false" text="Argentine" />
-                                  <MenuItem mnemonicParsing="false" text="England" />
-                                  <MenuItem mnemonicParsing="false" text="France" />
-                                  <MenuItem mnemonicParsing="false" text="Switzerland" />
-                                </items>
-                              </MenuButton>
-                              <Button alignment="CENTER" layoutX="722.0" layoutY="24.0" mnemonicParsing="false" onAction="#navigateToAjouter" prefHeight="32.0" prefWidth="100.0" style="-fx-background-color: #2196F3;" text="Back" textFill="WHITE">
+                              <TextField fx:id="searchField" prefHeight="35.0" prefWidth="500.0" promptText="Rechercher par nom ou localisation" style="-fx-background-radius: 5;">
                                  <font>
-                                    <Font name="Arial Black" size="14.0" />
+                                    <Font size="14.0" />
                                  </font>
-                              </Button>
-                              <Button fx:id="btnListeReservation" layoutX="580.0" layoutY="24.0" mnemonicParsing="false" onAction="#navigateToListeReservation" prefHeight="32.0" prefWidth="140.0" style="-fx-background-color: #d40606;" text="Liste Reservation" textFill="WHITE">
+                              </TextField>
+                              <Button mnemonicParsing="false" onAction="#search" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #3498db; -fx-background-radius: 5;" text="Rechercher" textFill="WHITE">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Button>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="832.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@iamge/df8dc2cc-ea34-4e71-aee9-de6e6472018a_removalai_preview.png" />
-                                 </image>
-                              </ImageView>
                            </children>
-                        </AnchorPane>
-                        <GridPane fx:id="foyerGrid" hgap="20" style="-fx-padding: 20;" vgap="20">
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" />
-                           </columnConstraints>
-                        </GridPane>
-   
-                        </children>
+                        </HBox>
+                        <Label fx:id="messageLabel" alignment="CENTER" textFill="WHITE" visible="false">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+                     </VBox.margin>
                   </VBox>
-               </content>
-               <padding>
-                  <Insets bottom="20" left="20" right="20" top="20" />
-               </padding>
-            </ScrollPane>
+                  <!-- Zone principale avec les cartes -->
+                  <AnchorPane style="-fx-background-color: white; -fx-background-radius: 10;" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" />
+                     </VBox.margin>
+                     <children>
+                        <ScrollPane fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" style="-fx-background: transparent; -fx-background-color: transparent;" pannable="true">
+                           <content>
+                              <GridPane fx:id="foyerGrid" alignment="CENTER" hgap="20" style="-fx-padding: 20;" vgap="20">
+                                 <columnConstraints>
+                                    <ColumnConstraints percentWidth="33" />
+                                    <ColumnConstraints percentWidth="33" />
+                                    <ColumnConstraints percentWidth="33" />
+                                 </columnConstraints>
+                              </GridPane>
+                           </content>
+                           <padding>
+                              <Insets bottom="20" left="20" right="20" top="20" />
+                           </padding>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+
+                  <!-- Boutons d'action en bas -->
+                  <HBox alignment="CENTER" spacing="20">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#refreshFoyers" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #3498db; -fx-background-radius: 5;" text="Actualiser" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="btnStatistiques" mnemonicParsing="false" onAction="#afficherStatistiques" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #2ecc71; -fx-background-radius: 5;" text="Statistiques" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#navigateToAjouter" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #e74c3c; -fx-background-radius: 5;" text="Retour" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="20.0" top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
    </items>

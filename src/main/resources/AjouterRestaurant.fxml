@@ -30,7 +30,7 @@
                               <Image url="@images/acceuil.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE">
+                        <Button mnemonicParsing="false" onAction="#navigateToAccueil" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE" fx:id="accueilButton">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -50,7 +50,7 @@
                               <Image url="@images/icons8-user-24.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE">
+                        <Button mnemonicParsing="false" onAction="#navigateToAdmin" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE" fx:id="userButton">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -72,7 +72,7 @@
                                     <Image url="@images/icons8-dossier-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#navigateToDossier" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE" fx:id="dossierButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -92,7 +92,7 @@
                                     <Image url="@images/icons8-university-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#navigateToUniversite" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE" fx:id="universiteButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -112,7 +112,7 @@
                                     <Image url="@images/icons8-video-call-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#navigateToEntretien" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE" fx:id="entretienButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -132,7 +132,7 @@
                                     <Image url="@images/icons8-event-accepted-32.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#navigateToEvenement" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE" fx:id="evenementButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -155,7 +155,7 @@
                                     <Insets left="4.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#navigateToHebergement" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE" fx:id="hebergementButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -175,7 +175,7 @@
                                     <Image url="@images/restaurant.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#navigateToRestaurant" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE" fx:id="restaurantButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -195,7 +195,7 @@
                                     <Image url="@images/icons8-plane-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#navigateToVols" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE" fx:id="volsButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -215,7 +215,7 @@
                                     <Image url="@images/icons8-logout-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#logout" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE" fx:id="logoutButton">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -366,7 +366,7 @@
       
                       <VBox spacing="2">
                           <HBox alignment="CENTER_LEFT" spacing="10.0">
-                              <Text fill="#333333" styleClass="form-label" text="Téléphone">
+                              <Text fill="#333333" styleClass="form-label" text="Téléphone *">
                                   <font>
                                       <Font size="14.0" />
                                   </font>
@@ -379,7 +379,7 @@
       
                       <VBox spacing="2">
                           <HBox alignment="CENTER_LEFT" spacing="10.0">
-                              <Text fill="#333333" styleClass="form-label" text="Email">
+                              <Text fill="#333333" styleClass="form-label" text="Email *">
                                   <font>
                                       <Font size="14.0" />
                                   </font>
@@ -390,7 +390,7 @@
                           <Label fx:id="emailErrorLabel" managed="false" style="-fx-font-size: 11px; -fx-padding: 0 0 0 150px;" text="Format d'email invalide" textFill="#e53935" visible="false" />
                       </VBox>
       
-                      <Text fill="#757575" style="-fx-font-size: 12px;" text="* Champs obligatoires">
+                      <Text fill="#d32f2f" style="-fx-font-size: 13px; -fx-font-weight: bold;" text="* Tous les champs sont obligatoires">
                           <VBox.margin>
                               <Insets top="5.0" />
                           </VBox.margin>
@@ -400,10 +400,25 @@
                   <!-- Right Image Section -->
                   <VBox alignment="CENTER" prefHeight="620.0" prefWidth="400.0" spacing="15.0" style="-fx-padding: 20px;">
                       <StackPane prefHeight="300.0" prefWidth="360.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1); -fx-background-radius: 8px;">
+                          <VBox.margin>
+                              <Insets top="10.0" />
+                          </VBox.margin>
+                          <HBox alignment="CENTER" style="-fx-background-color: #1976D2; -fx-background-radius: 8 8 0 0;" StackPane.alignment="TOP_CENTER">
+                              <children>
+                                  <Text fill="WHITE" text="Image du restaurant *" textAlignment="CENTER">
+                                      <font>
+                                          <Font name="System Bold" size="14.0" />
+                                      </font>
+                                  </Text>
+                              </children>
+                              <padding>
+                                  <Insets bottom="5.0" top="5.0" />
+                              </padding>
+                          </HBox>
                           <children>
                               <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#f5f5f5" height="280.0" stroke="#e0e0e0" strokeWidth="1.0" width="340.0" />
                               <ImageView fx:id="uploadedImageView" fitHeight="260.0" fitWidth="320.0" pickOnBounds="true" preserveRatio="true" />
-                              <Label fx:id="imageErrorLabel" style="-fx-background-color: rgba(255,255,255,0.8); -fx-padding: 5px; -fx-background-radius: 3px;" text="Veuillez sélectionner une image" textFill="#e53935" visible="false">
+                              <Label fx:id="imageErrorLabel" style="-fx-background-color: rgba(255,0,0,0.1); -fx-padding: 5px; -fx-background-radius: 3px; -fx-border-color: #e53935; -fx-border-radius: 3px;" text="Veuillez sélectionner une image" textFill="#e53935" visible="false">
                                   <StackPane.margin>
                                       <Insets bottom="-140.0" />
                                   </StackPane.margin>
@@ -411,7 +426,7 @@
                           </children>
                       </StackPane>
                       
-                      <Button onAction="#addimages" prefHeight="45.0" prefWidth="200.0" style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 25px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 2);" text="Télécharger Image">
+                      <Button onAction="#addimages" prefHeight="45.0" prefWidth="200.0" style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 25px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 2);" text="Télécharger Image *">
                           <graphic>
                               <Region prefHeight="24.0" prefWidth="24.0" style="-fx-background-color: white; -fx-shape: 'M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'; -fx-scale-x: 0.7; -fx-scale-y: 0.7;" />
                           </graphic>

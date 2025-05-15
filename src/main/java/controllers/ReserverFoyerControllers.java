@@ -11,6 +11,8 @@ import javafx.util.Duration;
 import javafx.scene.layout.Region;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.event.ActionEvent;
 
 import java.io.IOException;
 import Services.ServiceReservationFoyer;
@@ -20,6 +22,7 @@ import entities.Foyer;
 import utils.EmailSender;
 import utils.MyDatabase;
 import utils.QRCodeGenerator;
+import utils.SessionManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,6 +47,18 @@ public class ReserverFoyerControllers {
     @FXML private DatePicker dp_date_reserver;
     @FXML private ComboBox<Foyer> cb_foyer;
     
+    // Navigation buttons
+    @FXML private Button accueilButton;
+    @FXML private Button userButton;
+    @FXML private Button dossierButton;
+    @FXML private Button universiteButton;
+    @FXML private Button entretienButton;
+    @FXML private Button evenementButton;
+    @FXML private Button hebergementButton;
+    @FXML private Button restaurantButton;
+    @FXML private Button volsButton;
+    @FXML private Button logoutButton;
+
     private ServiceFoyer serviceFoyer = new ServiceFoyer();
 
     // Variable pour stocker le foyer sélectionné
@@ -73,6 +88,20 @@ public class ReserverFoyerControllers {
         setupStyles();
         setupDatePickers();
         loadFoyers();
+        setupNavigationButtons();
+        
+        // Récupérer l'email de l'utilisateur connecté depuis le SessionManager
+        String userEmail = SessionManager.getInstance().getUserEmail();
+        if (userEmail != null && !userEmail.isEmpty()) {
+            // Afficher l'email dans le champ et le rendre non modifiable
+            tf_gmail.setText(userEmail);
+            tf_gmail.setEditable(false);
+            tf_gmail.setDisable(true);
+            tf_gmail.setStyle(tf_gmail.getStyle() + "; -fx-opacity: 0.8; -fx-background-color: #e9ecef;");
+            System.out.println("ReserverFoyerControllers: Email utilisateur récupéré depuis SessionManager: " + userEmail);
+        } else {
+            System.out.println("ReserverFoyerControllers: Aucun email utilisateur trouvé dans SessionManager");
+        }
     }
     
     private void loadFoyers() {
@@ -166,6 +195,7 @@ public class ReserverFoyerControllers {
         dp_date_fin.setValue(today);
         dp_date_reserver.setValue(today);
 
+        // Configuration du DatePicker de date de début pour désactiver les dates passées
         dp_date_debut.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(java.time.LocalDate date, boolean empty) {
@@ -174,19 +204,215 @@ public class ReserverFoyerControllers {
             }
         });
 
-        dp_date_fin.setDayCellFactory(picker -> new DateCell() {
-            @Override
-            public void updateItem(java.time.LocalDate date, boolean empty) {
-                super.updateItem(date, empty);
-                setDisable(empty || date.compareTo(dp_date_debut.getValue()) < 0);
-            }
-        });
+        // Configuration du DatePicker de date de fin pour désactiver les dates antérieures à la date de début
+        updateDateFinCellFactory();
 
+        // Mettre à jour les contraintes de date de fin lorsque la date de début change
         dp_date_debut.valueProperty().addListener((obs, oldVal, newVal) -> {
+            // Mettre à jour la factory du DatePicker de date de fin
+            updateDateFinCellFactory();
+            
+            // Si la date de fin est antérieure à la nouvelle date de début, ajuster la date de fin
             if (dp_date_fin.getValue() != null && dp_date_fin.getValue().compareTo(newVal) < 0) {
                 dp_date_fin.setValue(newVal);
             }
         });
+    }
+    
+    /**
+     * Met à jour la factory du DatePicker de date de fin pour désactiver les dates antérieures à la date de début
+     */
+    private void updateDateFinCellFactory() {
+        dp_date_fin.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(java.time.LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                java.time.LocalDate dateDebut = dp_date_debut.getValue();
+                if (dateDebut != null) {
+                    // Désactiver les dates antérieures à la date de début
+                    setDisable(empty || date.compareTo(dateDebut) < 0);
+                    
+                    // Ajouter un style visuel pour indiquer les dates désactivées
+                    if (date.compareTo(dateDebut) < 0) {
+                        setStyle("-fx-background-color: #f8d7da;");
+                    }
+                }
+            }
+        });
+    }
+
+    private void setupNavigationButtons() {
+        accueilButton.setOnAction(this::onAccueilButtonClick);
+        userButton.setOnAction(this::onProfileButtonClick);
+        dossierButton.setOnAction(this::ondossierButtonClick);
+        universiteButton.setOnAction(this::onuniversiteButtonClick);
+        entretienButton.setOnAction(this::onentretienButtonClick);
+        evenementButton.setOnAction(this::onevenementButtonClick);
+        hebergementButton.setOnAction(this::onhebergementButtonClick);
+        restaurantButton.setOnAction(this::onrestaurantButtonClick);
+        volsButton.setOnAction(this::onvolsButtonClick);
+        logoutButton.setOnAction(this::onlogoutButtonClick);
+    }
+
+    @FXML
+    private void onAccueilButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/acceuil.fxml"));
+            Parent root = loader.load();
+            navigateToScene(root, event);
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de la navigation vers l'accueil: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onProfileButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditProfile.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Modifier Mon Profil");
+            stage.setMinWidth(800);
+            stage.setMinHeight(600);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture du profil: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void ondossierButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion du Dossier");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture du dossier: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onuniversiteButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion des Candidatures");
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des candidatures: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onentretienButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
+            Parent root = loader.load();
+            navigateToScene(root, event);
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture de l'entretien: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onevenementButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Événements");
+            stage.setMinWidth(1133);
+            stage.setMinHeight(691);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des événements: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onhebergementButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            Parent root = loader.load();
+            navigateToScene(root, event);
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des foyers: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onrestaurantButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Restaurants");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de l'ouverture des restaurants: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void onvolsButtonClick(ActionEvent event) {
+        // Implement when needed
+    }
+
+    @FXML
+    private void onlogoutButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            Scene scene = new Scene(root);
+            loginStage.setScene(scene);
+            loginStage.setTitle("Login - GradAway");
+            loginStage.setResizable(true);
+            loginStage.centerOnScreen();
+            loginStage.show();
+            
+            // Close current window
+            Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de la déconnexion: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void navigateToScene(Parent root, ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        
+        // Add fade transition
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+        fadeIn.play();
     }
 
     @FXML
@@ -268,6 +494,13 @@ public class ReserverFoyerControllers {
                 
                 // Réinitialiser les champs après la réservation
                 resetFields();
+                
+                // Gérer la fermeture de la boîte de dialogue (croix rouge)
+                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                stage.setOnCloseRequest(windowEvent -> {
+                    // Retourner à la liste des foyers quand on clique sur la croix
+                    navigateToListFoyerClient();
+                });
                 
                 // Attendre la réponse de l'utilisateur
                 final int finalIdEtudiant = idEtudiant; // Créer une copie finale pour le lambda
@@ -374,60 +607,23 @@ public class ReserverFoyerControllers {
         }
     }
 
-//    private void navigateToListFoyer() {
-//        try {
-//            // Assurez-vous que le chemin est correct et commence par un slash
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyer.fxml"));
-//            if (loader.getLocation() == null) {
-//                // Si le fichier n'est pas trouvé, essayez un autre chemin
-//                loader = new FXMLLoader(getClass().getResource("/main/resources/ListFoyer.fxml"));
-//
-//                // Si toujours null, essayez sans le slash
-//                if (loader.getLocation() == null) {
-//                    loader = new FXMLLoader(getClass().getResource("ListFoyer.fxml"));
-//                }
-//            }
-//
-//            if (loader.getLocation() == null) {
-//                throw new IOException("Impossible de trouver le fichier FXML ListFoyer.fxml");
-//            }
-//
-//            Parent root = loader.load();
-//            Stage stage = (Stage) tf_gmail.getScene().getWindow();
-//            Scene scene = new Scene(root);
-//            stage.setScene(scene);
-//
-//            // Ajouter une transition de fondu
-//            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-//            fadeIn.setFromValue(0.0);
-//            fadeIn.setToValue(1.0);
-//            fadeIn.play();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            showAlert("Erreur", "Erreur lors de la navigation: " + e.getMessage(), Alert.AlertType.ERROR);
-//        }
-//    }
-//
-
-
-private void navigateToListFoyer() {
-    try {
-        // Assurez-vous que le chemin est correct et commence par un slash
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyer.fxml"));
-        if (loader.getLocation() == null) {
-            // Si le fichier n'est pas trouvé, essayez un autre chemin
-            loader = new FXMLLoader(getClass().getResource("/main/resources/ListFoyer.fxml"));
-
-            // Si toujours null, essayez sans le slash
+    private void navigateToListFoyer() {
+        try {
+            // Assurez-vous que le chemin est correct et commence par un slash
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyer.fxml"));
             if (loader.getLocation() == null) {
-                loader = new FXMLLoader(getClass().getResource("ListFoyer.fxml"));
+                // Si le fichier n'est pas trouvé, essayez un autre chemin
+                loader = new FXMLLoader(getClass().getResource("/main/resources/ListFoyer.fxml"));
+
+                // Si toujours null, essayez sans le slash
+                if (loader.getLocation() == null) {
+                    loader = new FXMLLoader(getClass().getResource("ListFoyer.fxml"));
+                }
             }
-        }
-        
-        if (loader.getLocation() == null) {
-            throw new IOException("Impossible de trouver le fichier FXML ListFoyer.fxml");
-        }
+            
+            if (loader.getLocation() == null) {
+                throw new IOException("Impossible de trouver le fichier FXML ListFoyer.fxml");
+            }
             
             Parent root = loader.load();
             Stage stage = (Stage) tf_gmail.getScene().getWindow();
@@ -522,8 +718,6 @@ private void navigateToListFoyer() {
             e.printStackTrace();
         }
     }
-    
-    // Méthode showAlertWithQRCode supprimée car nous n'affichons plus le code QR dans l'interface
     
     /**
      * Envoie un email de confirmation de réservation
