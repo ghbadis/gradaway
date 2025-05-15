@@ -38,7 +38,7 @@ public class Ajouterafficheevenementcontrolleur {
     private final ServiceUser serviceUser = new ServiceUser();
     private int currentUserId; // Pour stocker l'ID de l'utilisateur connecté
     private List<Evenement> evenements;
-
+//
     @FXML
     public void initialize() {
         chargerEvenements();
