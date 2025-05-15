@@ -139,17 +139,26 @@ public class AcceuilAdmincontroller {
     @FXML
     public void onuniversiteAdminButtonClick(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminuniversite.fxml"));
+            System.out.println("AcceuilAdminController: Opening ListUniversiteCards view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/recupereruniversite.fxml"));
             Parent root = loader.load();
             
             Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Gestion des Universités");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
             stage.centerOnScreen();
         } catch (IOException e) {
+            System.err.println("AcceuilAdminController: Error loading listuniversitecards.fxml: " + e.getMessage());
+            showAlert("Erreur", "Erreur lors de l'ouverture", "Impossible de charger la vue des universités: " + e.getMessage());
             e.printStackTrace();
-            showAlert("Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        } catch (Exception e) {
+            System.err.println("AcceuilAdminController: Unexpected error: " + e.getMessage());
+            showAlert("Erreur", "Erreur Inattendue", "Une erreur inattendue est survenue: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import Services.ServiceUniversite;
+import utils.UserSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,6 +75,9 @@ public class UniversiteController implements Initializable {
         
         // Setup real-time validation
         setupValidationListeners();
+        
+        // Set the current user ID in the service
+        serviceUniversite.setCurrentUserId(UserSession.getInstance().getUserId());
     }
     
     private void setupValidationListeners() {
@@ -264,6 +268,9 @@ public class UniversiteController implements Initializable {
                 
                 // Create Universite object with photo path
                 Universite universite = new Universite(nom, ville, adresse, domaine, frais, photoPath);
+                
+                // Update the service with current user ID before adding
+                serviceUniversite.setCurrentUserId(UserSession.getInstance().getUserId());
                 
                 // Call service to add universite
                 serviceUniversite.ajouter(universite);

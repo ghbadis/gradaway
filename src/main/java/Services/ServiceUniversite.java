@@ -10,6 +10,7 @@ import java.util.List;
 public class ServiceUniversite {
 
     private Connection con = MyDatabase.getInstance().getCnx();
+    private int currentUserId;
 
     public List<Universite> getAllUniversites() throws SQLException {
         List<Universite> universites = new ArrayList<>();
@@ -130,5 +131,13 @@ public class ServiceUniversite {
             }
         }
         return null; // Return null if no university is found with the given ID
+    }
+
+    public void setCurrentUserId(int currentUserId) {
+        this.currentUserId = currentUserId;
+    }
+
+    public int getCurrentUserId() {
+        return currentUserId;
     }
 }
