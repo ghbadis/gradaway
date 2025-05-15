@@ -229,8 +229,8 @@ public class AdminDossiercontroller implements Initializable {
         actionBox.setAlignment(javafx.geometry.Pos.CENTER);
         actionBox.setPadding(new Insets(10));
 
-        Button editButton = createActionButton("Modifier le dossier", "#4CAF50", "✏️");
-        Button deleteButton = createActionButton("Supprimer le dossier", "#f44336", "🗑️");
+        Button editButton = createActionButton("Modifier ", "#4CAF50", "✏️");
+        Button deleteButton = createActionButton("Supprimer ", "#f44336", "🗑️");
 
         // Add event handlers for buttons
         editButton.setOnAction(event -> handleEditDossier(dossier));
@@ -285,177 +285,48 @@ public class AdminDossiercontroller implements Initializable {
 
     private void handleEditDossier(Dossier dossier) {
         try {
-            // Créer une boîte de dialogue pour la modification
-            Dialog<Dossier> dialog = new Dialog<>();
-            dialog.setTitle("Modifier le dossier");
-            dialog.setHeaderText("Modifier les informations du dossier");
+            // Vérifier que le dossier n'est pas null
+            if (dossier == null) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun dossier sélectionné.");
+                return;
+            }
 
-            // Configuration des boutons
-            ButtonType saveButtonType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
-            dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+            // Charger le FXML avec le chemin correct
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Modifierdossieradmin.fxml"));
+            if (loader.getLocation() == null) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de trouver le fichier FXML.");
+                return;
+            }
 
-            // Création du formulaire
-            GridPane grid = new GridPane();
-            grid.setHgap(10);
-            grid.setVgap(10);
-            grid.setPadding(new Insets(20, 150, 10, 10));
+            Parent root = loader.load();
+            
+            // Récupérer le contrôleur
+            ModifierDossierAdminController controller = loader.getController();
+            if (controller == null) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger le contrôleur.");
+                return;
+            }
 
-            // Champ de modification pour la photo avec bouton choisir
-            TextField photoField = new TextField(dossier.getPhoto());
-            Button photoChooseButton = new Button("Choisir");
-            photoChooseButton.setOnAction(e -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choisir une image");
-                fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif")
-                );
-                File selectedFile = fileChooser.showOpenDialog(null);
-                if (selectedFile != null) {
-                    photoField.setText(selectedFile.getAbsolutePath());
-                }
-            });
-            HBox photoBox = new HBox(5, photoField, photoChooseButton);
-
-            // Champ de modification pour CIN avec bouton choisir
-            TextField cinField = new TextField(dossier.getCin());
-            Button cinChooseButton = new Button("Choisir");
-            cinChooseButton.setOnAction(e -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choisir un fichier CIN");
-                File selectedFile = fileChooser.showOpenDialog(null);
-                if (selectedFile != null) {
-                    cinField.setText(selectedFile.getAbsolutePath());
-                }
-            });
-            HBox cinBox = new HBox(5, cinField, cinChooseButton);
-
-            // Champ de modification pour Diplôme Bac avec bouton choisir
-            TextField diplomeBacField = new TextField(dossier.getDiplome_baccalauréat());
-            Button diplomeBacChooseButton = new Button("Choisir");
-            diplomeBacChooseButton.setOnAction(e -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choisir un fichier Diplôme Bac");
-                File selectedFile = fileChooser.showOpenDialog(null);
-                if (selectedFile != null) {
-                    diplomeBacField.setText(selectedFile.getAbsolutePath());
-                }
-            });
-            HBox diplomeBacBox = new HBox(5, diplomeBacField, diplomeBacChooseButton);
-
-            // Champ de modification pour Relevé Notes avec bouton choisir
-            TextField releveNoteField = new TextField(dossier.getReleve_note());
-            Button releveNoteChooseButton = new Button("Choisir");
-            releveNoteChooseButton.setOnAction(e -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choisir un fichier Relevé Notes");
-                File selectedFile = fileChooser.showOpenDialog(null);
-                if (selectedFile != null) {
-                    releveNoteField.setText(selectedFile.getAbsolutePath());
-                }
-            });
-            HBox releveNoteBox = new HBox(5, releveNoteField, releveNoteChooseButton);
-
-            // Champ de modification pour Diplômes Obtenus avec bouton choisir
-            TextField diplomeObtenusField = new TextField(dossier.getDiplome_obtenus());
-            Button diplomeObtenusChooseButton = new Button("Choisir");
-            diplomeObtenusChooseButton.setOnAction(e -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choisir un fichier Diplômes Obtenus");
-                File selectedFile = fileChooser.showOpenDialog(null);
-                if (selectedFile != null) {
-                    diplomeObtenusField.setText(selectedFile.getAbsolutePath());
-                }
-            });
-            HBox diplomeObtenusBox = new HBox(5, diplomeObtenusField, diplomeObtenusChooseButton);
-
-            // Champ de modification pour Lettre Motivation avec bouton choisir
-            TextField lettreMotivationsField = new TextField(dossier.getLettre_motivations());
-            Button lettreMotivationsChooseButton = new Button("Choisir");
-            lettreMotivationsChooseButton.setOnAction(e -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choisir un fichier Lettre Motivation");
-                File selectedFile = fileChooser.showOpenDialog(null);
-                if (selectedFile != null) {
-                    lettreMotivationsField.setText(selectedFile.getAbsolutePath());
-                }
-            });
-            HBox lettreMotivationsBox = new HBox(5, lettreMotivationsField, lettreMotivationsChooseButton);
-
-            // Champ de modification pour Dossier Santé avec bouton choisir
-            TextField dossierSanteField = new TextField(dossier.getDossier_sante());
-            Button dossierSanteChooseButton = new Button("Choisir");
-            dossierSanteChooseButton.setOnAction(e -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choisir un fichier Dossier Santé");
-                File selectedFile = fileChooser.showOpenDialog(null);
-                if (selectedFile != null) {
-                    dossierSanteField.setText(selectedFile.getAbsolutePath());
-                }
-            });
-            HBox dossierSanteBox = new HBox(5, dossierSanteField, dossierSanteChooseButton);
-
-            // Champ de modification pour CV avec bouton choisir
-            TextField cvField = new TextField(dossier.getCv());
-            Button cvChooseButton = new Button("Choisir");
-            cvChooseButton.setOnAction(e -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Choisir un fichier CV");
-                File selectedFile = fileChooser.showOpenDialog(null);
-                if (selectedFile != null) {
-                    cvField.setText(selectedFile.getAbsolutePath());
-                }
-            });
-            HBox cvBox = new HBox(5, cvField, cvChooseButton);
-
-            // Ajout des champs au formulaire
-            grid.add(new Label("Photo:"), 0, 0);
-            grid.add(photoBox, 1, 0);
-            grid.add(new Label("CIN:"), 0, 1);
-            grid.add(cinBox, 1, 1);
-            grid.add(new Label("Diplôme Bac:"), 0, 2);
-            grid.add(diplomeBacBox, 1, 2);
-            grid.add(new Label("Relevé Notes:"), 0, 3);
-            grid.add(releveNoteBox, 1, 3);
-            grid.add(new Label("Diplômes Obtenus:"), 0, 4);
-            grid.add(diplomeObtenusBox, 1, 4);
-            grid.add(new Label("Lettre Motivation:"), 0, 5);
-            grid.add(lettreMotivationsBox, 1, 5);
-            grid.add(new Label("Dossier Santé:"), 0, 6);
-            grid.add(dossierSanteBox, 1, 6);
-            grid.add(new Label("CV:"), 0, 7);
-            grid.add(cvBox, 1, 7);
-
-            dialog.getDialogPane().setContent(grid);
-
-            // Conversion du résultat
-            dialog.setResultConverter(dialogButton -> {
-                if (dialogButton == saveButtonType) {
-                    dossier.setPhoto(photoField.getText());
-                    dossier.setCin(cinField.getText());
-                    dossier.setDiplome_baccalauréat(diplomeBacField.getText());
-                    dossier.setReleve_note(releveNoteField.getText());
-                    dossier.setDiplome_obtenus(diplomeObtenusField.getText());
-                    dossier.setLettre_motivations(lettreMotivationsField.getText());
-                    dossier.setDossier_sante(dossierSanteField.getText());
-                    dossier.setCv(cvField.getText());
-                    return dossier;
-                }
-                return null;
-            });
-
-            // Affichage de la boîte de dialogue et traitement du résultat
-            Optional<Dossier> result = dialog.showAndWait();
-            result.ifPresent(updatedDossier -> {
-                try {
-                    serviceDossier.modifier(updatedDossier);
-                    loadDossiers(); // Recharger la liste des dossiers
-                    showAlert(Alert.AlertType.INFORMATION, "Succès", "Le dossier a été modifié avec succès.");
-                } catch (SQLException e) {
-                    showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la modification du dossier: " + e.getMessage());
-                }
-            });
+            // Configurer le contrôleur
+            controller.setDossier(dossier);
+            
+            // Créer et configurer la fenêtre
+            Stage stage = new Stage();
+            controller.setStage(stage);
+            
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Modifier le dossier");
+            stage.showAndWait();
+            
+            // Recharger la liste des dossiers après la modification
+            loadDossiers();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la fenêtre de modification: " + e.getMessage());
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue: " + e.getMessage());
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur inattendue s'est produite: " + e.getMessage());
         }
     }
 
