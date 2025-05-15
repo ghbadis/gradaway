@@ -17,13 +17,18 @@ import javafx.geometry.Insets;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
 import javafx.geometry.Pos;
+import javafx.fxml.Initializable;
+import javafx.event.ActionEvent;
+import javafx.scene.Parent;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ResourceBundle;
 
-public class AjouterEvenementController {
+public class AjouterEvenementController implements Initializable {
     @FXML private TextField nom_txtf;
     @FXML private TextField description_txtf;
     @FXML private DatePicker date_picker;
@@ -36,11 +41,13 @@ public class AjouterEvenementController {
     @FXML private Button choisir_image_button;
     @FXML private Button choisir_lieu_button;
 
-    private final ServiceEvenement serviceEvenement = new ServiceEvenement();
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private ServiceEvenement serviceEvenement;
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @FXML
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        serviceEvenement = new ServiceEvenement();
+        
         // Définir la date minimale à aujourd'hui
         date_picker.setDayCellFactory(picker -> new DateCell() {
             @Override
@@ -55,45 +62,9 @@ public class AjouterEvenementController {
         date_picker.setValue(LocalDate.now());
 
         valider_button.setOnAction(event -> validerFormulaire());
-        annuler_button.setOnAction(event -> fermerFenetre());
+        annuler_button.setOnAction(event -> annulerFormulaire());
         choisir_image_button.setOnAction(event -> choisirImage());
         choisir_lieu_button.setOnAction(event -> showMapDialog());
-    }
-
-    private void validerFormulaire() {
-        try {
-            String nom = nom_txtf.getText();
-            String description = description_txtf.getText();
-            LocalDate dateValue = date_picker.getValue();
-            String lieu = lieu_txtf.getText();
-            String domaine = domaine_txtf.getText();
-            String placesStr = place_disponible_txtf.getText();
-            String image = image_txtf != null ? image_txtf.getText() : null;
-
-            // Contrôle de saisie : tous les champs doivent être remplis
-            if (nom.isEmpty() || description.isEmpty() || dateValue == null || lieu.isEmpty() || domaine.isEmpty() || placesStr.isEmpty() || image == null || image.isEmpty()) {
-                showAlert("Erreur", "Champs obligatoires", "Veuillez remplir tous les champs avant d'ajouter l'événement.");
-                return;
-            }
-
-            int placesDisponibles = Integer.parseInt(placesStr);
-            String date = dateValue.format(dateFormatter);
-
-            Evenement evenement = new Evenement(nom, description, date, lieu, domaine, placesDisponibles, image);
-            serviceEvenement.ajouter(evenement);
-            
-            showAlert("Succès", "Événement ajouté avec succès", null);
-            fermerFenetre();
-        } catch (SQLException e) {
-            showAlert("Erreur", "Erreur lors de l'ajout de l'événement", e.getMessage());
-        } catch (NumberFormatException e) {
-            showAlert("Erreur", "Format invalide", "Le nombre de places doit être un nombre entier");
-        }
-    }
-
-    private void fermerFenetre() {
-        Stage stage = (Stage) annuler_button.getScene().getWindow();
-        stage.close();
     }
 
     private void showAlert(String title, String header, String content) {
@@ -102,6 +73,79 @@ public class AjouterEvenementController {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void validerFormulaire() {
+        try {
+            // Validation des champs
+            if (nom_txtf.getText().isEmpty() || description_txtf.getText().isEmpty() ||
+                date_picker.getValue() == null || lieu_txtf.getText().isEmpty() ||
+                domaine_txtf.getText().isEmpty() || place_disponible_txtf.getText().isEmpty()) {
+                showAlert("Erreur", "Erreur", "Veuillez remplir tous les champs");
+                return;
+            }
+
+            // Vérification de l'image
+            String imagePath = image_txtf.getText();
+            if (imagePath == null || imagePath.isEmpty()) {
+                showAlert("Erreur", "Erreur", "Veuillez sélectionner une image pour l'événement");
+                return;
+            }
+
+            // Création de l'événement
+            Evenement evenement = new Evenement(
+                nom_txtf.getText(),
+                description_txtf.getText(),
+                date_picker.getValue().format(dateFormatter),
+                lieu_txtf.getText(),
+                domaine_txtf.getText(),
+                Integer.parseInt(place_disponible_txtf.getText()),
+                imagePath
+            );
+
+            // Ajout de l'événement
+            serviceEvenement.ajouter(evenement);
+            showAlert("Succès", "Succès", "Événement ajouté avec succès");
+            
+            // Redirection vers la page de gestion des événements
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion_evenement.fxml"));
+                Parent root = loader.load();
+                
+                Stage stage = (Stage) valider_button.getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Gestion des Événements");
+                stage.centerOnScreen();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Erreur", "Erreur", "Erreur lors du retour à la gestion des événements");
+            }
+
+        } catch (SQLException e) {
+            showAlert("Erreur", "Erreur", "Erreur lors de l'ajout de l'événement");
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            showAlert("Erreur", "Erreur", "Le nombre de places doit être un nombre entier");
+        }
+    }
+
+    @FXML
+    private void annulerFormulaire() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion_evenement.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) annuler_button.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Événements");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur", "Erreur lors du retour à la gestion des événements");
+        }
     }
 
     private void choisirImage() {
@@ -291,5 +335,163 @@ public class AjouterEvenementController {
         }
         System.out.println("Returning coordinates as fallback");
         return lat + ", " + lng; // Retourne les coordonnées si l'adresse n'a pas pu être récupérée
+    }
+
+    @FXML
+    public void onAccueilButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AcceuilAdmin.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Accueil Admin");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur", "Erreur lors de l'ouverture");
+        }
+    }
+
+    @FXML
+    public void onUserButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminUser.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Utilisateurs");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur", "Erreur lors de l'ouverture");
+        }
+    }
+
+    @FXML
+    public void onDossierButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminDossier.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Dossiers");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur", "Erreur lors de l'ouverture");
+        }
+    }
+
+    @FXML
+    public void onUniversiteButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminuniversite.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Universités");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur", "Erreur lors de l'ouverture");
+        }
+    }
+
+    @FXML
+    public void onEntretienButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Gestionnaire.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Entretiens");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur", "Erreur lors de l'ouverture");
+        }
+    }
+
+    @FXML
+    public void onEvenementButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion_evenement.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Événements");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur", "Erreur lors de l'ouverture");
+        }
+    }
+
+    @FXML
+    public void onHebergementButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterFoyer.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Foyers");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur", "Erreur lors de l'ouverture");
+        }
+    }
+
+    @FXML
+    public void onRestaurantButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterRestaurant.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Restaurants");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur", "Erreur lors de l'ouverture");
+        }
+    }
+
+    @FXML
+    public void onVolsButtonClick(ActionEvent actionEvent) {
+        showAlert("Information", "Information", "La fonctionnalité des vols sera bientôt disponible.");
+    }
+
+    @FXML
+    public void onLogoutButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login - GradAway");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur", "Erreur lors de la déconnexion");
+        }
     }
 } 

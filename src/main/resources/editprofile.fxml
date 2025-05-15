@@ -32,7 +32,7 @@
                               <Image url="@images/acceuil.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-text-fill: white; -fx-font-size: 18;" text="Accueil">
+                        <Button mnemonicParsing="false" onAction="#acceuilbutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-text-fill: white; -fx-font-size: 18;" text="Accueil">
                            <padding>
                               <Insets left="10.0" />
                            </padding>
@@ -49,7 +49,7 @@
                               <Image url="@images/icons8-user-24.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="WHITE">
+                        <Button mnemonicParsing="false" onAction="#userbutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -71,7 +71,7 @@
                                     <Image url="@images/icons8-dossier-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#dossierbutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -91,7 +91,7 @@
                                     <Image url="@images/icons8-university-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#universitébutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -111,7 +111,7 @@
                                     <Image url="@images/icons8-video-call-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#entretienbutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -131,7 +131,7 @@
                                     <Image url="@images/icons8-event-accepted-32.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#evenementbutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -154,7 +154,7 @@
                                     <Insets left="4.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#hebergementbutton" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -174,7 +174,7 @@
                                     <Image url="@images/restaurant.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#restaurantbutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -194,7 +194,7 @@
                                     <Image url="@images/icons8-plane-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#volsbutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -214,7 +214,7 @@
                                     <Image url="@images/icons8-logout-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE">
+                              <Button mnemonicParsing="false" onAction="#logoutbutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>

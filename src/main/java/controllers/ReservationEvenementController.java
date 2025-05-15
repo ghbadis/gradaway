@@ -16,6 +16,7 @@ import Services.ServiceReservationEvenement;
 import Services.ServiceEvenement;
 import Services.ServiceUser;
 import utils.EmailUtil;
+import javafx.event.ActionEvent;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -116,7 +117,6 @@ public class ReservationEvenementController {
             );
 
             showAlert("Succès", "Réservation effectuée", "Votre réservation a été enregistrée avec succès. Un email de confirmation vous a été envoyé.");
-            fermerFenetre();
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors de la réservation", e.getMessage());
         }
@@ -131,10 +131,11 @@ public class ReservationEvenementController {
             ListeReservationController controller = loader.getController();
             controller.setCurrentUserId(currentUser.getId());
 
-            Stage stage = new Stage();
+            Stage stage = (Stage) afficher_mes_reservation_butt.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             stage.setTitle("Mes Réservations");
-            stage.setScene(new Scene(root));
-            stage.show();
+            stage.centerOnScreen();
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
             showAlert("Erreur", "Erreur lors de l'ouverture de la liste des réservations", e.toString() + "\n" + (e.getCause() != null ? e.getCause().toString() : ""));
@@ -151,5 +152,189 @@ public class ReservationEvenementController {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    public void onAccueilButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/acceuil.fxml"));
+            Parent root = loader.load();
+
+            Acceuilcontroller controller = loader.getController();
+            controller.setUserId(currentUser.getId());
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Accueil - GradAway");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture de la page d'accueil", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onProfileButtonClick(ActionEvent event) {
+        if (currentUser == null) {
+            showAlert("Erreur", "Utilisateur non connecté", "Impossible d'ouvrir le profil.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditProfile.fxml"));
+            Parent root = loader.load();
+
+            EditProfileController controller = loader.getController();
+            controller.setUserId(currentUser.getId());
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Modifier Mon Profil");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture du profil", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void ondossierButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
+            Parent root = loader.load();
+
+            AjoutDossierController controller = loader.getController();
+            controller.setEtudiantId(currentUser.getId());
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Ajout Dossier");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture du dossier", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onuniversiteButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Candidatures");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture des candidatures", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onentretienButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Demander Entretien");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture des entretiens", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onevenementButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+
+            Ajouterafficheevenementcontrolleur controller = loader.getController();
+            controller.setCurrentUserId(currentUser.getId());
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Événements");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture des événements", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onhebergementButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Foyers");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture des foyers", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onrestaurantButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Restaurants");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture des restaurants", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onvolsButtonClick(ActionEvent event) {
+        showAlert("Information", "Information", "La fonctionnalité des vols sera bientôt disponible.");
+    }
+
+    @FXML
+    public void onlogoutButtonClick(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login - GradAway");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la déconnexion", e.getMessage());
+        }
     }
 } 

@@ -1,42 +1,276 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@design.css" xmlns="http://javafx.com/javafx/17.0.2"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReservationEvenementController">
-    
-    <VBox alignment="CENTER" layoutX="18.4" prefHeight="360.0" prefWidth="562.0" spacing="20" stylesheets="@design.css" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
-        <Label text="Réservation d'événement" styleClass="title-label"/>
-        <GridPane hgap="10" vgap="15">
-            <Label text="Nom:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <TextField fx:id="nom_txtf" promptText="Nom" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-            <Label text="Prénom:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <TextField fx:id="prenom_txtf" promptText="Prénom" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="Email:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <TextField fx:id="email_txtf" promptText="Email" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label text="Date:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <DatePicker fx:id="date_picker" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <columnConstraints>
-                <ColumnConstraints />
-                <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-            </rowConstraints>
-        </GridPane>
-        <Button fx:id="reserver_button" styleClass="add-btn" text="Réserver" />
-        <Button fx:id="afficher_mes_reservation_butt" mnemonicParsing="false" styleClass="clear-btn" stylesheets="@design.css" text="Afficher mes reservation " />
-    </VBox>
-</AnchorPane>
+
+<SplitPane dividerPositions="0.29598506069094305" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReservationEvenementController">
+   <items>
+      <AnchorPane prefHeight="694.0" prefWidth="110.0" style="-fx-background-color: #0d47a1;">
+         <children>
+            <VBox alignment="CENTER" layoutY="157.0" prefHeight="536.0" prefWidth="250.0" style="-fx-background-color: #1a237e; -fx-background-radius: 0 15 15 0;">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #0d47a1; -fx-background-radius: 0 15 0 0;">
+                     <children>
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/acceuil.png" />
+                           </image>
+                        </ImageView>
+                        <Button mnemonicParsing="false" onAction="#onAccueilButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets left="-45.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
+                     <children>
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/icons8-user-24.png" />
+                           </image>
+                        </ImageView>
+                        <Button mnemonicParsing="false" onAction="#onProfileButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Profile" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets left="-45.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <VBox alignment="CENTER" prefWidth="250.0" spacing="10.0" style="-fx-padding: 20 0 0 0;">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-dossier-24.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#ondossierButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-university-24.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onuniversiteButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="46.0" prefWidth="238.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-video-call-24.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onentretienButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-event-accepted-32.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onevenementButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-house-24.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets left="4.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onhebergementButtonClick" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/restaurant.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onrestaurantButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-plane-24.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onvolsButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                           <children>
+                              <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/icons8-logout-24.png" />
+                                 </image>
+                              </ImageView>
+                              <Button mnemonicParsing="false" onAction="#onlogoutButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="-45.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="11.0" prefHeight="110.0" prefWidth="213.0">
+               <children>
+                  <ImageView fitHeight="173.0" fitWidth="138.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/logo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </VBox>
+            <Label layoutX="46.0" layoutY="111.0" prefWidth="144.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a237e;" text="GRADAWAY" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@design.css">
+          
+          <VBox alignment="CENTER" layoutX="18.4" prefHeight="654.0" prefWidth="625.0" spacing="20" stylesheets="@design.css" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="-43.0" AnchorPane.topAnchor="20">
+              <Label styleClass="title-label" text="Réservation d'événement" />
+              <GridPane hgap="10" vgap="15">
+                  <Label styleClass="form-label" text="Nom:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <TextField fx:id="nom_txtf" promptText="Nom" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  <Label styleClass="form-label" text="Prénom:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <TextField fx:id="prenom_txtf" promptText="Prénom" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label styleClass="form-label" text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <TextField fx:id="email_txtf" promptText="Email" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label styleClass="form-label" text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                  <DatePicker fx:id="date_picker" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <columnConstraints>
+                      <ColumnConstraints />
+                      <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                      <RowConstraints />
+                      <RowConstraints />
+                      <RowConstraints />
+                      <RowConstraints />
+                  </rowConstraints>
+              </GridPane>
+              <Button fx:id="reserver_button" styleClass="add-btn" text="Réserver" />
+              <Button fx:id="afficher_mes_reservation_butt" mnemonicParsing="false" styleClass="clear-btn" stylesheets="@design.css" text="Afficher mes reservation " />
+          </VBox>
+      </AnchorPane>
+   </items>
+</SplitPane>

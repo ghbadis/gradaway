@@ -311,4 +311,170 @@ public class AdminUsercontroller implements Initializable {
             showError("Erreur de recherche", e.getMessage());
         }
     }
+
+    @FXML
+    public void onAccueilAdminButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AcceuilAdmin.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Accueil Admin");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onUserAdminButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminUser.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Utilisateurs");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void ondossierAdminButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminDossier.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Dossiers");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onuniversiteAdminButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminuniversite.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Universités");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onentretienAdminButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Gestionnaire.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Entretiens");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onevenementAdminButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion_evenement.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Événements");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onhebergementAdminButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterFoyer.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Foyers");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onrestaurantAdminButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterRestaurant.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Restaurants");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onvolsAdminButtonClick(ActionEvent actionEvent) {
+        showAlert("Information", "Information", "La fonctionnalité des vols sera bientôt disponible.");
+    }
+
+    @FXML
+    public void onlogoutAdminButtonClick(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login - GradAway");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la déconnexion", e.getMessage());
+        }
+    }
+
+    private void showAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 }
