@@ -431,6 +431,31 @@ public class AfficherDossierController {
         }
     }
 
+    @FXML
+    public void handleRetour(ActionEvent event) {
+        try {
+            System.out.println("AfficherDossierController: Opening AjoutDossier view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutDossier.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller and set the user ID
+            AjoutDossierController controller = loader.getController();
+            controller.setEtudiantId(this.currentEtudiantId);
+
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Ajout Dossier");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            System.err.println("AfficherDossierController: Error loading AjoutDossier.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors du retour à la page d'ajout de dossier.");
+            e.printStackTrace();
+        }
+    }
+
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

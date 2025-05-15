@@ -241,8 +241,6 @@ public class ModifierDossierController {
             this.currentDossier = updatedDossier;
             
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Dossier mis à jour avec succès!");
-            Stage stage = (Stage) updateButton.getScene().getWindow();
-            stage.close();
 
         } catch (SQLException e) {
             System.err.println("Erreur SQL lors de la mise à jour du dossier: " + e.getMessage());
@@ -257,8 +255,36 @@ public class ModifierDossierController {
 
     @FXML
     void handleCancel(ActionEvent event) {
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
+        try {
+            System.out.println("ModifierDossierController: Opening AfficherDossier view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherDossier.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller and set the user ID
+            AfficherDossierController controller = loader.getController();
+            
+            // Vérification de sécurité pour s'assurer que currentDossier n'est pas null
+            if (this.currentDossier != null && this.currentDossier.getId_etudiant() > 0) {
+                controller.setEtudiantId(this.currentDossier.getId_etudiant());
+                System.out.println("Etudiant ID set to: " + this.currentDossier.getId_etudiant());
+            } else {
+                System.err.println("Warning: currentDossier is null or has invalid ID");
+                showAlert(Alert.AlertType.WARNING, "Attention", "Impossible de récupérer l'ID de l'étudiant.");
+                return;
+            }
+
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Afficher Dossier");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            System.err.println("ModifierDossierController: Error loading AfficherDossier view: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la page d'affichage du dossier.");
+            e.printStackTrace();
+        }
     }
 
     private void showAlert(Alert.AlertType type, String title, String content) {
