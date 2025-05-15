@@ -341,7 +341,7 @@ public class MesReservationsFoyerController {
                 imageName = imageName.substring(imageName.lastIndexOf('/') + 1);
             }
             if (imageName != null && !imageName.isEmpty()) {
-                String imagePath = "/iamge/" + imageName;
+                String imagePath = "/images/" + imageName;
                 System.out.println("Tentative de chargement de l'image: " + imagePath);
                 InputStream imageStream = getClass().getResourceAsStream(imagePath);
                 if (imageStream != null) {
@@ -350,20 +350,30 @@ public class MesReservationsFoyerController {
                 } else {
                     System.out.println("Image introuvable dans le chemin: " + imagePath);
                     System.out.println("Tentative de chargement de l'image placeholder");
-                    image = new Image(getClass().getResourceAsStream("/iamge/placeholder-foyer.png"));
+                    // Try multiple fallback options
+                    imageStream = getClass().getResourceAsStream("/images/hotel.png");
+                    if (imageStream != null) {
+                        image = new Image(imageStream);
+                    } else {
+                        // If all else fails, set a default background
+                        imageView.setStyle("-fx-background-color: #e0e0e0;");
+                        return card;
+                    }
                 }
             } else {
                 System.out.println("Aucune image spécifiée pour le foyer, utilisation du placeholder");
-                image = new Image(getClass().getResourceAsStream("/iamge/placeholder-foyer.png"));
+                InputStream imageStream = getClass().getResourceAsStream("/images/hotel.png");
+                if (imageStream != null) {
+                    image = new Image(imageStream);
+                } else {
+                    imageView.setStyle("-fx-background-color: #e0e0e0;");
+                    return card;
+                }
             }
             imageView.setImage(image);
         } catch (Exception e) {
             System.out.println("Erreur image: " + e.getMessage());
-            try {
-                imageView.setImage(new Image(getClass().getResourceAsStream("/image/placeholder-foyer.png")));
-            } catch (Exception ex) {
-                System.out.println("Erreur fallback image: " + ex.getMessage());
-            }
+            imageView.setStyle("-fx-background-color: #e0e0e0;");
         }
 
         // Afficher le nom du foyer clairement et en plus grand
