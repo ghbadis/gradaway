@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
@@ -259,6 +260,7 @@
                      <children>
                         <TextField fx:id="searchField" prefHeight="30.0" prefWidth="300.0" promptText="Rechercher..." />
                         <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearchButton" text="Rechercher" />
+                        <ComboBox fx:id="statusFilterComboBox" prefHeight="30.0" prefWidth="150.0" promptText="Statut" />
                         <Button fx:id="ajouterButton" mnemonicParsing="false" onAction="#handleAjouterButton" text="Ajouter" style="-fx-background-color: #3E92CC; -fx-text-fill: white;" />
                         <Button fx:id="retourButton" mnemonicParsing="false" onAction="#handleRetourButton" text="Retour" />
                      </children>

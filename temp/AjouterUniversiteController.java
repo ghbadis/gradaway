@@ -14,20 +14,34 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.scene.image.Image;
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.concurrent.Worker.State;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.stage.Modality;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
-import Services.ServiceUniversite;
-import entities.Universite;
+import controls.AutocompleteTextField;
+import utils.JavaConnector;
+import utils.JavaConnector.MapLocation;
+import models.Universite;
 
 public class AjouterUniversiteController {
 
     @FXML private Button retourButton;
     @FXML private Button selectPhotoButton;
     @FXML private Button ajouterButton;
+    @FXML private Button verifyAddressButton;
     @FXML private Button fermerButton;
     
     @FXML private TextField nomField;
@@ -35,27 +49,116 @@ public class AjouterUniversiteController {
     @FXML private TextField adresseField;
     @FXML private TextField domaineField;
     @FXML private TextField fraisField;
+    @FXML private TextField latitudeField;
+    @FXML private TextField longitudeField;
 
     @FXML private Label nomErrorLabel;
     @FXML private Label villeErrorLabel;
     @FXML private Label adresseErrorLabel;
     @FXML private Label domaineErrorLabel;
     @FXML private Label fraisErrorLabel;
+    @FXML private Label coordsErrorLabel;
     @FXML private Label photoPathLabel;
+    @FXML private Label addressStatusLabel;
 
     @FXML private ImageView photoPreview;
 
     private String selectedPhotoPath;
     private ExecutorService executorService;
-    
+    private boolean isAddressValid = false;
+    private double[] coordinates = null;
+
     @FXML
     public void initialize() {
         try {
             // Initialize the executor service for background tasks
             executorService = Executors.newSingleThreadExecutor();
+            
+            // Add listeners to clear validation when fields change
+            villeField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.equals(oldValue)) {
+                    isAddressValid = false;
+                    addressStatusLabel.setVisible(false);
+                }
+            });
+            
+            adresseField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.equals(oldValue)) {
+                    isAddressValid = false;
+                    addressStatusLabel.setVisible(false);
+                }
+            });
+            
+            // Set up coordinate field listeners
+            latitudeField.textProperty().addListener((observable, oldValue, newValue) -> {
+                updateCoordinatesFromFields();
+            });
+            
+            longitudeField.textProperty().addListener((observable, oldValue, newValue) -> {
+                updateCoordinatesFromFields();
+            });
+            
         } catch (Exception e) {
             System.err.println("Erreur d'initialisation: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Update the coordinates array from the latitude/longitude fields
+     */
+    private void updateCoordinatesFromFields() {
+        try {
+            String latText = latitudeField.getText().trim();
+            String lngText = longitudeField.getText().trim();
+            
+            if (!latText.isEmpty() && !lngText.isEmpty()) {
+                double lat = Double.parseDouble(latText);
+                double lng = Double.parseDouble(lngText);
+                
+                // Validate coordinate ranges
+                if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+                    coordinates = new double[]{lat, lng};
+                    isAddressValid = true;
+                    
+                    // Update status
+                    addressStatusLabel.setText("Coordonnées valides ✓");
+                    addressStatusLabel.setTextFill(javafx.scene.paint.Color.web("#66ff66"));
+                    addressStatusLabel.setVisible(true);
+                    
+                    // Hide error
+                    coordsErrorLabel.setVisible(false);
+                } else {
+                    coordinates = null;
+                    isAddressValid = false;
+                    
+                    // Show error
+                    coordsErrorLabel.setText("Coordonnées hors limites");
+                    coordsErrorLabel.setVisible(true);
+                    addressStatusLabel.setVisible(false);
+                }
+            } else {
+                // One or both fields are empty
+                if (!latText.isEmpty() || !lngText.isEmpty()) {
+                    // Only one field has data
+                    coordsErrorLabel.setText("Les deux coordonnées sont requises");
+                    coordsErrorLabel.setVisible(true);
+                } else {
+                    // Both fields are empty, clear error
+                    coordsErrorLabel.setVisible(false);
+                }
+                
+                coordinates = null;
+                isAddressValid = false;
+                addressStatusLabel.setVisible(false);
+            }
+        } catch (NumberFormatException e) {
+            // Invalid number format
+            coordinates = null;
+            isAddressValid = false;
+            coordsErrorLabel.setText("Format de coordonnées invalide");
+            coordsErrorLabel.setVisible(true);
+            addressStatusLabel.setVisible(false);
         }
     }
 
@@ -89,52 +192,28 @@ public class AjouterUniversiteController {
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
-            try {
-                // Create resources/images directory if it doesn't exist
-                File imagesDir = new File("src/main/resources/images/universities");
-                if (!imagesDir.exists()) {
-                    imagesDir.mkdirs();
-                }
-                
-                // Generate unique filename based on timestamp and original filename
-                String originalFilename = selectedFile.getName();
-                String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
-                String uniqueFilename = "university_" + System.currentTimeMillis() + extension;
-                
-                // Create destination file
-                File destinationFile = new File(imagesDir, uniqueFilename);
-                
-                // Copy image to resources
-                java.nio.file.Files.copy(
-                    selectedFile.toPath(),
-                    destinationFile.toPath(),
-                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
-                );
-                
-                // Set the path to be saved in the database - use relative path that works with the resource loading
-                selectedPhotoPath = "images/universities/" + uniqueFilename;
-                
-                // Show the selected image and filename
-                photoPathLabel.setText(originalFilename);
-                Image image = new Image(destinationFile.toURI().toString());
-                photoPreview.setImage(image);
-                
-                System.out.println("Image saved at: " + destinationFile.getAbsolutePath());
-                System.out.println("Path to be stored in database: " + selectedPhotoPath);
-                
-            } catch (IOException e) {
-                e.printStackTrace();
-                showAlert(AlertType.ERROR, "Erreur", 
-                         "Impossible de copier l'image", 
-                         "Erreur: " + e.getMessage());
-                
-                // Fallback to the old behavior if copying fails
-                selectedPhotoPath = selectedFile.getAbsolutePath();
-                photoPathLabel.setText(selectedFile.getName());
-                Image image = new Image(selectedFile.toURI().toString());
-                photoPreview.setImage(image);
-            }
+            selectedPhotoPath = selectedFile.getAbsolutePath();
+            photoPathLabel.setText(selectedFile.getName());
+            Image image = new Image(selectedFile.toURI().toString());
+            photoPreview.setImage(image);
         }
+    }
+    
+    @FXML
+    private void handleVerifyAddressButton() {
+        // Manually verify the coordinates
+        updateCoordinatesFromFields();
+        
+        if (coordinates != null) {
+            isAddressValid = true;
+            addressStatusLabel.setText("Coordonnées validées ✓");
+            addressStatusLabel.setTextFill(javafx.scene.paint.Color.web("#66ff66"));
+        } else {
+            isAddressValid = false;
+            addressStatusLabel.setText("Coordonnées invalides");
+            addressStatusLabel.setTextFill(javafx.scene.paint.Color.web("#ff6666"));
+        }
+        addressStatusLabel.setVisible(true);
     }
 
     @FXML
@@ -172,25 +251,27 @@ public class AjouterUniversiteController {
     private Universite createUniversiteFromInputs() {
         String nom = nomField.getText().trim();
         String ville = villeField.getText().trim();
-        String adresse_universite = adresseField.getText().trim();
+        String adresse = adresseField.getText().trim();
         String domaine = domaineField.getText().trim();
         double frais = Double.parseDouble(fraisField.getText().trim());
         
-        // Create entities.Universite object using constructor with no ID
-        return new Universite(nom, ville, adresse_universite, domaine, frais, selectedPhotoPath);
+        Universite universite = new Universite(nom, ville, adresse, domaine, frais, selectedPhotoPath);
+        
+        // Add coordinates if available
+        if (coordinates != null) {
+            universite.setLatitude(coordinates[0]);
+            universite.setLongitude(coordinates[1]);
+        }
+        
+        return universite;
     }
     
     private void saveUniversite(Universite universite) {
-        try {
-            // Use ServiceUniversite to save the university to the database
-            ServiceUniversite serviceUniversite = new ServiceUniversite();
-            serviceUniversite.ajouter(universite);
-            System.out.println("University successfully added to the database: " + universite);
-        } catch (Exception e) {
-            System.err.println("Error saving university to database: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Failed to save university: " + e.getMessage(), e);
-        }
+        // TODO: Implement actual database save
+        // For now, just print the university to the console
+        System.out.println("Saving university: " + universite);
+        System.out.println("Coordinates: " + 
+                          (coordinates != null ? coordinates[0] + ", " + coordinates[1] : "Not available"));
     }
     
     private void showAlert(AlertType type, String title, String header, String content) {
@@ -229,6 +310,15 @@ public class AjouterUniversiteController {
             isValid = false;
         } else {
             adresseErrorLabel.setVisible(false);
+        }
+        
+        // Validate coordinates
+        if (coordinates == null) {
+            coordsErrorLabel.setText("Les coordonnées sont obligatoires");
+            coordsErrorLabel.setVisible(true);
+            isValid = false;
+        } else {
+            coordsErrorLabel.setVisible(false);
         }
         
         // Validate Domaine
@@ -275,8 +365,7 @@ public class AjouterUniversiteController {
 
     @FXML
     private void handleFermerButton() {
-        Stage stage = (Stage) fermerButton.getScene().getWindow();
-        stage.close();
+        // TODO: Implement logic to close the window or clear the form
     }
     
     /**

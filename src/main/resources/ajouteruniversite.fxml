@@ -14,7 +14,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.web.WebView?>
 
 
 <SplitPane dividerPositions="0.2399697199091597" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterUniversiteController">
@@ -277,24 +276,26 @@
                       
                       <!-- Ville field -->
                       <Label text="Ville:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                      <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                          <WebView fx:id="mapView" prefHeight="200" prefWidth="300" />
-                          <Label fx:id="selectedCityLabel" textFill="WHITE" />
-                          <TextField fx:id="selectedAddressField" promptText="Collez l'adresse ici" />
-                          <Button fx:id="openMapButton" text="Ouvrir la carte dans le navigateur" onAction="#handleOpenMapButton" />
-                      </VBox>
+                      <TextField fx:id="villeField" promptText="Ville de l'université" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                       <Label fx:id="villeErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                       
+                      <!-- Adresse field -->
+                      <Label text="Adresse:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                      <TextField fx:id="adresseField" promptText="Adresse complète" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                      <Label fx:id="adresseErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                      
                       <!-- Domaine field -->
-                      <Label text="Domaine:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                      <TextField fx:id="domaineField" promptText="Domaine d'étude" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                      <Label fx:id="domaineErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                      <Label text="Domaine:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                      <TextField fx:id="domaineField" promptText="Domaine d'étude" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                      <Label fx:id="domaineErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                       
                       <!-- Frais field -->
-                      <Label text="Frais:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-                      <TextField fx:id="fraisField" promptText="Frais d'inscription" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                      <Label fx:id="fraisErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                      <Label text="Frais:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                      <TextField fx:id="fraisField" promptText="Frais d'inscription" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                      <Label fx:id="fraisErrorLabel" style="-fx-font-size: 11px;" textFill="#ff6666" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                   <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
                      <RowConstraints />
                      <RowConstraints />
                      <RowConstraints />
@@ -308,29 +309,22 @@
                   </rowConstraints>
                   </GridPane>
                   
-                  <!-- Right side - Photo selection and preview -->
+                  <!-- Right side - Photo selection -->
                   <VBox alignment="CENTER" spacing="10">
                       <padding>
                           <Insets bottom="20" left="20" right="20" top="20" />
                       </padding>
                       
+                      <!-- Photo Section -->
                       <Label text="Photo de l'université:" textFill="WHITE" />
-                      
-                      <!-- Image preview -->
-                      <ImageView fx:id="photoPreview" fitHeight="150" fitWidth="200" preserveRatio="true" style="-fx-border-color: white; -fx-border-width: 1px;" />
-                      
-                      <!-- Selected file name label -->
+                      <ImageView fx:id="photoPreview" fitHeight="100" fitWidth="150" preserveRatio="true" style="-fx-border-color: white; -fx-border-width: 1px;" />
                       <Label fx:id="photoPathLabel" maxWidth="200" textFill="WHITE" wrapText="true" />
-                      
-                      <!-- Select photo button -->
                       <Button fx:id="selectPhotoButton" onAction="#handleSelectPhotoButton" prefHeight="30" prefWidth="200" style="-fx-background-color: #3E92CC; -fx-text-fill: white;" text="Sélectionner une photo" />
                   </VBox>
               </HBox>
               
               <HBox alignment="CENTER" spacing="20">
                   <Button fx:id="ajouterButton" onAction="#handleAjouterButton" prefHeight="40" prefWidth="200" style="-fx-background-color: #3E92CC; -fx-text-fill: white;" text="Ajouter Université" />
-                          
-
               </HBox>
           </VBox>
       

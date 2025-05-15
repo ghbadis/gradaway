@@ -47,6 +47,8 @@ public class CandidatureCardsController implements Initializable {
     private Button retourButton;
     @FXML
     private Button ajouterButton;
+    @FXML
+    private ComboBox<String> statusFilterComboBox;
     
     private CandidatureService candidatureService;
     private ServiceUniversite universiteService;
@@ -75,6 +77,9 @@ public class CandidatureCardsController implements Initializable {
             candidatureService.setCurrentUserId(currentUserId);
         }
         
+        // Initialize status filter
+        initializeStatusFilter();
+        
         // Load candidatures
         loadCandidatures();
         
@@ -95,32 +100,85 @@ public class CandidatureCardsController implements Initializable {
         }
     }
     
+    private void initializeStatusFilter() {
+        // Create a status filter if the ComboBox exists in FXML
+        if (statusFilterComboBox != null) {
+            // Add status options
+            statusFilterComboBox.getItems().addAll(
+                "Tous les statuts",
+                "En attente",  // pending
+                "Acceptée",    // accepted
+                "Refusée"      // rejected
+            );
+            statusFilterComboBox.setValue("Tous les statuts");
+            
+            // Add listener for status changes
+            statusFilterComboBox.setOnAction(event -> handleFilterByStatus());
+        }
+    }
+    
+    private void handleFilterByStatus() {
+        if (statusFilterComboBox == null) return;
+        
+        String selectedStatus = statusFilterComboBox.getValue();
+        String searchText = searchField.getText().toLowerCase().trim();
+        
+        try {
+            List<Candidature> allCandidatures = candidatureService.getAllCandidatures();
+            List<Candidature> filteredCandidatures = allCandidatures.stream()
+                    .filter(c -> {
+                        // Filter by university name if search text is not empty
+                        boolean matchesSearch = true;
+                        if (!searchText.isEmpty()) {
+                            String universityName = getUniversityName(c.getId_universite()).toLowerCase();
+                            matchesSearch = universityName.contains(searchText);
+                        }
+                        
+                        // Filter by status if not "All statuses"
+                        boolean matchesStatus = true;
+                        if (selectedStatus != null && !selectedStatus.equals("Tous les statuts")) {
+                            String status = c.getStatus();
+                            if (status == null) status = "pending";
+                            
+                            // Map French labels to status values in database
+                            switch (selectedStatus) {
+                                case "En attente":
+                                    matchesStatus = status.equals("pending");
+                                    break;
+                                case "Acceptée":
+                                    matchesStatus = status.equals("accepted");
+                                    break;
+                                case "Refusée":
+                                    matchesStatus = status.equals("rejected");
+                                    break;
+                                default:
+                                    matchesStatus = true;
+                            }
+                        }
+                        
+                        return matchesSearch && matchesStatus;
+                    })
+                    .collect(Collectors.toList());
+            
+            displayCandidatures(filteredCandidatures);
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de filtrage", 
+                    "Une erreur est survenue lors du filtrage des candidatures", e.getMessage());
+        }
+    }
+    
     @FXML
     private void handleSearchButton() {
-        String searchText = searchField.getText().toLowerCase().trim();
-        if (searchText.isEmpty()) {
-            loadCandidatures();
-        } else {
-            try {
-                List<Candidature> allCandidatures = candidatureService.getAllCandidatures();
-                List<Candidature> filteredCandidatures = allCandidatures.stream()
-                        .filter(c -> {
-                            String universityName = getUniversityName(c.getId_universite()).toLowerCase();
-                            return universityName.contains(searchText);
-                        })
-                        .collect(Collectors.toList());
-                
-                displayCandidatures(filteredCandidatures);
-            } catch (Exception e) {
-                showAlert(Alert.AlertType.ERROR, "Erreur de recherche", 
-                        "Une erreur est survenue lors de la recherche", e.getMessage());
-            }
-        }
+        // Call the filter method to handle both name and status filtering
+        handleFilterByStatus();
     }
     
     @FXML
     private void handleRefreshButton() {
         searchField.clear();
+        if (statusFilterComboBox != null) {
+            statusFilterComboBox.setValue("Tous les statuts");
+        }
         loadCandidatures();
     }
     
@@ -206,10 +264,9 @@ public class CandidatureCardsController implements Initializable {
     }
     
     private VBox createCandidatureCard(Candidature candidature) {
-        // Main card container
-        VBox card = new VBox(15);
-        card.setPrefWidth(280);
-        card.setPrefHeight(380);
+        VBox card = new VBox(10);
+        card.setPrefWidth(300);
+        card.setPrefHeight(300);
         card.setStyle("-fx-background-color: #1A3473; -fx-background-radius: 10px;");
         card.setPadding(new Insets(15));
         
@@ -232,28 +289,54 @@ public class CandidatureCardsController implements Initializable {
                 // Try to load from resources folder
                 String defaultImagePath = "/images/default_university.png";
                 try {
+                    System.out.println("CandidatureCardsController: Trying to load image from path: " + universite.getPhotoPath());
+                    
                     // Try to load from resources
                     URL photoUrl = getClass().getResource("/" + universite.getPhotoPath());
                     if (photoUrl != null) {
+                        System.out.println("Loading from resources URL: " + photoUrl);
                         Image universityImage = new Image(photoUrl.toExternalForm());
                         universityImageView.setImage(universityImage);
+                        System.out.println("Image loaded successfully from resources");
                     } else {
                         // Try as a file path
-                        File photoFile = new File("src/main/resources/" + universite.getPhotoPath());
+                        String resourcePath = "src/main/resources/" + universite.getPhotoPath();
+                        File photoFile = new File(resourcePath);
+                        System.out.println("Trying to load from file path: " + photoFile.getAbsolutePath());
+                        
                         if (photoFile.exists()) {
+                            System.out.println("File exists, loading from: " + photoFile.toURI());
                             Image universityImage = new Image(photoFile.toURI().toString());
                             universityImageView.setImage(universityImage);
+                            System.out.println("Image loaded successfully from file");
                         } else {
-                            // If file not found, use default image
-                            URL defaultUrl = getClass().getResource(defaultImagePath);
-                            if (defaultUrl != null) {
-                                Image defaultImage = new Image(defaultUrl.toExternalForm());
-                                universityImageView.setImage(defaultImage);
+                            // Try as direct file path
+                            File directFile = new File(universite.getPhotoPath());
+                            System.out.println("Trying as direct file path: " + directFile.getAbsolutePath());
+                            
+                            if (directFile.exists()) {
+                                System.out.println("Direct file exists, loading from: " + directFile.toURI());
+                                Image universityImage = new Image(directFile.toURI().toString());
+                                universityImageView.setImage(universityImage);
+                                System.out.println("Image loaded successfully from direct path");
+                            } else {
+                                // If file not found, use default image
+                                System.out.println("Could not find image, using default");
+                                URL defaultUrl = getClass().getResource(defaultImagePath);
+                                if (defaultUrl != null) {
+                                    Image defaultImage = new Image(defaultUrl.toExternalForm());
+                                    universityImageView.setImage(defaultImage);
+                                    System.out.println("Default image loaded");
+                                } else {
+                                    System.out.println("Even default image couldn't be loaded!");
+                                }
                             }
                         }
                     }
                 } catch (Exception e) {
                     // Load default image on error
+                    System.err.println("Error loading university photo: " + e.getMessage());
+                    e.printStackTrace();
                     URL defaultUrl = getClass().getResource(defaultImagePath);
                     if (defaultUrl != null) {
                         Image defaultImage = new Image(defaultUrl.toExternalForm());
@@ -310,27 +393,72 @@ public class CandidatureCardsController implements Initializable {
         Label dateLabel = new Label("Date de soumission: " + formattedDate);
         dateLabel.setTextFill(Color.WHITE);
         
-        infoBox.getChildren().addAll(studentLabel, universityLabel, dateLabel);
+        // Add status label with appropriate styling
+        String status = candidature.getStatus();
+        if (status == null) {
+            status = "pending";
+        }
         
-        // Action buttons
-        HBox buttonBox = new HBox(10);
-        buttonBox.setAlignment(Pos.CENTER);
+        Label statusLabel = new Label();
+        statusLabel.setPrefWidth(150);
+        statusLabel.setPrefHeight(30);
+        statusLabel.setAlignment(Pos.CENTER);
+        statusLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
         
-        Button viewButton = new Button("supprimer");
-        viewButton.setStyle("-fx-background-color: #3E92CC; -fx-text-fill: white;");
-        viewButton.setPrefWidth(120);
+        // Style based on status
+        switch (status) {
+            case "accepted":
+                statusLabel.setText("ACCEPTÉE");
+                statusLabel.setTextFill(Color.WHITE);
+                statusLabel.setStyle("-fx-background-color: #4CAF50; -fx-background-radius: 5px; -fx-padding: 5px;");
+                break;
+            case "rejected":
+                statusLabel.setText("REFUSÉE");
+                statusLabel.setTextFill(Color.WHITE);
+                statusLabel.setStyle("-fx-background-color: #F44336; -fx-background-radius: 5px; -fx-padding: 5px;");
+                break;
+            case "pending":
+            default:
+                statusLabel.setText("EN ATTENTE");
+                statusLabel.setTextFill(Color.BLACK);
+                statusLabel.setStyle("-fx-background-color: #FFC107; -fx-background-radius: 5px; -fx-padding: 5px;");
+                break;
+        }
         
-        // Set view button action
-        viewButton.setOnAction(e -> supprimerCandidature(candidature));
+        // Add status to info box
+        infoBox.getChildren().addAll(studentLabel, universityLabel, dateLabel, statusLabel);
         
-        buttonBox.getChildren().add(viewButton);
+        // Buttons
+        HBox buttonsBox = new HBox(10);
+        buttonsBox.setAlignment(Pos.CENTER);
         
-        // Add some spacing
+        Button supprimerButton = new Button("Supprimer");
+        supprimerButton.setStyle("-fx-background-color: #D8315B; -fx-text-fill: white;");
+        supprimerButton.setPrefWidth(80);
+        supprimerButton.setPrefHeight(30);
+        supprimerButton.setOnAction(e -> supprimerCandidature(candidature));
+        
+        // Check if user is admin to add gestion button
+        boolean isAdmin = checkIfUserIsAdmin();
+        
+        if (isAdmin) {
+            Button gestionButton = new Button("Gérer");
+            gestionButton.setStyle("-fx-background-color: #FF9800; -fx-text-fill: white;");
+            gestionButton.setPrefWidth(80);
+            gestionButton.setPrefHeight(30);
+            gestionButton.setOnAction(e -> navigateToGestionCandidatures());
+            
+            buttonsBox.getChildren().addAll(supprimerButton, gestionButton);
+        } else {
+            buttonsBox.getChildren().add(supprimerButton);
+        }
+        
+        // Add some spacing at the bottom
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
         
-        // Assemble the card - image at the top now
-        card.getChildren().addAll(imageBox, domaineLabel, infoBox, spacer, buttonBox);
+        // Assemble the card
+        card.getChildren().addAll(imageBox, domaineLabel, infoBox, spacer, buttonsBox);
         
         return card;
     }
@@ -400,6 +528,40 @@ public class CandidatureCardsController implements Initializable {
             }
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur de suppression", "La suppression a échoué.", "Veuillez réessayer.");
+        }
+    }
+    
+    private boolean checkIfUserIsAdmin() {
+        try {
+            String query = "SELECT role FROM user WHERE id = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, currentUserId);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                String role = rs.getString("role");
+                return "admin".equalsIgnoreCase(role);
+            }
+            
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    private void navigateToGestionCandidatures() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestioncandidatures.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) candidatureCardsPane.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Candidatures");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", 
+                    "Impossible d'ouvrir l'interface de gestion des candidatures", e.getMessage());
         }
     }
     

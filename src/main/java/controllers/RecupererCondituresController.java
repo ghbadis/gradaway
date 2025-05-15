@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import models.Candidature;
 import Services.CandidatureService;
@@ -45,6 +46,9 @@ public class RecupererCondituresController implements Initializable {
     private TableColumn<Candidature, String> domaineColumn;
     
     @FXML
+    private TableColumn<Candidature, String> statusColumn;
+    
+    @FXML
     private TextField searchField;
     
     @FXML
@@ -74,6 +78,7 @@ public class RecupererCondituresController implements Initializable {
         universiteColumn.setCellValueFactory(new PropertyValueFactory<>("id_universite"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date_de_remise_c"));
         domaineColumn.setCellValueFactory(new PropertyValueFactory<>("domaine"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         
         // Use simplified cell factories without custom styling
         userColumn.setCellFactory(column -> new TableCell<Candidature, Integer>() {
@@ -136,6 +141,38 @@ public class RecupererCondituresController implements Initializable {
             }
         });
         
+        // Add status column with color styling
+        statusColumn.setCellFactory(column -> new TableCell<Candidature, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                    setStyle("");
+                } else {
+                    setText(item.toUpperCase());
+                    
+                    // Style based on status
+                    switch (item.toLowerCase()) {
+                        case "accepted":
+                            setTextFill(Color.WHITE);
+                            setStyle("-fx-background-color: #4CAF50; -fx-font-weight: bold; -fx-alignment: center;");
+                            break;
+                        case "rejected":
+                            setTextFill(Color.WHITE);
+                            setStyle("-fx-background-color: #F44336; -fx-font-weight: bold; -fx-alignment: center;");
+                            break;
+                        case "pending":
+                        default:
+                            setTextFill(Color.BLACK);
+                            setStyle("-fx-background-color: #FFC107; -fx-font-weight: bold; -fx-alignment: center;");
+                            break;
+                    }
+                }
+            }
+        });
+        
         // Default row factory
         candidaturesTable.setRowFactory(tv -> new TableRow<>());
         
@@ -171,7 +208,8 @@ public class RecupererCondituresController implements Initializable {
                 filteredCandidatures.setPredicate(candidature -> 
                     candidature.getDomaine().toLowerCase().contains(searchText) ||
                     String.valueOf(candidature.getUser_id()).contains(searchText) ||
-                    String.valueOf(candidature.getId_universite()).contains(searchText)
+                    String.valueOf(candidature.getId_universite()).contains(searchText) ||
+                    (candidature.getStatus() != null && candidature.getStatus().toLowerCase().contains(searchText))
                 );
             }
         }
@@ -187,8 +225,14 @@ public class RecupererCondituresController implements Initializable {
             
             // Manually add each candidature to ensure they're properly loaded
             for (Candidature c : candidatures) {
+                // Ensure status is set for each candidature
+                if (c.getStatus() == null) {
+                    c.setStatus("pending");
+                }
                 candidaturesList.add(c);
-                System.out.println("Added to list: User ID " + c.getUser_id() + " - Domain " + c.getDomaine());
+                System.out.println("Added to list: User ID " + c.getUser_id() + 
+                                  " - Domain " + c.getDomaine() + 
+                                  " - Status " + c.getStatus());
             }
             
             // Force the TableView to refresh with the new data

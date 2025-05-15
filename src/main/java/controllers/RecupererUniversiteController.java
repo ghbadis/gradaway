@@ -37,8 +37,6 @@ public class RecupererUniversiteController implements Initializable {
     @FXML
     private FlowPane universiteListView;
     @FXML
-    private Button refreshButton;
-    @FXML
     private Button closeButton;
     @FXML
     private Button ajouterButton;
@@ -66,12 +64,6 @@ public class RecupererUniversiteController implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Erreur de recherche", 
                     "Une erreur est survenue lors de la recherche", e.getMessage());
         }
-    }
-
-    @FXML
-    private void handleRefreshButton(ActionEvent event) {
-        searchField.clear();
-        loadUniversites();
     }
 
     @FXML
@@ -104,6 +96,22 @@ public class RecupererUniversiteController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleGestionCandidaturesButton() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestioncandidatures.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) universiteListView.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Candidatures");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", 
+                    "Impossible d'ouvrir l'interface de gestion des candidatures", e.getMessage());
+        }
+    }
+
     private void loadUniversites() {
         try {
             List<Universite> universities = serviceUniversite.getAllUniversites();
@@ -125,6 +133,7 @@ public class RecupererUniversiteController implements Initializable {
             return;
         }
         
+        // Add universities to the view
         for (Universite university : universities) {
             VBox card = createUniversityCard(university);
             universiteListView.getChildren().add(card);
@@ -133,16 +142,21 @@ public class RecupererUniversiteController implements Initializable {
     
     private VBox createUniversityCard(Universite university) {
         // Main card container
-        VBox card = new VBox(10);
-        card.setPrefWidth(280);
-        card.setPrefHeight(400);
-        card.setStyle("-fx-background-color: #1A3473; -fx-background-radius: 10px;");
+        VBox card = new VBox(15);
+        card.setPrefWidth(740);
+        card.setPrefHeight(180);
+        card.getStyleClass().addAll("white-bg", "shadow");
+        card.setStyle("-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 10);");
         card.setPadding(new Insets(15));
         
-        // University photo
+        // Create the horizontal layout for the card content
+        HBox contentBox = new HBox(20);
+        contentBox.setAlignment(Pos.CENTER_LEFT);
+        
+        // Left side: University photo
         ImageView imageView = new ImageView();
-        imageView.setFitWidth(250);
-        imageView.setFitHeight(150);
+        imageView.setFitWidth(150);
+        imageView.setFitHeight(130);
         imageView.setPreserveRatio(true);
         
         // Set default image
@@ -151,28 +165,53 @@ public class RecupererUniversiteController implements Initializable {
         // Try to load the university's photo if available
         if (university.getPhotoPath() != null && !university.getPhotoPath().isEmpty()) {
             try {
+                System.out.println("RecupererUniversiteController: Trying to load image from path: " + university.getPhotoPath());
+                
                 // First try to load from the resources folder
                 URL photoUrl = getClass().getResource("/" + university.getPhotoPath());
                 if (photoUrl != null) {
+                    System.out.println("Loading from resources URL: " + photoUrl);
                     Image universityImage = new Image(photoUrl.toExternalForm());
                     imageView.setImage(universityImage);
+                    System.out.println("Image loaded successfully from resources");
                 } else {
                     // Try as a file path if not found in resources
-                    File photoFile = new File("src/main/resources/" + university.getPhotoPath());
+                    String resourcePath = "src/main/resources/" + university.getPhotoPath();
+                    File photoFile = new File(resourcePath);
+                    System.out.println("Trying to load from file path: " + photoFile.getAbsolutePath());
+                    
                     if (photoFile.exists()) {
+                        System.out.println("File exists, loading from: " + photoFile.toURI());
                         Image universityImage = new Image(photoFile.toURI().toString());
                         imageView.setImage(universityImage);
+                        System.out.println("Image loaded successfully from file");
                     } else {
-                        // Use default image if photo not found
-                        URL defaultUrl = getClass().getResource(defaultImagePath);
-                        if (defaultUrl != null) {
-                            Image defaultImage = new Image(defaultUrl.toExternalForm());
-                            imageView.setImage(defaultImage);
+                        // Try as a direct file path (absolute path)
+                        File directFile = new File(university.getPhotoPath());
+                        System.out.println("Trying as direct file path: " + directFile.getAbsolutePath());
+                        
+                        if (directFile.exists()) {
+                            System.out.println("Direct file exists, loading from: " + directFile.toURI());
+                            Image universityImage = new Image(directFile.toURI().toString());
+                            imageView.setImage(universityImage);
+                            System.out.println("Image loaded successfully from direct path");
+                        } else {
+                            // Use default image if photo not found
+                            System.out.println("Could not find image, using default");
+                            URL defaultUrl = getClass().getResource(defaultImagePath);
+                            if (defaultUrl != null) {
+                                Image defaultImage = new Image(defaultUrl.toExternalForm());
+                                imageView.setImage(defaultImage);
+                                System.out.println("Default image loaded");
+                            } else {
+                                System.out.println("Even default image couldn't be loaded!");
+                            }
                         }
                     }
                 }
             } catch (Exception e) {
                 System.err.println("Error loading university photo: " + e.getMessage());
+                e.printStackTrace();
                 // Fallback to default image
                 try {
                     URL defaultUrl = getClass().getResource(defaultImagePath);
@@ -198,63 +237,75 @@ public class RecupererUniversiteController implements Initializable {
         }
         
         // Style the image view
-        imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
+        imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 0); -fx-background-radius: 5px;");
         
-        // University name
+        // Middle: University info
+        VBox infoBox = new VBox(8);
+        infoBox.setAlignment(Pos.CENTER_LEFT);
+        infoBox.setPrefWidth(400);
+        
+        // University name - now in the info box
         Label nameLabel = new Label(university.getNom());
-        nameLabel.setTextFill(Color.WHITE);
+        nameLabel.setTextFill(Color.valueOf("#1A237E"));
         nameLabel.setFont(Font.font("System", FontWeight.BOLD, 18));
         nameLabel.setWrapText(true);
-        nameLabel.setTextAlignment(TextAlignment.CENTER);
-        nameLabel.setAlignment(Pos.CENTER);
-        nameLabel.setPrefWidth(250);
-        
-        // University info
-        VBox infoBox = new VBox(5);
-        infoBox.setAlignment(Pos.TOP_LEFT);
         
         Label locationLabel = new Label("Ville: " + university.getVille());
-        locationLabel.setTextFill(Color.WHITE);
+        locationLabel.setTextFill(Color.valueOf("#303F9F"));
+        locationLabel.setFont(Font.font("System", 14));
         
         Label addressLabel = new Label("Adresse: " + university.getAdresse_universite());
-        addressLabel.setTextFill(Color.WHITE);
+        addressLabel.setTextFill(Color.valueOf("#303F9F"));
+        addressLabel.setFont(Font.font("System", 14));
         addressLabel.setWrapText(true);
         
         Label fieldLabel = new Label("Domaine: " + university.getDomaine());
-        fieldLabel.setTextFill(Color.WHITE);
+        fieldLabel.setTextFill(Color.valueOf("#303F9F"));
+        fieldLabel.setFont(Font.font("System", 14));
         fieldLabel.setWrapText(true);
         
         Label feesLabel = new Label(String.format("Frais: %.2f €", university.getFrais()));
-        feesLabel.setTextFill(Color.WHITE);
+        feesLabel.setTextFill(Color.valueOf("#303F9F"));
+        feesLabel.setFont(Font.font("System", 14));
         
-        infoBox.getChildren().addAll(locationLabel, addressLabel, fieldLabel, feesLabel);
+        infoBox.getChildren().addAll(nameLabel, locationLabel, addressLabel, fieldLabel, feesLabel);
         
-        // Buttons container
-        HBox buttonsBox = new HBox(10);
+        // Right side: Buttons in vertical arrangement
+        VBox buttonsBox = new VBox(10);
         buttonsBox.setAlignment(Pos.CENTER);
+        buttonsBox.setPrefWidth(150);
         
         // Modify button
         Button modifierButton = new Button("Modifier");
-        modifierButton.setStyle("-fx-background-color: #3E92CC; -fx-text-fill: white;");
+        modifierButton.getStyleClass().add("update-btn");
+        modifierButton.setStyle("-fx-background-color: #3E92CC; -fx-text-fill: white; -fx-background-radius: 5px; -fx-cursor: hand;");
         modifierButton.setPrefWidth(120);
-        modifierButton.setPrefHeight(30);
+        modifierButton.setPrefHeight(35);
+        modifierButton.setFont(Font.font("System", 14));
         modifierButton.setOnAction(e -> handleModifierUniversite(university));
         
         // Delete button
         Button supprimerButton = new Button("Supprimer");
-        supprimerButton.setStyle("-fx-background-color: #D8315B; -fx-text-fill: white;");
+        supprimerButton.getStyleClass().add("clear-btn");
+        supprimerButton.setStyle("-fx-background-color: #D8315B; -fx-text-fill: white; -fx-background-radius: 5px; -fx-cursor: hand;");
         supprimerButton.setPrefWidth(120);
-        supprimerButton.setPrefHeight(30);
+        supprimerButton.setPrefHeight(35);
+        supprimerButton.setFont(Font.font("System", 14));
         supprimerButton.setOnAction(e -> handleSupprimerUniversite(university));
         
         buttonsBox.getChildren().addAll(modifierButton, supprimerButton);
         
-        // Add some spacing at the bottom
-        Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
+        // Add a vertical separator
+        Separator separator = new Separator();
+        separator.setOrientation(javafx.geometry.Orientation.VERTICAL);
+        separator.setPrefHeight(130);
+        separator.setStyle("-fx-background-color: #E0E0E0;");
         
-        // Assemble the card
-        card.getChildren().addAll(imageView, nameLabel, infoBox, spacer, buttonsBox);
+        // Assemble the horizontal content box
+        contentBox.getChildren().addAll(imageView, infoBox, separator, buttonsBox);
+        
+        // Add the content box to the card
+        card.getChildren().add(contentBox);
         
         return card;
     }
@@ -308,6 +359,22 @@ public class RecupererUniversiteController implements Initializable {
                 showAlert(Alert.AlertType.ERROR, "Erreur", 
                         "Erreur lors de la suppression de l'université", e.getMessage());
             }
+        }
+    }
+    
+    private void handleGestionCandidatures(Universite universite) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestioncandidatures.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) universiteListView.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Candidatures");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", 
+                    "Impossible d'ouvrir l'interface de gestion des candidatures", e.getMessage());
         }
     }
     

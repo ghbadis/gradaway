@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Carte Simplifiée</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .map-container {
+            width: 100%;
+            height: 100%;
+            background-color: #f0f0f0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .info-message {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 80%;
+        }
+        .map-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #3E92CC;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 16px;
+            background-color: #3E92CC;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .button:hover {
+            background-color: #2E82BC;
+        }
+    </style>
+</head>
+<body>
+    <div class="map-container">
+        <div class="info-message">
+            <div class="map-icon">&#128506;</div>
+            <h2>Carte non disponible</h2>
+            <p>La carte interactive n'a pas pu être chargée. Vous pouvez quand même saisir l'adresse manuellement et la vérifier avec le bouton "Vérifier l'adresse".</p>
+            <button class="button" onclick="returnToForm()">Retourner au formulaire</button>
+        </div>
+    </div>
+    
+    <script>
+        // Function to notify Java that the user wants to return to the form
+        function returnToForm() {
+            try {
+                console.log("Demande de retour au formulaire");
+                
+                // Try to call the Java connector if available
+                if (window.javaConnector) {
+                    window.javaConnector.fallbackAction("RETURN_TO_FORM");
+                    console.log("Action envoyée au JavaConnector");
+                } else {
+                    console.warn("JavaConnector non disponible");
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'appel de retour:", error);
+            }
+        }
+        
+        // Try to establish connection with Java when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Page de secours chargée");
+            
+            try {
+                if (window.javaConnector) {
+                    console.log("JavaConnector trouvé sur la page de secours");
+                    window.javaConnector.fallbackAction("FALLBACK_LOADED");
+                } else {
+                    console.warn("JavaConnector non trouvé sur la page de secours");
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'initialisation de la page de secours:", error);
+            }
+        });
+    </script>
+</body>
+</html> 

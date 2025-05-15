@@ -22,7 +22,13 @@ import Services.ServiceUniversite;
 import Services.CandidatureService;
 import models.Candidature;
 import utils.EmailService;
+import utils.PDFGenerator;
+import utils.QRCodeGenerator;
+import javafx.scene.web.WebView;
+import java.awt.Desktop;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -34,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import java.util.Base64;
+import javafx.scene.control.ScrollPane;
 
 public class UniversiteCardsController implements Initializable {
 
@@ -191,28 +199,53 @@ public class UniversiteCardsController implements Initializable {
         // Try to load the university's photo if available
         if (university.getPhotoPath() != null && !university.getPhotoPath().isEmpty()) {
             try {
+                System.out.println("Trying to load image from path: " + university.getPhotoPath());
+                
                 // First try to load from the resources folder
                 URL photoUrl = getClass().getResource("/" + university.getPhotoPath());
                 if (photoUrl != null) {
+                    System.out.println("Loading from resources URL: " + photoUrl);
                     javafx.scene.image.Image universityImage = new javafx.scene.image.Image(photoUrl.toExternalForm());
                     imageView.setImage(universityImage);
+                    System.out.println("Image loaded successfully from resources");
                 } else {
                     // Try as a file path if not found in resources
-                    File photoFile = new File("src/main/resources/" + university.getPhotoPath());
+                    String resourcePath = "src/main/resources/" + university.getPhotoPath();
+                    File photoFile = new File(resourcePath);
+                    System.out.println("Trying to load from file path: " + photoFile.getAbsolutePath());
+                    
                     if (photoFile.exists()) {
+                        System.out.println("File exists, loading from: " + photoFile.toURI());
                         javafx.scene.image.Image universityImage = new javafx.scene.image.Image(photoFile.toURI().toString());
                         imageView.setImage(universityImage);
+                        System.out.println("Image loaded successfully from file");
                     } else {
-                        // Use default image if photo not found
-                        URL defaultUrl = getClass().getResource(defaultImagePath);
-                        if (defaultUrl != null) {
-                            javafx.scene.image.Image defaultImage = new javafx.scene.image.Image(defaultUrl.toExternalForm());
-                            imageView.setImage(defaultImage);
+                        // Try as a direct file path (absolute path)
+                        File directFile = new File(university.getPhotoPath());
+                        System.out.println("Trying as direct file path: " + directFile.getAbsolutePath());
+                        
+                        if (directFile.exists()) {
+                            System.out.println("Direct file exists, loading from: " + directFile.toURI());
+                            javafx.scene.image.Image universityImage = new javafx.scene.image.Image(directFile.toURI().toString());
+                            imageView.setImage(universityImage);
+                            System.out.println("Image loaded successfully from direct path");
+                        } else {
+                            // Use default image if photo not found
+                            System.out.println("Could not find image, using default");
+                            URL defaultUrl = getClass().getResource(defaultImagePath);
+                            if (defaultUrl != null) {
+                                javafx.scene.image.Image defaultImage = new javafx.scene.image.Image(defaultUrl.toExternalForm());
+                                imageView.setImage(defaultImage);
+                                System.out.println("Default image loaded");
+                            } else {
+                                System.out.println("Even default image couldn't be loaded!");
+                            }
                         }
                     }
                 }
             } catch (Exception e) {
                 System.err.println("Error loading university photo: " + e.getMessage());
+                e.printStackTrace();
                 // Fallback to default image
                 try {
                     URL defaultUrl = getClass().getResource(defaultImagePath);
@@ -318,19 +351,71 @@ public class UniversiteCardsController implements Initializable {
 
             if (success) {
                 // Get university name for email
-                String universiteName = "";
+                String tempUniversiteName;
                 try {
-                    universiteName = serviceUniversite.recuperer(university.getId_universite()).getNom();
+                    tempUniversiteName = serviceUniversite.recuperer(university.getId_universite()).getNom();
                 } catch (SQLException e) {
                     System.err.println("Error getting university name: " + e.getMessage());
+                    tempUniversiteName = "Université"; // Default fallback
+                }
+                final String universiteName = tempUniversiteName;
+
+                // Get user information from database
+                final String userEmail = getUserEmail(currentUserId);
+                final String userName = getUserName(currentUserId);
+                final String email = (userEmail == null || userEmail.isEmpty()) ? 
+                    "mnbettaieb@gmail.com" : userEmail; // Default fallback email
+                final String name = (userName == null || userName.isEmpty()) ? 
+                    "Étudiant" : userName; // Default fallback name
+
+                // Format date for display
+                String tempFormattedDate;
+                try {
+                    java.time.LocalDate localDate = today.toLocalDate();
+                    tempFormattedDate = localDate.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                } catch (Exception e) {
+                    System.err.println("Error formatting date: " + e.getMessage());
+                    tempFormattedDate = today.toString();
+                }
+                final String formattedDate = tempFormattedDate;
+
+                // Get university image path for the QR code card
+                final String universityImagePath = university.getPhotoPath();
+
+                // Send email notification with PDF
+                try {
+                    EmailService.sendCandidatureConfirmationEmail(email, universiteName, domaine, formattedDate);
+                    System.out.println("Email sent to: " + email);
+                } catch (Exception e) {
+                    System.err.println("Error sending email: " + e.getMessage());
+                    e.printStackTrace();
                 }
 
-                // Send email notification
-                EmailService.sendCandidatureConfirmationEmail("mnbettaieb@gmail.com", universiteName, domaine, today.toString());
-
-                // Show success message
-                showAlert(Alert.AlertType.INFORMATION, "Succès",
-                        "Votre candidature a été soumise avec succès", "Une notification a été envoyée par email.");
+                // Show success message with option to view the QR code
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Succès");
+                alert.setHeaderText("Votre candidature a été soumise avec succès");
+                alert.setContentText("Une confirmation a été envoyée par email. " +
+                                    "Vous pouvez voir le QR code de votre candidature en cliquant sur le bouton ci-dessous.");
+                
+                // Add button to view QR code
+                ButtonType viewQRCodeButton = new ButtonType("Voir le QR Code");
+                ButtonType closeButton = new ButtonType("Fermer", ButtonBar.ButtonData.CANCEL_CLOSE);
+                
+                alert.getButtonTypes().setAll(viewQRCodeButton, closeButton);
+                
+                alert.showAndWait().ifPresent(buttonType -> {
+                    if (buttonType == viewQRCodeButton) {
+                        try {
+                            // Show QR code in a new window
+                            showQRCodeWindow(name, universiteName, domaine, formattedDate, universityImagePath);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            showAlert(Alert.AlertType.ERROR, "Erreur", 
+                                      "Impossible d'afficher le QR code", e.getMessage());
+                        }
+                    }
+                });
             } else {
                 showAlert(Alert.AlertType.ERROR, "Erreur",
                         "Impossible de soumettre la candidature - vérifiez que l'utilisateur et le dossier existent", "");
@@ -341,6 +426,116 @@ public class UniversiteCardsController implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Une erreur est survenue lors de la soumission de la candidature", e.getMessage());
         }
+    }
+
+    /**
+     * Shows a window with just the candidature QR code
+     */
+    private void showQRCodeWindow(String userName, String universityName, String domaine, 
+                                 String submissionDate, String universityImagePath) {
+        try {
+            // Generate QR code with candidature information in exact format
+            String qrData = "Candidat: " + userName + "\n" +
+                            "Université: " + universityName + "\n" +
+                            "Domaine: " + domaine + "\n" +
+                            "Date: " + submissionDate;
+            
+            // Use QRCodeGenerator to create the QR code image
+            java.awt.image.BufferedImage bufferedImage = QRCodeGenerator.generateQRCode(qrData, 400, 400);
+            
+            // Convert BufferedImage to JavaFX Image
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            javax.imageio.ImageIO.write(bufferedImage, "png", outputStream);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            javafx.scene.image.Image qrImage = new javafx.scene.image.Image(inputStream);
+            
+            // Create a new stage for displaying just the QR code
+            Stage qrStage = new Stage();
+            qrStage.setTitle("Code QR - " + universityName);
+            
+            // Create the layout
+            VBox root = new VBox(15);
+            root.setPadding(new Insets(20));
+            root.setAlignment(Pos.CENTER);
+            
+            // Create and add ImageView for QR code with higher resolution
+            javafx.scene.image.ImageView qrView = new javafx.scene.image.ImageView(qrImage);
+            qrView.setFitWidth(400);
+            qrView.setFitHeight(400);
+            qrView.setPreserveRatio(true);
+            qrView.setSmooth(true);
+            
+            // Make QR code zoomable with scroll
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setContent(qrView);
+            scrollPane.setPannable(true);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setFitToHeight(true);
+            scrollPane.setPrefViewportHeight(400);
+            scrollPane.setPrefViewportWidth(400);
+            
+            // Add a close button
+            Button closeButton = new Button("Fermer");
+            closeButton.setOnAction(e -> qrStage.close());
+            closeButton.setPrefWidth(150);
+            
+            // Add components to layout
+            root.getChildren().addAll(scrollPane, closeButton);
+            
+            // Create scene and show stage
+            Scene scene = new Scene(root);
+            qrStage.setScene(scene);
+            qrStage.show();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", 
+                      "Impossible de générer le code QR", e.getMessage());
+        }
+    }
+    
+    /**
+     * Get user's full name from database
+     * @param userId User ID
+     * @return User's full name or null if not found
+     */
+    private String getUserName(int userId) {
+        String name = null;
+        try {
+            String query = "SELECT nom, prenom FROM utilisateur WHERE id_utilisateur = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String nom = rs.getString("nom");
+                String prenom = rs.getString("prenom");
+                name = (prenom != null ? prenom + " " : "") + (nom != null ? nom : "");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting user name: " + e.getMessage());
+        }
+        return name;
+    }
+
+    /**
+     * Get user email from database
+     * @param userId User ID
+     * @return User's email address or null if not found
+     */
+    private String getUserEmail(int userId) {
+        String email = null;
+        try {
+            String query = "SELECT email FROM utilisateur WHERE id_utilisateur = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                email = rs.getString("email");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting user email: " + e.getMessage());
+        }
+        return email;
     }
 
     private int getDossierIdForUser(int userId) throws SQLException {
@@ -384,5 +579,34 @@ public class UniversiteCardsController implements Initializable {
 
     public int getCurrentUserId() {
         return this.currentUserId;
+    }
+
+    /**
+     * Debug method to test email functionality directly
+     * This can be called from a test button or debug menu
+     */
+    private void debugTestEmail() {
+        String email = getUserEmail(currentUserId);
+        if (email == null || email.isEmpty()) {
+            email = "mnbettaieb@gmail.com"; // Default fallback email
+        }
+        
+        try {
+            boolean success = EmailService.testSendPDF(email);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Test Email");
+            if (success) {
+                alert.setHeaderText("Test Email Sent");
+                alert.setContentText("A test email with PDF attachment has been sent to: " + email);
+            } else {
+                alert.setHeaderText("Test Email Failed");
+                alert.setContentText("Failed to send test email. Check console for details.");
+            }
+            alert.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", 
+                     "Failed to send test email", e.getMessage());
+        }
     }
 }

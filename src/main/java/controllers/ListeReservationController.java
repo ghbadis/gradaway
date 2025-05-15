@@ -148,9 +148,24 @@ public class ListeReservationController {
                 reservation.getDate()
             );
 
-            // Générer et afficher le QR code
-            ImageView qrCode = QRCodeGenerator.generateQRCode(qrContent, 200, 200);
-            if (qrCode != null) {
+            // Générer le QR code en tant que BufferedImage
+            java.awt.image.BufferedImage bufferedImage = QRCodeGenerator.generateQRCode(qrContent, 200, 200);
+            
+            // Convertir BufferedImage en Image JavaFX
+            javafx.scene.image.Image fxImage = null;
+            if (bufferedImage != null) {
+                java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
+                javax.imageio.ImageIO.write(bufferedImage, "png", outputStream);
+                java.io.ByteArrayInputStream inputStream = new java.io.ByteArrayInputStream(outputStream.toByteArray());
+                fxImage = new javafx.scene.image.Image(inputStream);
+            }
+            
+            // Créer ImageView à partir de l'Image JavaFX
+            if (fxImage != null) {
+                ImageView qrCode = new ImageView(fxImage);
+                qrCode.setFitWidth(200);
+                qrCode.setFitHeight(200);
+                qrCode.setPreserveRatio(true);
                 root.getChildren().add(qrCode);
             }
 
