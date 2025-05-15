@@ -21,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import java.util.List;
 
 public class ModifierExpertController {
     @FXML
@@ -54,18 +55,28 @@ public class ModifierExpertController {
 
     @FXML
     public void initialize() {
-        // Initialiser les spécialités
-        specialiteComboBox.getItems().addAll(
-            "Java",
-            "Python",
-            "JavaScript",
-            "DevOps",
-            "Base de données",
-            "Web",
-            "Mobile",
-            "Cloud",
-            "Sécurité"
-        );
+        try {
+            // Load specialties from database
+            List<String> domaines = serviceExpert.recupererDomaines();
+            specialiteComboBox.getItems().addAll(domaines);
+            if (!domaines.isEmpty()) {
+                specialiteComboBox.setValue(domaines.get(0)); // Set first domain as default
+            }
+        } catch (SQLException e) {
+            System.err.println("Error loading domains: " + e.getMessage());
+            // Fallback to default values if database load fails
+            specialiteComboBox.getItems().addAll(
+                "Java",
+                "Python",
+                "JavaScript",
+                "DevOps",
+                "Base de données",
+                "Web",
+                "Mobile",
+                "Cloud",
+                "Sécurité"
+            );
+        }
 
         // Configurer les boutons
         modifierButton.setOnAction(event -> modifierExpert());
