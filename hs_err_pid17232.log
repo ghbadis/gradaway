@@ -1,0 +1,249 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 132120576 bytes. Error detail: G1 virtual space
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   This process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Unscaled Compressed Oops mode in which the Java heap is
+#     placed in the first 4GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 4GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_windows.cpp:3825), pid=17232, tid=16860
+#
+# JRE version:  (17.0.12+1) (build )
+# Java VM: OpenJDK 64-Bit Server VM (17.0.12+1-b1207.37, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, windows-amd64)
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: --add-modules=javafx.controls,javafx.fxml,javafx.swing --module-path=C:\Users\dell\.m2\repository\org\openjfx\javafx-base\17.0.2\javafx-base-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-base\17.0.2\javafx-base-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-controls\17.0.2\javafx-controls-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-controls\17.0.2\javafx-controls-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-fxml\17.0.2\javafx-fxml-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-fxml\17.0.2\javafx-fxml-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-graphics\17.0.2\javafx-graphics-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-graphics\17.0.2\javafx-graphics-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-media\17.0.2\javafx-media-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-media\17.0.2\javafx-media-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-swing\17.0.2\javafx-swing-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-swing\17.0.2\javafx-swing-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-web\17.0.2\javafx-web-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-web\17.0.2\javafx-web-17.0.2.jar --add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web Main.Main
+
+Host: Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz, 8 cores, 7G,  Windows 11 , 64 bit Build 22621 (10.0.22621.5124)
+Time: Tue May 13 01:36:45 2025 Paris, Madrid elapsed time: 0.034838 seconds (0d 0h 0m 0s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000001b561c9b360):  JavaThread "Unknown thread" [_thread_in_vm, id=16860, stack(0x0000005972d00000,0x0000005972e00000)]
+
+Stack: [0x0000005972d00000,0x0000005972e00000]
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x689d89]  os::platform_print_native_stack+0xd9  (os_windows_x86.cpp:235)
+V  [jvm.dll+0x84386a]  VMError::report+0xc6a  (vmError.cpp:868)
+V  [jvm.dll+0x8454ee]  VMError::report_and_die+0x78e  (vmError.cpp:1766)
+V  [jvm.dll+0x845b53]  VMError::report_and_die+0x43  (vmError.cpp:1552)
+V  [jvm.dll+0x24a56f]  report_vm_out_of_memory+0x8f  (debug.cpp:321)
+V  [jvm.dll+0x686ad9]  os::pd_commit_memory_or_exit+0xc9  (os_windows.cpp:3833)
+V  [jvm.dll+0x67b3da]  os::commit_memory_or_exit+0x2a  (os.cpp:1740)
+V  [jvm.dll+0x30b15b]  G1PageBasedVirtualSpace::commit+0x19b  (g1PageBasedVirtualSpace.cpp:204)
+V  [jvm.dll+0x312646]  G1RegionsLargerThanCommitSizeMapper::commit_regions+0x96  (g1RegionToSpaceMapper.cpp:100)
+V  [jvm.dll+0x36288e]  HeapRegionManager::expand_any+0xee  (heapRegionManager.cpp:363)
+V  [jvm.dll+0x362acf]  HeapRegionManager::expand_by+0x7f  (heapRegionManager.cpp:380)
+V  [jvm.dll+0x2e125c]  G1CollectedHeap::expand+0xbc  (g1CollectedHeap.cpp:1292)
+V  [jvm.dll+0x2e21b4]  G1CollectedHeap::initialize+0x664  (g1CollectedHeap.cpp:1713)
+V  [jvm.dll+0x81420b]  universe_init+0xbb  (universe.cpp:737)
+V  [jvm.dll+0x370618]  init_globals+0x48  (init.cpp:131)
+V  [jvm.dll+0x7f2b45]  Threads::create_vm+0x5e5  (thread.cpp:2909)
+V  [jvm.dll+0x3f4aaf]  JNI_CreateJavaVM_inner+0x8f  (jni.cpp:3654)
+V  [jvm.dll+0x3f6661]  JNI_CreateJavaVM+0x11  (jni.cpp:3746)
+C  [jli.dll+0x528f]  JavaMain+0x113  (java.c:413)
+C  [ucrtbase.dll+0x29333]
+C  [KERNEL32.DLL+0x1259d]
+C  [ntdll.dll+0x5af38]
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00007ff9b9e35fd8, length=0, elements={
+}
+
+Java Threads: ( => current thread )
+
+Other Threads:
+  0x000001b561cf6460 GCTaskThread "GC Thread#0" [stack: 0x0000005972e00000,0x0000005972f00000] [id=22160]
+  0x000001b561d07ed0 ConcurrentGCThread "G1 Main Marker" [stack: 0x0000005972f00000,0x0000005973000000] [id=19836]
+  0x000001b561d08800 ConcurrentGCThread "G1 Conc#0" [stack: 0x0000005973000000,0x0000005973100000] [id=22376]
+
+[error occurred during error reporting (printing all threads), id 0xc0000005, EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00007ff9b95e1ae7]
+
+VM state: not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x000001b561c962c0] Heap_lock - owner thread: 0x000001b561c9b360
+
+Heap address: 0x0000000082000000, size: 2016 MB, Compressed Oops mode: 32-bit
+
+CDS archive(s) mapped at: [0x0000000000000000-0x0000000000000000-0x0000000000000000), size 0, SharedBaseAddress: 0x0000000800000000, ArchiveRelocationMode: 1.
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 0, Narrow klass range: 0x0
+
+GC Precious Log:
+<Empty>
+
+Heap:
+ garbage-first heap   total 0K, used 0K [0x0000000082000000, 0x0000000100000000)
+  region size 1024K, 0 young (0K), 0 survivors (0K)
+ Metaspace       used 0K, committed 0K, reserved 0K
+  class space    used 0K, committed 0K, reserved 0K
+
+Heap Regions: E=young(eden), S=young(survivor), O=old, HS=humongous(starts), HC=humongous(continues), CS=collection set, F=free, OA=open archive, CA=closed archive, TAMS=top-at-mark-start (previous, next)
+
+Card table byte_map: [0x000001b574b90000,0x000001b574f80000] _byte_map_base: 0x000001b574780000
+
+Marking Bits (Prev, Next): (CMBitMap*) 0x000001b561cf6990, (CMBitMap*) 0x000001b561cf69d0
+ Prev Bits: [0x000001b575370000, 0x000001b5772f0000)
+ Next Bits: [0x000001b5772f0000, 0x000001b579270000)
+
+GC Heap History (0 events):
+No events
+
+Dll operation events (1 events):
+Event: 0.012 Loaded shared library C:\Users\dell\.jdks\jbr-17.0.12\bin\java.dll
+
+Deoptimization events (0 events):
+No events
+
+Classes loaded (0 events):
+No events
+
+Classes unloaded (0 events):
+No events
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+VM Operations (0 events):
+No events
+
+Events (0 events):
+No events
+
+
+Dynamic libraries:
+0x00007ff76ca00000 - 0x00007ff76ca0a000 	C:\Users\dell\.jdks\jbr-17.0.12\bin\java.exe
+0x00007ff9fe090000 - 0x00007ff9fe2a7000 	C:\WINDOWS\SYSTEM32\ntdll.dll
+0x00007ff9fd310000 - 0x00007ff9fd3d4000 	C:\WINDOWS\System32\KERNEL32.DLL
+0x00007ff9fb7f0000 - 0x00007ff9fbbc3000 	C:\WINDOWS\System32\KERNELBASE.dll
+0x00007ff9fb280000 - 0x00007ff9fb391000 	C:\WINDOWS\System32\ucrtbase.dll
+0x00007ff9cb740000 - 0x00007ff9cb757000 	C:\Users\dell\.jdks\jbr-17.0.12\bin\jli.dll
+0x00007ff9efb00000 - 0x00007ff9efb1b000 	C:\Users\dell\.jdks\jbr-17.0.12\bin\VCRUNTIME140.dll
+0x00007ff9fd110000 - 0x00007ff9fd2c1000 	C:\WINDOWS\System32\USER32.dll
+0x00007ff9e6a20000 - 0x00007ff9e6cb8000 	C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.22621.5124_none_270e8f4f7386d69d\COMCTL32.dll
+0x00007ff9fb220000 - 0x00007ff9fb246000 	C:\WINDOWS\System32\win32u.dll
+0x00007ff9fcd80000 - 0x00007ff9fce27000 	C:\WINDOWS\System32\msvcrt.dll
+0x00007ff9fd2d0000 - 0x00007ff9fd2f9000 	C:\WINDOWS\System32\GDI32.dll
+0x00007ff9fb6d0000 - 0x00007ff9fb7eb000 	C:\WINDOWS\System32\gdi32full.dll
+0x00007ff9fbc90000 - 0x00007ff9fbd2a000 	C:\WINDOWS\System32\msvcp_win.dll
+0x00007ff9fd450000 - 0x00007ff9fd481000 	C:\WINDOWS\System32\IMM32.DLL
+0x00007ff9efaf0000 - 0x00007ff9efafc000 	C:\Users\dell\.jdks\jbr-17.0.12\bin\vcruntime140_1.dll
+0x00007ff9bb240000 - 0x00007ff9bb2cd000 	C:\Users\dell\.jdks\jbr-17.0.12\bin\msvcp140.dll
+0x00007ff9b92f0000 - 0x00007ff9b9f7a000 	C:\Users\dell\.jdks\jbr-17.0.12\bin\server\jvm.dll
+0x00007ff9fce30000 - 0x00007ff9fcee1000 	C:\WINDOWS\System32\ADVAPI32.dll
+0x00007ff9fcb20000 - 0x00007ff9fcbc8000 	C:\WINDOWS\System32\sechost.dll
+0x00007ff9fb250000 - 0x00007ff9fb278000 	C:\WINDOWS\System32\bcrypt.dll
+0x00007ff9fc010000 - 0x00007ff9fc124000 	C:\WINDOWS\System32\RPCRT4.dll
+0x00007ff9fcbd0000 - 0x00007ff9fcc41000 	C:\WINDOWS\System32\WS2_32.dll
+0x00007ff9fa020000 - 0x00007ff9fa06d000 	C:\WINDOWS\SYSTEM32\POWRPROF.dll
+0x00007ff9f5c00000 - 0x00007ff9f5c34000 	C:\WINDOWS\SYSTEM32\WINMM.dll
+0x00007ff9f2b20000 - 0x00007ff9f2b2a000 	C:\WINDOWS\SYSTEM32\VERSION.dll
+0x00007ff9fa000000 - 0x00007ff9fa013000 	C:\WINDOWS\SYSTEM32\UMPDC.dll
+0x00007ff9fa2c0000 - 0x00007ff9fa2d8000 	C:\WINDOWS\SYSTEM32\kernel.appcore.dll
+0x00007ff9cc940000 - 0x00007ff9cc94a000 	C:\Users\dell\.jdks\jbr-17.0.12\bin\jimage.dll
+0x00007ff9f8d90000 - 0x00007ff9f8fc2000 	C:\WINDOWS\SYSTEM32\DBGHELP.DLL
+0x00007ff9fd5f0000 - 0x00007ff9fd982000 	C:\WINDOWS\System32\combase.dll
+0x00007ff9fc9d0000 - 0x00007ff9fcaa7000 	C:\WINDOWS\System32\OLEAUT32.dll
+0x00007ff9d7f80000 - 0x00007ff9d7fb2000 	C:\WINDOWS\SYSTEM32\dbgcore.DLL
+0x00007ff9fb3a0000 - 0x00007ff9fb41b000 	C:\WINDOWS\System32\bcryptPrimitives.dll
+0x00007ff9c8570000 - 0x00007ff9c8595000 	C:\Users\dell\.jdks\jbr-17.0.12\bin\java.dll
+
+dbghelp: loaded successfully - version: 4.0.5 - missing functions: none
+symbol engine: initialized successfully - sym options: 0x614 - pdb path: .;C:\Users\dell\.jdks\jbr-17.0.12\bin;C:\WINDOWS\SYSTEM32;C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.22621.5124_none_270e8f4f7386d69d;C:\Users\dell\.jdks\jbr-17.0.12\bin\server
+
+VM Arguments:
+jvm_args: --add-modules=javafx.controls,javafx.fxml,javafx.swing --module-path=C:\Users\dell\.m2\repository\org\openjfx\javafx-base\17.0.2\javafx-base-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-base\17.0.2\javafx-base-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-controls\17.0.2\javafx-controls-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-controls\17.0.2\javafx-controls-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-fxml\17.0.2\javafx-fxml-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-fxml\17.0.2\javafx-fxml-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-graphics\17.0.2\javafx-graphics-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-graphics\17.0.2\javafx-graphics-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-media\17.0.2\javafx-media-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-media\17.0.2\javafx-media-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-swing\17.0.2\javafx-swing-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-swing\17.0.2\javafx-swing-17.0.2.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-web\17.0.2\javafx-web-17.0.2-win.jar;C:\Users\dell\.m2\repository\org\openjfx\javafx-web\17.0.2\javafx-web-17.0.2.jar --add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web 
+java_command: Main.Main
+java_class_path (initial): C:\Users\dell\OneDrive\Bureau\gradaway\target\classes;C:\Users\dell\.m2\repository\com\beust\jcommander\1.82\jcommander-1.82.jar;C:\Users\dell\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.15.3\jackson-annotations-2.15.3.jar;C:\Users\dell\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.15.3\jackson-core-2.15.3.jar;C:\Users\dell\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.15.3\jackson-databind-2.15.3.jar;C:\Users\dell\.m2\repository\com\github\jai-imageio\jai-imageio-core\1.4.0\jai-imageio-core-1.4.0.jar;C:\Users\dell\.m2\repository\com\google\protobuf\protobuf-java\3.21.9\protobuf-java-3.21.9.jar;C:\Users\dell\.m2\repository\com\google\zxing\core\3.5.2\core-3.5.2.jar;C:\Users\dell\.m2\repository\com\google\zxing\javase\3.5.2\javase-3.5.2.jar;C:\Users\dell\.m2\repository\com\itextpdf\itextpdf\5.5.13.3\itextpdf-5.5.13.3.jar;C:\Users\dell\.m2\repository\com\mysql\mysql-connector-j\8.0.33\mysql-connector-j-8.0.33.jar;C:\Users\dell\.m2\repository\com\sendgrid\java-http-client\4.5.0\java-http-client-4.5.0.jar;C:\Users\dell\.m2\repository\com\sendgrid\sendgrid-java\4.9.3\sendgrid-java-4.9.3.jar;C:\Users\dell\.m2\repository\com\sun\mail\javax.mail\1.6.2\javax.mail-1.6.2.jar;C:\Users\dell\.m2\repository\commons-codec\commons-codec\1.11\commons-codec-1.11.jar;C:\Users\dell\.m2\repository\commons-logging\commons-logging\1.2\commons-logging-1.2.jar;C:\Users\dell\.m2\repository\de\jensd\fontawesomefx-commons\9.1.2\fontawesomefx-commons-9.1.2.jar;C:\Users\dell\.m2\repository\de\jensd\fontawesomefx-fontawesome\4.7.0-9.1.2\fontawesomefx-fontawesome-4.7.0-9.1.2.jar;C:\Users\dell\.m2\repository\javax\activation\activation\1.1.1\activation-1.1.1.jar;C:\Users\dell\.m2\repository\org\apache\httpcomponents\httpclient\4.5.13\httpclient-4.5.13.jar;C:\Users\dell\.m2\repository\org\apache\httpcomponents\httpcore\4.4.13\httpcore-4.4.13.jar;C:\Users\dell\.m2\repository\org\bouncycastle\bcprov-jdk15on\1.70\bcprov-jdk15on-1
+Launcher Type: SUN_STANDARD
+
+[Global flags]
+     intx CICompilerCount                          = 4                                         {product} {ergonomic}
+     uint ConcGCThreads                            = 2                                         {product} {ergonomic}
+     uint G1ConcRefinementThreads                  = 8                                         {product} {ergonomic}
+   size_t G1HeapRegionSize                         = 1048576                                   {product} {ergonomic}
+    uintx GCDrainStackTargetSize                   = 64                                        {product} {ergonomic}
+   size_t InitialHeapSize                          = 132120576                                 {product} {ergonomic}
+   size_t MarkStackSize                            = 4194304                                   {product} {ergonomic}
+   size_t MaxHeapSize                              = 2113929216                                {product} {ergonomic}
+   size_t MinHeapDeltaBytes                        = 1048576                                   {product} {ergonomic}
+   size_t MinHeapSize                              = 8388608                                   {product} {ergonomic}
+    uintx NonNMethodCodeHeapSize                   = 5839372                                {pd product} {ergonomic}
+    uintx NonProfiledCodeHeapSize                  = 122909434                              {pd product} {ergonomic}
+    uintx ProfiledCodeHeapSize                     = 122909434                              {pd product} {ergonomic}
+    uintx ReservedCodeCacheSize                    = 251658240                              {pd product} {ergonomic}
+     bool SegmentedCodeCache                       = true                                      {product} {ergonomic}
+   size_t SoftMaxHeapSize                          = 2113929216                             {manageable} {ergonomic}
+     bool UseCompressedClassPointers               = true                           {product lp64_product} {ergonomic}
+     bool UseCompressedOops                        = true                           {product lp64_product} {ergonomic}
+     bool UseG1GC                                  = true                                      {product} {ergonomic}
+     bool UseLargePagesIndividualAllocation        = false                                  {pd product} {ergonomic}
+
+Logging:
+Log output configuration:
+ #0: stdout all=warning uptime,level,tags
+ #1: stderr all=off uptime,level,tags
+
+Environment Variables:
+PATH=C:\Users\dell\.jdks\jbr-17.0.12\bin;C:\Program Files (x86)\VMware\VMware Workstation\bin\;C:\oraclexe\app\oracle\product\11.2.0\server\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Users\dell\AppData\Local\Programs\Python\Launcher\;C:\Users\dell\AppData\Local\Microsoft\WindowsApps;;C:\Users\dell\AppData\Local\Programs\Microsoft VS Code\bin;E:\cursor\resources\app\bin
+USERNAME=dell
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 142 Stepping 10, GenuineIntel
+TMP=C:\Users\dell\AppData\Local\Temp
+TEMP=C:\Users\dell\AppData\Local\Temp
+
+
+
+Periodic native trim disabled
+
+JNI global refs:
+JNI global refs: 0, weak refs: 0
+
+JNI global refs memory usage: 0, weak refs: 0
+
+Process memory usage:
+Resident Set Size: 46052K (0% of 8250432K total physical memory with 263300K free physical memory)
+
+OOME stack traces (most recent first):
+Classloader memory used:
+
+
+---------------  S Y S T E M  ---------------
+
+OS:
+ Windows 11 , 64 bit Build 22621 (10.0.22621.5124)
+OS uptime: 0 days 11:55 hours
+
+CPU: total 8 (initial active 8) (4 cores per cpu, 2 threads per core) family 6 model 142 stepping 10 microcode 0xe0, cx8, cmov, fxsr, ht, mmx, 3dnowpref, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, lzcnt, tsc, tscinvbit, avx, avx2, aes, erms, clmul, bmi1, bmi2, adx, fma, vzeroupper, clflush, clflushopt
+Processor Information for all 8 processors :
+  Max Mhz: 1800, Current Mhz: 1600, Mhz Limit: 1584
+
+Memory: 4k page, system-wide physical 8057M (257M free)
+TotalPageFile size 32633M (AvailPageFile size 44M)
+current process WorkingSet (physical memory assigned to process): 44M, peak: 44M
+current process commit charge ("private bytes"): 93M, peak: 186M
+
+vm_info: OpenJDK 64-Bit Server VM (17.0.12+1-b1207.37) for windows-amd64 JRE (17.0.12+1-b1207.37), built on 2024-09-25 by "builduser" with MS VC++ 16.10 / 16.11 (VS2019)
+
+END.

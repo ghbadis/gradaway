@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<SplitPane dividerPositions="0.3169295973628443, 0.3244643277607722" prefHeight="700.0" prefWidth="851.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminConditatureController">
+<SplitPane dividerPositions="0.3169295973628443, 0.3244643277607722" prefHeight="700.0" prefWidth="851.0" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminConditatureController">
    <items>
       <AnchorPane prefHeight="698.0" prefWidth="282.0" style="-fx-background-color: #0d47a1;">
          <children>

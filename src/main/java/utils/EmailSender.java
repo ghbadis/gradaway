@@ -245,7 +245,7 @@ public class EmailSender {
         return generateReservationConfirmationEmail(nomFoyer, dateDebut, dateFin, dateReservation, 0, "");
     }
 
-    public static String generateDossierConfirmationEmail(int idDossier, String dateDepot) {
+    public static String generateDossierConfirmationEmail(String dateDepot) {
         return "<!DOCTYPE html>"
              + "<html>"
              + "<head>"
@@ -269,7 +269,6 @@ public class EmailSender {
              + "            <p>Cher étudiant,</p>"
              + "            <p>Nous vous confirmons que votre dossier a été déposé avec succès.</p>"
              + "            <table>"
-             + "                <tr><th>Numéro de dossier</th><td>" + idDossier + "</td></tr>"
              + "                <tr><th>Date de dépôt</th><td>" + dateDepot + "</td></tr>"
              + "            </table>"
              + "            <div class='qr-code' style='text-align: center; margin: 20px 0;'>\n"
@@ -288,9 +287,8 @@ public class EmailSender {
              + "</html>";
     }
 
-    public static String generateDossierQRContent(int idDossier, String dateDepot) {
+    public static String generateDossierQRContent(String dateDepot) {
         return "Dossier GradAway\n" +
-               "ID Dossier: " + idDossier + "\n" +
                "Date de dépôt: " + dateDepot;
     }
 }

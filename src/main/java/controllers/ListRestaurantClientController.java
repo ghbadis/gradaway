@@ -53,6 +53,7 @@ public class ListRestaurantClientController {
     @FXML private Button restaurantButton;
     @FXML private Button volsButton;
     @FXML private Button logoutButton;
+    @FXML private Button mesReservationsButton;
     
     private ServiceRestaurant serviceRestaurant;
     private ObservableList<Restaurant> restaurantList;
@@ -78,6 +79,11 @@ public class ListRestaurantClientController {
         
         // Setup dashboard navigation
         setupNavigationButtons();
+        
+        // Ajouter l'action au bouton Mes Réservations
+        if (mesReservationsButton != null) {
+            mesReservationsButton.setOnAction(this::ouvrirMesReservations);
+        }
     }
     
     /**
@@ -422,34 +428,7 @@ public class ListRestaurantClientController {
      */
     @FXML
     void voirMesReservations(ActionEvent event) {
-        try {
-            // Utiliser l'ID de l'utilisateur qui a fait les réservations
-            // Pour l'exemple, nous allons utiliser l'ID 2 qui semble avoir des réservations
-            int userId = 2;
-            
-            // Charger la vue des réservations
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MesReservationsRestaurant.fxml"));
-            Parent root = loader.load();
-            
-            // Récupérer le contrôleur et définir l'ID de l'utilisateur
-            MesReservationsRestaurantController controller = loader.getController();
-            controller.setUserId(userId);
-            
-            // Afficher la vue
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            
-            // Transition de fondu
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            
-            stage.setScene(scene);
-            fadeIn.play();
-        } catch (IOException e) {
-            showAlert("Erreur", "Erreur lors du chargement de la page des réservations: " + e.getMessage(), Alert.AlertType.ERROR);
-            e.printStackTrace();
-        }
+        ouvrirMesReservations(event);
     }
     
     /**
@@ -650,6 +629,26 @@ public class ListRestaurantClientController {
             currentStage.close();
         } catch (IOException e) {
             showAlert("Erreur", "Erreur lors de la déconnexion: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void ouvrirMesReservations(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MesReservationsRestaurant.fxml"));
+            Parent root = loader.load();
+            MesReservationsRestaurantController controller = loader.getController();
+            controller.setUserId(utils.SessionManager.getInstance().getUserId());
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            stage.setScene(scene);
+            fadeIn.play();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors du chargement de la page des réservations: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
         }
     }
 }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ModifierDossierAdminController"
+            prefHeight="800.0" prefWidth="1000.0"
+            style="-fx-background-color: white;">
+
+    <VBox spacing="20">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+        
+        <Label text="Modifier le Dossier" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        
+        <GridPane hgap="10" vgap="10">
+            <!-- Photo -->
+            <Label text="Photo:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <TextField fx:id="photoField" prefWidth="300"/>
+                <Button text="Choisir" onAction="#handlePhotoChoose"/>
+            </HBox>
+
+            <!-- CIN -->
+            <Label text="CIN:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <TextField fx:id="cinField" prefWidth="300"/>
+                <Button text="Choisir" onAction="#handleCinChoose"/>
+            </HBox>
+
+            <!-- Diplôme Bac -->
+            <Label text="Diplôme Bac:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <TextField fx:id="diplomeBacField" prefWidth="300"/>
+                <Button text="Choisir" onAction="#handleDiplomeBacChoose"/>
+            </HBox>
+
+            <!-- Relevé Notes -->
+            <Label text="Relevé Notes:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <TextField fx:id="releveNoteField" prefWidth="300"/>
+                <Button text="Choisir" onAction="#handleReleveNoteChoose"/>
+            </HBox>
+
+            <!-- Diplômes Obtenus -->
+            <Label text="Diplômes Obtenus:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                <TextField fx:id="diplomeObtenusField" prefWidth="300"/>
+                <Button text="Choisir" onAction="#handleDiplomeObtenusChoose"/>
+            </HBox>
+
+            <!-- Lettre Motivation -->
+            <Label text="Lettre Motivation:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                <TextField fx:id="lettreMotivationsField" prefWidth="300"/>
+                <Button text="Choisir" onAction="#handleLettreMotivationsChoose"/>
+            </HBox>
+
+            <!-- Dossier Santé -->
+            <Label text="Dossier Santé:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                <TextField fx:id="dossierSanteField" prefWidth="300"/>
+                <Button text="Choisir" onAction="#handleDossierSanteChoose"/>
+            </HBox>
+
+            <!-- CV -->
+            <Label text="CV:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+            <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                <TextField fx:id="cvField" prefWidth="300"/>
+                <Button text="Choisir" onAction="#handleCvChoose"/>
+            </HBox>
+        </GridPane>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Enregistrer" onAction="#handleSave" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"/>
+            <Button text="Annuler" onAction="#handleCancel" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

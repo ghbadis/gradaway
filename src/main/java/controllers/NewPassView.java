@@ -12,6 +12,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.Group;
 import utils.MyDatabase;
+import utils.PasswordHasher;
+import javafx.scene.control.PasswordField;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -20,13 +22,13 @@ import java.sql.SQLException;
 
 public class NewPassView {
     @FXML
-    private TextField newPass;
+    private PasswordField newPass;
     @FXML
-    private TextField confNewPass;
+    private TextField newPassVisible;
     @FXML
-    private ImageView togglePasswordIcon1;
+    private PasswordField confNewPass;
     @FXML
-    private ImageView togglePasswordIcon;
+    private TextField confNewPassVisible;
     @FXML
     private Group back1;
     @FXML
@@ -35,27 +37,22 @@ public class NewPassView {
     private Text welcome;
 
     private Connection connection;
+    @FXML
+    private ImageView togglePasswordIcon2;
+    @FXML
+    private ImageView togglePasswordIcon1;
+
+    private boolean isNewPassVisible = false;
+    private boolean isConfNewPassVisible = false;
 
     @FXML
     public void initialize() {
-        // Set password fields to be masked by default
-        newPass.setPromptText("••••••••");
-        confNewPass.setPromptText("••••••••");
-
-        // Add click handlers for password toggle icons
-        togglePasswordIcon.setOnMouseClicked(event -> togglePasswordVisibility(newPass, togglePasswordIcon));
-        togglePasswordIcon1.setOnMouseClicked(event -> togglePasswordVisibility(confNewPass, togglePasswordIcon1));
-    }
-
-    private void togglePasswordVisibility(TextField passwordField, ImageView toggleIcon) {
-        if (passwordField.getPromptText().equals("••••••••")) {
-            passwordField.setPromptText("");
-            // Change icon to show password is visible
-            // You can set a different icon here if needed
-        } else {
-            passwordField.setPromptText("••••••••");
-            // Change icon to show password is hidden
-            // You can set a different icon here if needed
+        // Initialize password visibility toggle
+        if (togglePasswordIcon1 != null) {
+            togglePasswordIcon1.setOnMouseClicked(event -> toggleNewPassVisibility());
+        }
+        if (togglePasswordIcon2 != null) {
+            togglePasswordIcon2.setOnMouseClicked(event -> toggleConfNewPassVisibility());
         }
     }
 
@@ -82,10 +79,18 @@ public class NewPassView {
             return;
         }
 
+        if (password.length() < 6) {
+            showAlert("Erreur", "Le mot de passe doit contenir au moins 6 caractères");
+            return;
+        }
+
         try {
+            // Hasher le nouveau mot de passe
+            String hashedPassword = PasswordHasher.hashPassword(password);
+
             String query = "UPDATE user SET mdp = ? WHERE email = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, password); // Dans un cas réel, il faudrait hasher le mot de passe
+            preparedStatement.setString(1, hashedPassword);
             preparedStatement.setString(2, OptViewcontroller.getCurrentEmail());
 
             int rowsAffected = preparedStatement.executeUpdate();
@@ -150,5 +155,35 @@ public class NewPassView {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    private void toggleNewPassVisibility() {
+        if (isNewPassVisible) {
+            // Hide password
+            newPass.setText(newPassVisible.getText());
+            newPass.setVisible(true);
+            newPassVisible.setVisible(false);
+        } else {
+            // Show password
+            newPassVisible.setText(newPass.getText());
+            newPassVisible.setVisible(true);
+            newPass.setVisible(false);
+        }
+        isNewPassVisible = !isNewPassVisible;
+    }
+
+    private void toggleConfNewPassVisibility() {
+        if (isConfNewPassVisible) {
+            // Hide password
+            confNewPass.setText(confNewPassVisible.getText());
+            confNewPass.setVisible(true);
+            confNewPassVisible.setVisible(false);
+        } else {
+            // Show password
+            confNewPassVisible.setText(confNewPass.getText());
+            confNewPassVisible.setVisible(true);
+            confNewPass.setVisible(false);
+        }
+        isConfNewPassVisible = !isConfNewPassVisible;
     }
 } 

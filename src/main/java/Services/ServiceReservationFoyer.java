@@ -11,6 +11,7 @@ import java.util.List;
 
 public class ServiceReservationFoyer implements IService<ReservationFoyer> {
     private Connection con;
+    ServiceUser us = new ServiceUser();
 
     public ServiceReservationFoyer() {
         con = MyDatabase.getInstance().getCnx();
@@ -22,7 +23,9 @@ public class ServiceReservationFoyer implements IService<ReservationFoyer> {
                 "VALUES (?, ?, ?, ?, ?)";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setInt(1, reservation.getFoyerId());
-        ps.setInt(2, reservation.getIdEtudiant());
+       ps.setInt(2, reservation.getIdEtudiant());
+      // ps.setInt(2, user.getUserById());
+
         ps.setDate(3, Date.valueOf(reservation.getDateDebut()));
         ps.setDate(4, Date.valueOf(reservation.getDateFin()));
         ps.setDate(5, Date.valueOf(reservation.getDateReservation()));

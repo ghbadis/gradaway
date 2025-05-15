@@ -34,7 +34,7 @@ public class ServiceUser implements IService<User> {
             ps.setString(9, user.getDomaine_etude());
             ps.setString(10, user.getUniversite_origine());
             ps.setString(11, user.getRole());
-            ps.setInt(12, user.getMoyennes());
+            ps.setDouble(12, user.getMoyennes());
             ps.setInt(13, user.getAnnee_obtention_diplome());
             ps.setString(14, user.getMdp());
             ps.setString(15, user.getImage());
@@ -74,7 +74,7 @@ public class ServiceUser implements IService<User> {
         ps.setString(9, user.getDomaine_etude());
         ps.setString(10, user.getUniversite_origine());
         ps.setString(11, user.getRole());
-        ps.setInt(12, user.getMoyennes());
+        ps.setDouble(12, user.getMoyennes());
         ps.setInt(13, user.getAnnee_obtention_diplome());
         ps.setString(14, user.getMdp());
         ps.setString(15, user.getImage());
@@ -104,7 +104,7 @@ public class ServiceUser implements IService<User> {
             int ageP = rs.getInt("age");
             int cinP = rs.getInt("cin");
             int telephoneP = rs.getInt("telephone");
-            int moyennesP = rs.getInt("moyennes");
+            double moyennesP = rs.getDouble("moyennes");
             int anneeDiplomeP = rs.getInt("annee_obtention_diplome");
             String nomP = rs.getString("nom");
             String prenomP = rs.getString("prenom");
@@ -140,7 +140,7 @@ public class ServiceUser implements IService<User> {
                     rs.getInt("age"),
                     rs.getInt("cin"),
                     rs.getInt("telephone"),
-                    rs.getInt("moyennes"),
+                    rs.getDouble("moyennes"),
                     rs.getInt("annee_obtention_diplome"),
                     rs.getString("nom"),
                     rs.getString("prenom"),
@@ -159,5 +159,70 @@ public class ServiceUser implements IService<User> {
             System.out.println("ServiceUser: No user found with ID: " + id);
             return null;
         }
+    }
+
+    public boolean verifyPassword(int userId, String password) throws SQLException {
+        String req = "SELECT mdp FROM user WHERE id = ?";
+        try (PreparedStatement ps = con.prepareStatement(req)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                String hashedPassword = rs.getString("mdp");
+                return utils.PasswordHasher.verifyPassword(password, hashedPassword);
+            }
+            return false;
+        }
+    }
+
+    public void updatePassword(int userId, String newPassword) throws SQLException {
+        String hashedPassword = utils.PasswordHasher.hashPassword(newPassword);
+        String req = "UPDATE user SET mdp = ? WHERE id = ?";
+        try (PreparedStatement ps = con.prepareStatement(req)) {
+            ps.setString(1, hashedPassword);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        }
+    }
+
+    public boolean emailExists(String email) throws SQLException {
+        String req = "SELECT COUNT(*) FROM user WHERE email = ?";
+        try (PreparedStatement ps = con.prepareStatement(req)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
+    public User getUserByEmail(String email) throws SQLException {
+        String req = "SELECT * FROM user WHERE email = ?";
+        try (PreparedStatement ps = con.prepareStatement(req)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("id"),
+                    rs.getInt("age"),
+                    rs.getInt("cin"),
+                    rs.getInt("telephone"),
+                    rs.getDouble("moyennes"),
+                    rs.getInt("annee_obtention_diplome"),
+                    rs.getString("nom"),
+                    rs.getString("prenom"),
+                    rs.getString("nationalite"),
+                    rs.getString("email"),
+                    rs.getString("domaine_etude"),
+                    rs.getString("universite_origine"),
+                    rs.getString("role"),
+                    rs.getDate("DateNaissance").toLocalDate(),
+                    rs.getString("mdp"),
+                    rs.getString("image")
+                );
+            }
+        }
+        return null;
     }
 }

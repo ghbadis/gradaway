@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
+import utils.SessionManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,15 +51,19 @@ public class MesReservationsRestaurantController {
     private ServiceRestaurant serviceRestaurant;
     private int userId; // ID de l'étudiant connecté
     
+    // Pour test ou admin : forcer l'affichage des réservations d'un user précis
+    private static final Integer USER_ID_AFFICHAGE_FORCE = null; // Remplace null par un id (ex: 5) pour forcer
+    
     @FXML
     public void initialize() {
         serviceReservation = new ServiceReservationRestaurant();
         serviceRestaurant = new ServiceRestaurant();
-        
-        // Par défaut, on utilise l'ID 2 qui semble avoir des réservations
-        userId = 2;
-        
-        // Les réservations seront chargées après l'initialisation du userId
+        // Récupérer l'ID de l'utilisateur connecté ou forcer un ID pour l'affichage
+        if (USER_ID_AFFICHAGE_FORCE != null) {
+            userId = USER_ID_AFFICHAGE_FORCE;
+        } else {
+            userId = SessionManager.getInstance().getUserId();
+        }
         loadReservations();
         // Setup dashboard navigation
         setupNavigationButtons();
@@ -81,13 +86,10 @@ public class MesReservationsRestaurantController {
      */
     private void loadReservations() {
         try {
-            System.out.println("Chargement de toutes les réservations de restaurant");
-            
-            // Récupérer toutes les réservations sans filtrer par ID d'utilisateur
-            List<ReservationRestaurant> reservations = serviceReservation.getAllReservations();
-            
-            System.out.println("Nombre total de réservations trouvées: " + reservations.size());
-            
+            System.out.println("Chargement des réservations de restaurant pour l'utilisateur ID: " + userId);
+            // Récupérer les réservations filtrées par ID d'utilisateur
+            List<ReservationRestaurant> reservations = serviceReservation.getReservationsByEtudiantId(userId);
+            System.out.println("Nombre de réservations trouvées pour l'utilisateur: " + reservations.size());
             if (reservations.isEmpty()) {
                 System.out.println("Aucune réservation trouvée, affichage du message 'pas de réservations'");
                 showNoReservationsMessage();

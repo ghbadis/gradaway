@@ -604,6 +604,10 @@ public class ListFoyerClientControllers {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/MesReservationsFoyer.fxml"));
             Parent root = loader.load();
 
+            // Récupérer le contrôleur et lui passer l'ID de l'utilisateur connecté
+            MesReservationsFoyerController controller = loader.getController();
+            controller.setUserId(utils.SessionManager.getInstance().getUserId());
+
             Stage stage = (Stage) foyerContainer.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);

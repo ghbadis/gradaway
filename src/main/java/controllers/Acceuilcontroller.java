@@ -84,11 +84,12 @@ public class Acceuilcontroller {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
             Parent root = loader.load();
-            
+
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
             // Display an alert if loading fails
@@ -109,6 +110,7 @@ public class Acceuilcontroller {
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion des Candidatures");
             stage.show();
+
         } catch (IOException e) {
             System.err.println("AcceuilController: Error loading adminconditature.fxml: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des candidatures.");
@@ -139,8 +141,8 @@ public class Acceuilcontroller {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Gestion du Dossier");
-            stage.setMinWidth(1200); // Match the size from LoginViewcontroller or adjust
-            stage.setMinHeight(800);
+            stage.setMinWidth(1138); // Match the size from LoginViewcontroller or adjust
+            stage.setMinHeight(696);
             stage.setResizable(true);
             stage.centerOnScreen();
             stage.show();
@@ -148,6 +150,7 @@ public class Acceuilcontroller {
             // Optional: Close the accueil window if needed
             // Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             // currentStage.close();
+            // Fermer la fenêtre actuelle
 
         } catch (IOException e) {
             System.err.println("AcceuilController: Error loading AjoutDossier.fxml: " + e.getMessage());
@@ -217,11 +220,13 @@ public class Acceuilcontroller {
             System.err.println("AcceuilController: Error loading EditProfile.fxml: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue du profil.");
             e.printStackTrace();
+
         } catch (Exception e) {
             System.err.println("AcceuilController: Unexpected error opening profile: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
             e.printStackTrace();
         }
+        
     }
 
     @FXML
@@ -230,6 +235,10 @@ public class Acceuilcontroller {
             System.out.println("AcceuilController: Opening Affiche Evenement view");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
             Parent root = loader.load();
+
+            // Récupérer le contrôleur et lui passer l'ID de l'utilisateur connecté
+            Ajouterafficheevenementcontrolleur controller = loader.getController();
+            controller.setCurrentUserId(getCurrentUserId());
 
             Stage stage = new Stage();
             Scene scene = new Scene(root);
@@ -250,6 +259,10 @@ public class Acceuilcontroller {
             showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
             e.printStackTrace();
         }
+    }
+
+    private int getCurrentUserId() {
+        return this.userId;
     }
 
     @FXML

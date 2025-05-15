@@ -8,8 +8,8 @@ import java.util.Properties;
 public class EmailUtil {
     private static final String HOST = "smtp.gmail.com";
     private static final String PORT = "587";
-    private static final String USERNAME = " nabliaous005@gmail.com"; // Email de l'application
-    private static final String PASSWORD = "gvzl awcg ldhf otxn"; // Mot de passe d'application fourni
+    private static final String USERNAME = " awaygrad@gmail.com"; // Email de l'application
+    private static final String PASSWORD = "dmzq fnaw uglm glyn"; // Mot de passe d'application fourni
     private static final String APP_NAME = "JavaFXApp"; // Nom de l'application
 
     public static void sendConfirmationEmail(String toEmail, String nom, String prenom, String nomEvenement, String date) {

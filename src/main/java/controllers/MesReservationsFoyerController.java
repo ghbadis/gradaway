@@ -58,12 +58,8 @@ public class MesReservationsFoyerController {
     public void initialize() {
         serviceReservation = new ServiceReservationFoyer();
         serviceFoyer = new ServiceFoyer();
-        
-        // Par défaut, on utilise l'ID 2 qui semble avoir des réservations
-        userId = 2;
-        
-        // Les réservations seront chargées après l'initialisation du userId
-        loadReservations();
+        // userId = 2; // SUPPRIMÉ : ne pas initialiser ici
+        // loadReservations(); // SUPPRIMÉ : ne pas charger ici
         setupNavigationButtons();
     }
 
@@ -258,12 +254,12 @@ public class MesReservationsFoyerController {
      */
     private void loadReservations() {
         try {
-            System.out.println("Chargement de toutes les réservations de foyer");
+            System.out.println("Chargement des réservations de foyer pour l'utilisateur ID: " + userId);
             
-            // Récupérer toutes les réservations sans filtrer par ID d'utilisateur
-            List<ReservationFoyer> reservations = serviceReservation.getAllReservations();
+            // Récupérer les réservations filtrées par ID d'utilisateur
+            List<ReservationFoyer> reservations = serviceReservation.getReservationsByEtudiantId(userId);
             
-            System.out.println("Nombre total de réservations trouvées: " + reservations.size());
+            System.out.println("Nombre de réservations trouvées pour l'utilisateur: " + reservations.size());
             
             if (reservations.isEmpty()) {
                 System.out.println("Aucune réservation trouvée, affichage du message 'pas de réservations'");

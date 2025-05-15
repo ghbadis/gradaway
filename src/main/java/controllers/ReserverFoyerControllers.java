@@ -90,6 +90,7 @@ public class ReserverFoyerControllers {
         loadFoyers();
         setupNavigationButtons();
         
+        try {
         // Récupérer l'email de l'utilisateur connecté depuis le SessionManager
         String userEmail = SessionManager.getInstance().getUserEmail();
         if (userEmail != null && !userEmail.isEmpty()) {
@@ -97,10 +98,27 @@ public class ReserverFoyerControllers {
             tf_gmail.setText(userEmail);
             tf_gmail.setEditable(false);
             tf_gmail.setDisable(true);
-            tf_gmail.setStyle(tf_gmail.getStyle() + "; -fx-opacity: 0.8; -fx-background-color: #e9ecef;");
+                tf_gmail.setStyle("-fx-background-color: #e9ecef; -fx-opacity: 0.8; -fx-text-fill: #666666;");
             System.out.println("ReserverFoyerControllers: Email utilisateur récupéré depuis SessionManager: " + userEmail);
         } else {
             System.out.println("ReserverFoyerControllers: Aucun email utilisateur trouvé dans SessionManager");
+                showAlert("Erreur", "Vous devez être connecté pour faire une réservation", Alert.AlertType.ERROR);
+                // Rediriger vers la page de connexion
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+                    Parent root = loader.load();
+                    Stage stage = (Stage) tf_gmail.getScene().getWindow();
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.setTitle("Login - GradAway");
+                    stage.centerOnScreen();
+                } catch (IOException e) {
+                    System.err.println("Erreur lors de la redirection vers la page de connexion: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération de l'email utilisateur: " + e.getMessage());
+            showAlert("Erreur", "Une erreur est survenue lors de la récupération de vos informations", Alert.AlertType.ERROR);
         }
     }
     
@@ -440,9 +458,10 @@ public class ReserverFoyerControllers {
             ServiceReservationFoyer serviceReservation = new ServiceReservationFoyer();
             
             // Rechercher un utilisateur existant dans la base de données
-            int idEtudiant = getUserIdFromDatabase();
+            int idEtudiant = SessionManager.getInstance().getUserId();
+            System.out.println("ID utilisé pour la réservation : " + idEtudiant);
             if (idEtudiant == -1) {
-                showAlert("Erreur", "Aucun utilisateur disponible dans la base de données. Veuillez d'abord créer un compte utilisateur.", Alert.AlertType.ERROR);
+                showAlert("Erreur", "Aucun utilisateur connecté. Veuillez d'abord vous connecter.", Alert.AlertType.ERROR);
                 return;
             }
             

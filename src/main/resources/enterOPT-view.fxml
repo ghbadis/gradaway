@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane prefHeight="600.0" prefWidth="1000.0" stylesheets="stylesbadiss.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EnterOPTViewcontroller">
+<StackPane prefHeight="600.0" prefWidth="1000.0" stylesheets="stylesbadiss.css" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EnterOPTViewcontroller">
     <HBox />
    <StackPane stylesheets="stylesbadis.css">
       <children>
@@ -33,16 +33,16 @@
                </Pane>
                <Pane prefHeight="600.0" prefWidth="639.0" style="-fx-background-color: #e5e5e5;">
                   <children>
-                     <Button layoutX="54.0" layoutY="398.0" mnemonicParsing="false" onAction="#verifyOTP" prefHeight="42.0" prefWidth="500.0" text="Verify" fx:id="verifyButton">
+                     <Button fx:id="verifyButton" layoutX="54.0" layoutY="398.0" mnemonicParsing="false" onAction="#verifyOTP" prefHeight="42.0" prefWidth="500.0" style="-fx-background-color: #6988f2;" text="Verify">
                         <font>
                            <Font name="System Bold" size="12.0" />
                         </font>
                      </Button>
                      <TextField fx:id="input1" layoutX="97.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
-                     <TextField fx:id="input2" layoutX="167.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
+                     <TextField fx:id="input2" layoutX="166.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
                      <TextField fx:id="input3" layoutX="238.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
-                     <TextField fx:id="input4" layoutX="304.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
-                     <TextField fx:id="input5" layoutX="366.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
+                     <TextField fx:id="input4" layoutX="307.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
+                     <TextField fx:id="input5" layoutX="374.0" layoutY="259.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="50.0" />
                      <Text layoutX="96.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter OTP" />
                      <Text layoutX="96.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="We have share a code of your registered email">
                         <font>

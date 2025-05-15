@@ -12,9 +12,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import utils.PasswordHasher;
+import Services.ServiceUser;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
+import java.sql.SQLException;
 
 public class SignUpView1controller {
     @FXML
@@ -33,14 +36,16 @@ public class SignUpView1controller {
     private TextField visiblePasswordField;
 
     private boolean isPasswordVisible = false;
+    private ServiceUser serviceUser;
 
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(gmail\\.com|yahoo\\.com|outlook\\.com|hotmail\\.com|esprit\\.tn|icloud\\.com|aol\\.com|protonmail\\.com|zoho\\.com|orange\\.fr|free\\.fr|sfr\\.fr|laposte\\.net|bouyguestelecom\\.fr)$";
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX, Pattern.CASE_INSENSITIVE);
     @FXML
     private Group backlogin;
 
     @FXML
     public void initialize() {
+        serviceUser = new ServiceUser();
         // Initialize password visibility toggle
         if (togglePasswordIcon != null) {
             togglePasswordIcon.setOnMouseClicked(event -> togglePasswordVisibility());
@@ -85,40 +90,63 @@ public class SignUpView1controller {
     }
 
     @FXML
-    public void continuer(ActionEvent actionEvent) {
-        if (validateFields()) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/SignUpView2.fxml"));
-                Parent root = loader.load();
-                SignUpView2controller controller = loader.getController();
-                controller.setUserData(tfnom.getText(), tfprenom.getText(), tfemail.getText(), tfmdp.getText());
-                
-                Stage stage = (Stage) tfnom.getScene().getWindow();
-                stage.setScene(new Scene(root));
-            } catch (IOException e) {
-                showAlert("Erreur", "Impossible de charger la page suivante");
-            }
-        }
-    }
+    public void continuer(ActionEvent event) {
+        String nom = tfnom.getText();
+        String prenom = tfprenom.getText();
+        String email = tfemail.getText();
+        String password = tfmdp.getText();
 
-    private boolean validateFields() {
-        if (tfnom.getText().isEmpty() || tfprenom.getText().isEmpty() || 
-            tfemail.getText().isEmpty() || tfmdp.getText().isEmpty()) {
-            showAlert("Erreur", "Tous les champs sont obligatoires");
-            return false;
+        if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            showAlert("Erreur", "Veuillez remplir tous les champs");
+            return;
         }
 
-        if (!EMAIL_PATTERN.matcher(tfemail.getText()).matches()) {
-            showAlert("Erreur", "Format d'email invalide");
-            return false;
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            showAlert("Erreur", "Veuillez entrer une adresse email valide");
+            return;
         }
 
-        if (tfmdp.getText().length() < 6) {
+        if (password.length() < 6) {
             showAlert("Erreur", "Le mot de passe doit contenir au moins 6 caractères");
-            return false;
+            return;
         }
 
-        return true;
+        try {
+            // Vérifier si l'email existe déjà
+            if (serviceUser.emailExists(email)) {
+                showAlert("Erreur", "Cette adresse email est déjà utilisée");
+                return;
+            }
+
+            // Hasher le mot de passe avant de le stocker
+            String hashedPassword = PasswordHasher.hashPassword(password);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SignUpView2.fxml"));
+            Parent root = loader.load();
+
+            SignUpView2controller controller = loader.getController();
+            controller.setUserData(nom, prenom, email, hashedPassword);
+
+            Stage currentStage = (Stage) tfnom.getScene().getWindow();
+            currentStage.close();
+
+            Stage signUpStage = new Stage();
+            Scene scene = new Scene(root);
+            signUpStage.setScene(scene);
+            signUpStage.setTitle("Sign Up - Step 2");
+            signUpStage.setResizable(true);
+            signUpStage.centerOnScreen();
+            signUpStage.show();
+
+        } catch (SQLException e) {
+            System.err.println("Error checking email: " + e.getMessage());
+            showAlert("Erreur", "Une erreur est survenue lors de la vérification de l'email");
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("Error loading SignUpView2.fxml: " + e.getMessage());
+            showAlert("Erreur", "Erreur lors de l'ouverture de la page suivante");
+            e.printStackTrace();
+        }
     }
 
     private void showAlert(String title, String content) {

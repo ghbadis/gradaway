@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import utils.MyDatabase;
+import utils.PasswordHasher;
 import utils.SessionManager;
 
 import java.io.IOException;
@@ -110,38 +111,43 @@ public class LoginViewcontroller {
 
         try {
             System.out.println("LoginViewcontroller: Attempting to query database for user: " + email);
-            String query = "SELECT id, role FROM user WHERE email = ? AND mdp = ?";
+            String query = "SELECT id, role, mdp FROM user WHERE email = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
             
-            System.out.println("LoginViewcontroller: Executing query: " + query.replace("?", "'" + email + "' or '****'"));
+            System.out.println("LoginViewcontroller: Executing query: " + query.replace("?", "'" + email + "'"));
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                int userId = resultSet.getInt("id");
-                String role = resultSet.getString("role");
-                System.out.println("LoginViewcontroller: Login successful for user ID: " + userId + " with role: " + role);
-                
-                // Stocker les informations de l'utilisateur dans le SessionManager
-                SessionManager.getInstance().setUserInfo(userId, email, role);
-                System.out.println("LoginViewcontroller: User info stored in SessionManager");
-                
-                Stage loginStage = (Stage) loginEmail.getScene().getWindow();
-                loginStage.close();
+                String hashedPassword = resultSet.getString("mdp");
+                if (PasswordHasher.verifyPassword(password, hashedPassword)) {
+                    int userId = resultSet.getInt("id");
+                    String role = resultSet.getString("role");
+                    System.out.println("LoginViewcontroller: Login successful for user ID: " + userId + " with role: " + role);
+                    
+                    // Stocker les informations de l'utilisateur dans SessionManager
+                    SessionManager.getInstance().setUserInfo(userId, email, role);
+                    System.out.println("LoginViewcontroller: User info stored in SessionManager - ID: " + userId + ", Email: " + email + ", Role: " + role);
+                    
+                    Stage loginStage = (Stage) loginEmail.getScene().getWindow();
+                    loginStage.close();
 
-                if ("admin".equalsIgnoreCase(role)) {
-                    System.out.println("Opening Admin interface");
-                    openAdminInterface(userId);
-                } else if ("etudiant".equalsIgnoreCase(role)) {
-                    System.out.println("Opening Etudiant interface");
-                    openAccueil(userId);
+                    if ("admin".equalsIgnoreCase(role)) {
+                        System.out.println("Opening Admin interface");
+                        openAdminInterface(userId);
+                    } else if ("etudiant".equalsIgnoreCase(role)) {
+                        System.out.println("Opening Etudiant interface");
+                        openAccueil(userId);
+                    } else {
+                        System.err.println("Role non reconnu: '" + role + "'");
+                        showAlert("Erreur", "Rôle non reconnu: " + role);
+                    }
                 } else {
-                    System.err.println("Role non reconnu: '" + role + "'");
-                    showAlert("Erreur", "Rôle non reconnu: " + role);
+                    System.out.println("LoginViewcontroller: Login failed - invalid password for user: " + email);
+                    showAlert("Erreur", "Email ou mot de passe incorrect");
                 }
             } else {
-                System.out.println("LoginViewcontroller: Login failed - invalid credentials for user: " + email);
+                System.out.println("LoginViewcontroller: Login failed - user not found: " + email);
                 showAlert("Erreur", "Email ou mot de passe incorrect");
             }
         } catch (SQLException e) {

@@ -6,6 +6,7 @@ import entities.Dossier;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -37,14 +38,6 @@ public class AjoutDossierController {
     @FXML private ImageView lettreMotivationPreview;
     @FXML private ImageView dossierSantePreview;
     @FXML private ImageView cvPreview;
-    @FXML private TextField cinPathField;
-    @FXML private TextField photoPathField;
-    @FXML private TextField diplomeBacPathField;
-    @FXML private TextField releveNotePathField;
-    @FXML private TextField diplomeObtenuPathField;
-    @FXML private TextField lettreMotivationPathField;
-    @FXML private TextField dossierSantePathField;
-    @FXML private TextField cvPathField;
     @FXML private DatePicker dateDepotPicker;
     @FXML private Button submitButton;
     @FXML private Button cancelButton;
@@ -107,6 +100,8 @@ public class AjoutDossierController {
         System.out.println("Initialisation du contrôleur AjoutDossierController");
         
         dateDepotPicker.setValue(LocalDate.now());
+        dateDepotPicker.setDisable(true);
+        dateDepotPicker.setStyle("-fx-opacity: 0.7;");
         serviceDossier = new ServiceDossier();
         serviceUser = new ServiceUser();
 
@@ -261,17 +256,11 @@ public class AjoutDossierController {
             // Formater la date pour l'affichage
             String dateDepot = dossier.getDatedepot().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             
-            // Générer le contenu HTML de l'email
-            String emailContent = EmailSender.generateDossierConfirmationEmail(
-                dossier.getId_dossier(),
-                dateDepot
-            );
+            // Générer le contenu HTML de l'email sans l'ID du dossier
+            String emailContent = EmailSender.generateDossierConfirmationEmail(dateDepot);
             
-            // Générer le contenu du code QR
-            String qrContent = EmailSender.generateDossierQRContent(
-                dossier.getId_dossier(),
-                dateDepot
-            );
+            // Générer le contenu du code QR sans l'ID du dossier
+            String qrContent = EmailSender.generateDossierQRContent(dateDepot);
             
             // Nom du fichier QR code
             String qrFileName = "dossier_" + dossier.getId_dossier() + ".png";
@@ -297,6 +286,7 @@ public class AjoutDossierController {
             } else {
                 System.err.println("Impossible de trouver l'email de l'étudiant avec l'ID: " + dossier.getId_etudiant());
             }
+
         } catch (Exception e) {
             System.err.println("Erreur lors de l'envoi de l'email: " + e.getMessage());
             e.printStackTrace();
@@ -369,7 +359,7 @@ public class AjoutDossierController {
             viewDossierButton.setDisable(false);
             MqttService mqttService = new MqttService();
             ServiceUser serviceUser = new ServiceUser();
-            mqttService.publishSms(String.valueOf(serviceUser.getUserById(currentEtudiantId).getTelephone()), "Bonjour"+serviceUser.getUserById(currentEtudiantId).getNom()+"✅ Le dossier a ete cree avec succes.");
+            mqttService.publishSms(String.valueOf(serviceUser.getUserById(currentEtudiantId).getTelephone()), "Bonjour" + serviceUser.getUserById(currentEtudiantId).getNom()+ "✅ Le dossier a ete cree avec succes.");
             mqttService.disconnect();
 
         } catch (SQLException e) {
@@ -396,7 +386,8 @@ public class AjoutDossierController {
             AfficherDossierController afficherController = loader.getController();
             afficherController.setEtudiantId(currentEtudiantId);
 
-            Stage stage = new Stage();
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Mon Dossier");
@@ -404,8 +395,7 @@ public class AjoutDossierController {
             stage.setMinHeight(700);
             stage.setResizable(true);
             stage.centerOnScreen();
-            stage.show();
-
+          
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur Chargement FXML", "Impossible de charger la vue 'Afficher Dossier'.");
             System.err.println("Error loading AfficherDossier.fxml:");
@@ -459,4 +449,190 @@ public class AjoutDossierController {
         }
         alert.showAndWait();
     }
-} 
+
+    @FXML
+    public void acceuilbutton(ActionEvent actionEvent) {
+        try {
+            System.out.println("AjoutDossierController: Opening Accueil view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/acceuil.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller and set the user ID
+            Acceuilcontroller controller = loader.getController();
+            controller.setUserId(this.currentEtudiantId);
+
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Accueil - GradAway");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            System.err.println("AjoutDossierController: Error loading accueil view: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la page d'accueil.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void userbutton(ActionEvent actionEvent) {
+        if (this.currentEtudiantId <= 0) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "ID utilisateur invalide. Impossible d'ouvrir le profil.");
+            return;
+        }
+
+        try {
+            System.out.println("AjoutDossierController: Opening EditProfile view for User ID: " + this.currentEtudiantId);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditProfile.fxml"));
+            Parent root = loader.load();
+
+            EditProfileController editProfileController = loader.getController();
+            editProfileController.setUserId(this.currentEtudiantId);
+
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Modifier Mon Profil");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            System.err.println("AjoutDossierController: Error loading EditProfile.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue du profil.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void universitébutton(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminconditature.fxml"));
+            Parent root = loader.load();
+
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Candidatures");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            System.err.println("AjoutDossierController: Error loading adminconditature.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des candidatures.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void evenementbutton(ActionEvent actionEvent) {
+        try {
+            System.out.println("AjoutDossierController: Opening Affiche Evenement view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affiche_evenement.fxml"));
+            Parent root = loader.load();
+
+            Ajouterafficheevenementcontrolleur controller = loader.getController();
+            controller.setCurrentUserId(this.currentEtudiantId);
+
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Événements");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            System.err.println("AjoutDossierController: Error loading affiche_evenement.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des événements.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void hebergementbutton(ActionEvent actionEvent) {
+        try {
+            System.out.println("AjoutDossierController: Opening ListFoyerClient view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListFoyerClient.fxml"));
+            Parent root = loader.load();
+
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Foyers");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            System.err.println("AjoutDossierController: Error loading ListFoyerClient.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des foyers.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void restaurantbutton(ActionEvent actionEvent) {
+        try {
+            System.out.println("AjoutDossierController: Opening ListRestaurantClient view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListRestaurantClient.fxml"));
+            Parent root = loader.load();
+
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des Restaurants");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            System.err.println("AjoutDossierController: Error loading ListRestaurantClient.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des restaurants.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void entretienbutton(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemanderEntretien.fxml"));
+            Parent root = loader.load();
+
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Demander Entretien");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des entretiens.");
+        }
+    }
+
+    @FXML
+    public void logoutbutton(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+            Parent root = loader.load();
+
+            // Get the current stage and update its scene
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Login - GradAway");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            System.err.println("AjoutDossierController: Error loading login view: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la déconnexion.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void volsbutton(ActionEvent actionEvent) {
+        // To be implemented when the flights functionality is ready
+        showAlert(Alert.AlertType.INFORMATION, "Information", "La fonctionnalité des vols sera bientôt disponible.");
+    }
+
+}

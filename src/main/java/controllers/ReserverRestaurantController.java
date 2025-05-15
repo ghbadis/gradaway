@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -23,8 +25,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import javax.imageio.ImageIO;
 import utils.EmailSender;
-import utils.QRCodeGenerator;
+import utils.QRCodeGeneratorF;
 import utils.SessionManager;
 
 public class ReserverRestaurantController {
@@ -66,18 +69,44 @@ public class ReserverRestaurantController {
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 2);
         personnesSpinner.setValueFactory(valueFactory);
         
-        // Récupérer l'email de l'utilisateur connecté depuis le SessionManager
-        String userEmail = SessionManager.getInstance().getUserEmail();
-        if (userEmail != null && !userEmail.isEmpty()) {
-            // Afficher l'email dans le champ et le rendre non modifiable
-            emailField.setText(userEmail);
-            emailField.setEditable(false);
-            emailField.setDisable(true);
-            emailField.setStyle("-fx-opacity: 0.8; -fx-background-color: #e9ecef;");
-            System.out.println("ReserverRestaurantController: Email utilisateur récupéré depuis SessionManager: " + userEmail);
-        } else {
-            System.out.println("ReserverRestaurantController: Aucun email utilisateur trouvé dans SessionManager");
+        // Vérifier que tous les champs sont correctement initialisés
+        if (nomClientField == null || emailField == null || personnesSpinner == null) {
+            System.err.println("Erreur: Certains champs FXML ne sont pas correctement initialisés (nomClientField, emailField, personnesSpinner)");
+            showAlert("Erreur", "Une erreur est survenue lors de l'initialisation de l'interface. Veuillez redémarrer l'application.", Alert.AlertType.ERROR);
+            return;
         }
+        
+        try {
+            // Récupérer l'email de l'utilisateur connecté depuis le SessionManager
+            String userEmail = SessionManager.getInstance().getUserEmail();
+            if (userEmail != null && !userEmail.isEmpty()) {
+                // Afficher l'email dans le champ et le rendre non modifiable
+                emailField.setText(userEmail);
+                emailField.setEditable(false);
+                emailField.setDisable(true);
+                emailField.setStyle("-fx-background-color: #e9ecef; -fx-opacity: 0.8; -fx-text-fill: #666666;");
+                System.out.println("ReserverRestaurantController: Email utilisateur récupéré depuis SessionManager: " + userEmail);
+            } else {
+                System.out.println("ReserverRestaurantController: Aucun email utilisateur trouvé dans SessionManager");
+                showAlert("Erreur", "Vous devez être connecté pour faire une réservation", Alert.AlertType.ERROR);
+                // Rediriger vers la page de connexion
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/login-view.fxml"));
+                    Parent root = loader.load();
+                    Stage stage = (Stage) emailField.getScene().getWindow();
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.setTitle("Login - GradAway");
+                    stage.centerOnScreen();
+                } catch (IOException e) {
+                    System.err.println("Erreur lors de la redirection vers la page de connexion: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la récupération de l'email utilisateur: " + e.getMessage());
+            showAlert("Erreur", "Une erreur est survenue lors de la récupération de vos informations", Alert.AlertType.ERROR);
+        }
+        
         // Setup dashboard navigation
         setupNavigationButtons();
     }
@@ -433,24 +462,17 @@ public class ReserverRestaurantController {
      */
     private void naviguerVersMesReservations(int idEtudiant) {
         try {
-            // Charger la vue des réservations
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/MesReservationsRestaurant.fxml"));
             Parent root = loader.load();
-            
-            // Récupérer le contrôleur et définir l'ID de l'utilisateur
+            // Récupérer le contrôleur et définir l'ID de l'utilisateur connecté
             MesReservationsRestaurantController controller = loader.getController();
-            // Utiliser l'ID 2 pour voir les réservations existantes
-            controller.setUserId(2);
-            
+            controller.setUserId(SessionManager.getInstance().getUserId());
             // Afficher la vue
             Scene scene = new Scene(root);
             Stage stage = (Stage) reserverButton.getScene().getWindow();
-            
-            // Transition de fondu
             FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
-            
             stage.setScene(scene);
             fadeIn.play();
         } catch (IOException e) {
@@ -465,14 +487,23 @@ public class ReserverRestaurantController {
     private boolean validateFields() {
         StringBuilder errors = new StringBuilder();
         
-        if (nomClientField.getText().trim().isEmpty()) {
+        // Vérifier si les champs sont null
+        if (nomClientField == null) {
+            errors.append("- Le champ nom n'est pas initialisé\n");
+        } else if (nomClientField.getText().trim().isEmpty()) {
             errors.append("- Le nom est requis\n");
         }
         
-        if (emailField.getText().trim().isEmpty()) {
+        if (emailField == null) {
+            errors.append("- Le champ email n'est pas initialisé\n");
+        } else if (emailField.getText().trim().isEmpty()) {
             errors.append("- L'email est requis\n");
         } else if (!isValidEmail(emailField.getText().trim())) {
             errors.append("- Format d'email invalide\n");
+        }
+        
+        if (personnesSpinner == null) {
+            errors.append("- Le champ nombre de personnes n'est pas initialisé\n");
         }
         
         if (errors.length() > 0) {
@@ -574,6 +605,17 @@ public class ReserverRestaurantController {
             // Nom du fichier QR code
             String qrFileName = "reservation_restaurant_" + System.currentTimeMillis() + ".png";
             
+            // Générer le QR code
+            BufferedImage qrImage = QRCodeGeneratorF.generateQRCodeBufferedImage(qrContent, 300, 300);
+            if (qrImage == null) {
+                throw new Exception("QR code generation failed (image is null)");
+            }
+            
+            // Convertir l'image en tableau de bytes
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(qrImage, "PNG", baos);
+            byte[] imageBytes = baos.toByteArray();
+            
             // Envoyer l'email avec le code QR en pièce jointe
             boolean sent = EmailSender.sendEmail(
                 email, 
@@ -586,11 +628,12 @@ public class ReserverRestaurantController {
             if (sent) {
                 System.out.println("Email de confirmation avec code QR envoyé avec succès à " + email);
             } else {
-                System.err.println("Erreur lors de l'envoi de l'email de confirmation à " + email);
+                throw new Exception("Échec de l'envoi de l'email");
             }
         } catch (Exception e) {
             System.err.println("Erreur lors de l'envoi de l'email: " + e.getMessage());
             e.printStackTrace();
+            showAlert("Erreur", "Une erreur est survenue lors de l'envoi de l'email de confirmation. Veuillez vérifier votre adresse email.", Alert.AlertType.WARNING);
         }
     }
     

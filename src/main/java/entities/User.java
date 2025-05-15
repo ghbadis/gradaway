@@ -3,11 +3,12 @@ package entities;
 import java.time.LocalDate;
 
 public class User {
-    private int id, age, cin, telephone, moyennes, annee_obtention_diplome;
+    private int id, age, cin, telephone, annee_obtention_diplome;
+    private double moyennes;
     private String nom, prenom, nationalite, email, domaine_etude, universite_origine, role, mdp, image;
     private LocalDate dateNaissance;
 
-    public User(int id, int age, int cin, int telephone, int moyennes, int annee_obtention_diplome,
+    public User(int id, int age, int cin, int telephone, double moyennes, int annee_obtention_diplome,
                 String nom, String prenom, String nationalite, String email,
                 String domaine_etude, String universite_origine, String role,
                 LocalDate dateNaissance, String mdp, String image) {
@@ -29,7 +30,7 @@ public class User {
         this.image = image;
     }
 
-    public User(int age, int cin, int telephone, int moyennes, int annee_obtention_diplome,
+    public User(int age, int cin, int telephone, double moyennes, int annee_obtention_diplome,
                 String nom, String prenom, String nationalite, String email,
                 String domaine_etude, String universite_origine, String role,
                 LocalDate dateNaissance, String mdp, String image) {
@@ -123,11 +124,11 @@ public class User {
         this.telephone = telephone;
     }
 
-    public int getMoyennes() {
+    public double getMoyennes() {
         return moyennes;
     }
 
-    public void setMoyennes(int moyennes) {
+    public void setMoyennes(double moyennes) {
         this.moyennes = moyennes;
     }
 
