@@ -187,6 +187,9 @@ public class CandidatureCardsController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Acceuil.fxml"));
             Parent root = loader.load();
+            Acceuilcontroller controller = loader.getController();
+            controller.setUserId(this.getCurrentUserId()); // Pass the current user ID
+
             Stage stage = (Stage) retourButton.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
