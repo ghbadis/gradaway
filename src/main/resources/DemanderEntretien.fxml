@@ -17,6 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Region?>
 
 
 <SplitPane dividerPositions="0.2399697199091597" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DemanderEntretienController">
@@ -254,6 +255,11 @@
                   <Insets bottom="30" left="30" right="30" top="30" />
               </padding>
       
+              <HBox alignment="TOP_RIGHT">
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button fx:id="voirDemandesButton" onAction="#voirDemandes" style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 16;" text="Voir mes demandes" />
+              </HBox>
+      
               <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="Demande d'Entretien Professionnel" />
       
               <GridPane alignment="CENTER" hgap="10" vgap="10">
@@ -267,11 +273,11 @@
                   <DatePicker fx:id="dateSouhaitee" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       
                   <Label style="-fx-text-fill: white; -fx-font-size: 14px;" text="Heure souhaitée:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                  <TextField fx:id="heureSouhaitee" promptText="HH:mm" style="-fx-background-color: white; -fx-prompt-text-fill: gray;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      
-                  <Label style="-fx-text-fill: white; -fx-font-size: 14px;" text="Objet de l'entretien:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                  <TextArea fx:id="objetTextArea" prefRowCount="4" promptText="Décrivez l'objet de votre entretien" style="-fx-background-color: white; -fx-prompt-text-fill: gray;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-      
+                  <ComboBox fx:id="heureSouhaiteeComboBox" promptText="Choisissez une plage horaire" styleClass="form-field" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                  <Label style="-fx-text-fill: white; -fx-font-size: 14px;" text="Type d'entretien:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                  <ComboBox fx:id="typeEntretienComboBox" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
                   <Label style="-fx-text-fill: white; -fx-font-size: 14px;" text="Offre universitaire:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
                   <ComboBox fx:id="offreComboBox" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                <columnConstraints>

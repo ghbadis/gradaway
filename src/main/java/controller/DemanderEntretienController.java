@@ -1,10 +1,14 @@
 package controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import Services.ServiceDemandeEntretien;
 import utils.MyDatabase;
+import utils.SessionManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,7 +27,9 @@ public class DemanderEntretienController {
     @FXML
     private DatePicker dateSouhaitee;
     @FXML
-    private TextField heureSouhaitee;
+    private ComboBox<String> heureSouhaiteeComboBox;
+    @FXML
+    private ComboBox<String> typeEntretienComboBox;
     @FXML
     private TextArea objetTextArea;
     @FXML
@@ -32,19 +38,44 @@ public class DemanderEntretienController {
     private Button annulerButton;
     @FXML
     private ComboBox<String> offreComboBox;
+    @FXML
+    private Button voirDemandesButton;
 
     private static final Pattern TIME_PATTERN = Pattern.compile("^([01]?[0-9]|2[0-3]):[0-5][0-9]$");
     private final ServiceDemandeEntretien serviceDemandeEntretien = new ServiceDemandeEntretien();
 
     @FXML
     public void initialize() {
-        // Fill domain dropdown with common programming domains
-        domaineComboBox.getItems().addAll(
-            "Java", "Python", "C++", "JavaScript", "SQL",
-            "Web Development", "Mobile Development", "Data Science",
-            "Machine Learning", "DevOps", "Cloud Computing"
+        // Auto-fill email field with logged-in user's email
+        String loggedInEmail = SessionManager.getInstance().getUserEmail();
+        if (loggedInEmail != null && !loggedInEmail.isEmpty()) {
+            emailField.setText(loggedInEmail);
+            emailField.setEditable(false);
+        }
+        // Fill domain dropdown from candidature table
+        try {
+            java.util.List<String> domaines = serviceDemandeEntretien.recupererDomaines();
+            domaineComboBox.getItems().addAll(domaines);
+            if (!domaines.isEmpty()) {
+                domaineComboBox.setValue(domaines.get(0));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error loading domaines: " + e.getMessage());
+            // Fallback to default values if needed
+            domaineComboBox.getItems().addAll(
+                "Java", "Python", "C++", "JavaScript", "SQL",
+                "Web Development", "Mobile Development", "Data Science",
+                "Machine Learning", "DevOps", "Cloud Computing"
+            );
+        }
+        // Set heureSouhaiteeComboBox values with consistent format
+        heureSouhaiteeComboBox.getItems().addAll(
+            "08h00-10h00",
+            "14h00-16h00",
+            "20h00-22h00"
         );
-
+        // Set type d'entretien values
+        typeEntretienComboBox.getItems().addAll("Présentiel", "En ligne");
         // Set today as minimum date
         dateSouhaitee.setDayCellFactory(picker -> new DateCell() {
             public void updateItem(LocalDate date, boolean empty) {
@@ -52,8 +83,27 @@ public class DemanderEntretienController {
                 setDisable(empty || date.compareTo(LocalDate.now()) < 0);
             }
         });
-
         offreComboBox.getItems().addAll("licence", "master", "doctorat", "echange universitaire");
+        // Add focus/blur listeners for blue border
+        addFieldFocusListeners();
+    }
+
+    private void addFieldFocusListeners() {
+        addFocusListener(emailField);
+        addFocusListener(domaineComboBox);
+        addFocusListener(dateSouhaitee);
+        addFocusListener(heureSouhaiteeComboBox);
+        addFocusListener(typeEntretienComboBox);
+        addFocusListener(offreComboBox);
+    }
+    private void addFocusListener(Control field) {
+        field.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                field.setStyle("-fx-border-color: #2196F3; -fx-border-width: 2px; -fx-background-color: white;");
+            } else {
+                field.setStyle("-fx-background-color: white;");
+            }
+        });
     }
 
     @FXML
@@ -61,7 +111,6 @@ public class DemanderEntretienController {
         if (!validateFields()) {
             return;
         }
-
         try {
             String email = emailField.getText().trim();
             int userId = getUserIdByEmail(email);
@@ -77,39 +126,73 @@ public class DemanderEntretienController {
                 userId,
                 domaineComboBox.getValue(),
                 dateSouhaitee.getValue(),
-                LocalTime.parse(heureSouhaitee.getText().trim()),
-                objetTextArea.getText().trim(),
-                offreComboBox.getValue()
+                parseHeureFromComboBox(),
+                "", // No objet field
+                offreComboBox.getValue(),
+                typeEntretienComboBox.getValue()
             );
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Votre demande a été soumise avec succès");
-            annuler(null);
+            // Do not close the window
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la soumission de la demande: " + e.getMessage());
         }
     }
 
+    private LocalTime parseHeureFromComboBox() {
+        String selected = heureSouhaiteeComboBox.getValue();
+        if (selected == null) return null;
+        
+        try {
+            // Parse the start time from the range (e.g., "08h00-10h00" -> 08:00)
+            String start = selected.split("-")[0].trim();
+            // Convert "14h" to "14:00" and "14h00" to "14:00"
+            start = start.replace("h", ":");
+            if (!start.contains(":")) {
+                start += ":00";
+            }
+            // Ensure HH:mm format
+            if (start.length() == 4) {
+                start = "0" + start;
+            }
+            return LocalTime.parse(start);
+        } catch (Exception e) {
+            System.err.println("Error parsing time: " + e.getMessage());
+            return null;
+        }
+    }
+
     private boolean validateFields() {
-        if (emailField.getText().trim().isEmpty() ||
-            domaineComboBox.getValue() == null ||
-            dateSouhaitee.getValue() == null ||
-            heureSouhaitee.getText().trim().isEmpty() ||
-            objetTextArea.getText().trim().isEmpty() ||
-            offreComboBox.getValue() == null) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez remplir tous les champs");
-            return false;
+        boolean valid = true;
+        if (emailField.getText().trim().isEmpty()) {
+            emailField.setStyle("-fx-border-color: #e53935; -fx-border-width: 2px; -fx-background-color: white;");
+            valid = false;
+        }
+        if (domaineComboBox.getValue() == null) {
+            domaineComboBox.setStyle("-fx-border-color: #e53935; -fx-border-width: 2px; -fx-background-color: white;");
+            valid = false;
+        }
+        if (dateSouhaitee.getValue() == null) {
+            dateSouhaitee.setStyle("-fx-border-color: #e53935; -fx-border-width: 2px; -fx-background-color: white;");
+            valid = false;
+        }
+        if (heureSouhaiteeComboBox.getValue() == null) {
+            heureSouhaiteeComboBox.setStyle("-fx-border-color: #e53935; -fx-border-width: 2px; -fx-background-color: white;");
+            valid = false;
+        }
+        if (typeEntretienComboBox.getValue() == null) {
+            typeEntretienComboBox.setStyle("-fx-border-color: #e53935; -fx-border-width: 2px; -fx-background-color: white;");
+            valid = false;
+        }
+        if (offreComboBox.getValue() == null) {
+            offreComboBox.setStyle("-fx-border-color: #e53935; -fx-border-width: 2px; -fx-background-color: white;");
+            valid = false;
         }
         String email = emailField.getText().trim();
         if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez entrer un email valide");
-            return false;
+            emailField.setStyle("-fx-border-color: #e53935; -fx-border-width: 2px; -fx-background-color: white;");
+            valid = false;
         }
-
-        if (!TIME_PATTERN.matcher(heureSouhaitee.getText().trim()).matches()) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Le format de l'heure doit être HH:mm");
-            return false;
-        }
-
-        return true;
+        return valid;
     }
 
     private int getUserIdByEmail(String email) throws SQLException {
@@ -144,6 +227,20 @@ public class DemanderEntretienController {
     public void annuler(javafx.event.ActionEvent event) {
         Stage stage = (Stage) annulerButton.getScene().getWindow();
         stage.close();
+    }
+
+    @FXML
+    private void voirDemandes() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MesDemandesEntretien.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Mes Demandes d'Entretien");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la fenêtre des demandes: " + e.getMessage());
+        }
     }
 
     private void showAlert(Alert.AlertType type, String title, String content) {

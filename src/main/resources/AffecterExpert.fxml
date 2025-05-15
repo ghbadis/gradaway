@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="20" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AffecterExpertController">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox alignment="CENTER" style="-fx-background-color: #3454d1;">
+        <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="Affecter un Expert" />
+    </HBox>
+
+    <VBox spacing="10">
+        <Label text="Informations de la demande:" style="-fx-font-weight: bold;"/>
+        <GridPane vgap="10" hgap="10">
+            <Label text="Nom du candidat:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label fx:id="nomCandidatLabel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            
+            <Label text="Domaine:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="domaineLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            
+            <Label text="Date souhaitée:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="dateSouhaiteeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+    </VBox>
+
+    <VBox spacing="10">
+        <Label text="Sélectionner un expert:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="expertsComboBox" prefWidth="300"/>
+    </VBox>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="confirmerButton" onAction="#confirmerAffectation" text="Confirmer" style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 32;"/>
+        <Button fx:id="annulerButton" onAction="#annuler" text="Annuler" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 32;"/>
+    </HBox>
+</VBox> 

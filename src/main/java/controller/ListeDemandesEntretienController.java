@@ -60,6 +60,7 @@ public class ListeDemandesEntretienController {
 
     @FXML
     public void initialize() {
+        demandesListView.setPlaceholder(new Label("Aucune demandes n'as été envoyer"));
         demandesListView.setCellFactory(lv -> new ListCell<DemandeEntretien>() {
             @Override
             protected void updateItem(DemandeEntretien demande, boolean empty) {
@@ -78,36 +79,50 @@ public class ListeDemandesEntretienController {
                         new Label("Date Souhaitée: " + demande.getDateSouhaitee().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))),
                         new Label("Heure: " + demande.getHeureSouhaitee().format(DateTimeFormatter.ofPattern("HH:mm"))),
                         new Label("Statut: " + demande.getStatut()),
-                        new Label("Offre: " + demande.getOffre())
+                        new Label("Offre: " + demande.getOffre()),
+                        new Label("Type d'entretien: " + demande.getTypeEntretien()),
+                        new Label("Expert : " + demande.getExpert())
                     );
                     Button accepterBtn = new Button("Accepter");
                     accepterBtn.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 4 12;");
-                    accepterBtn.setOnAction(e -> accepterDemande(demande));
+                    accepterBtn.setOnAction(e -> {
+                        if (demande.getIdExpert() <= 0) {
+                            showAlert(Alert.AlertType.ERROR, "Erreur", "Vous devez ajouter un expert à cette demande");
+                        } else {
+                            accepterDemande(demande);
+                        }
+                    });
                     Button refuserBtn = new Button("Refuser");
                     refuserBtn.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 4 12;");
                     refuserBtn.setOnAction(e -> refuserDemande(demande));
-                    row.getChildren().addAll(infoBox, accepterBtn, refuserBtn);
+                    Button affecterExpertBtn = new Button("Affecter expert");
+                    affecterExpertBtn.setStyle("-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 4 12;");
+                    affecterExpertBtn.setOnAction(e -> affecterExpert(demande));
+                    row.getChildren().addAll(infoBox, accepterBtn, refuserBtn, affecterExpertBtn);
                     setGraphic(row);
                     setText(null);
                 }
             }
         });
         loadDemandes();
-        demandesListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                objetTextArea.setText(newSelection.getObjet());
-            }
-        });
     }
 
     private void loadDemandes() {
         try {
-            String query = "SELECT d.*, u.nom, u.prenom FROM demandes_entretien d JOIN user u ON d.id_user = u.id ORDER BY date_demande DESC";
+            String query = "SELECT d.*, u.nom, u.prenom, e.nom_expert, e.prenom_expert " +
+                           "FROM demandes_entretien d " +
+                           "JOIN user u ON d.id_user = u.id " +
+                           "LEFT JOIN expert e ON d.id_expert = e.id_expert " +
+                           "ORDER BY date_demande DESC";
             try (Connection con = MyDatabase.getInstance().getCnx();
                  Statement st = con.createStatement();
                  ResultSet rs = st.executeQuery(query)) {
                 ObservableList<DemandeEntretien> demandesList = FXCollections.observableArrayList();
                 while (rs.next()) {
+                    String expertName = "Pas selectionné";
+                    if (rs.getString("nom_expert") != null) {
+                        expertName = rs.getString("nom_expert") + " " + rs.getString("prenom_expert");
+                    }
                     demandesList.add(new DemandeEntretien(
                         rs.getInt("id_demande"),
                         rs.getInt("id_user"),
@@ -118,7 +133,10 @@ public class ListeDemandesEntretienController {
                         rs.getTime("heure_souhaitee").toLocalTime(),
                         rs.getString("objet"),
                         rs.getString("statut"),
-                        rs.getString("offre")
+                        rs.getString("offre"),
+                        rs.getInt("id_expert"),
+                        expertName,
+                        rs.getString("type_entretien")
                     ));
                 }
                 demandesListView.setItems(demandesList);
@@ -128,6 +146,23 @@ public class ListeDemandesEntretienController {
         }
     }
 
+    private String getExpertNameById(int idExpert) {
+        String name = "Pas selectionné";
+        String query = "SELECT nom_expert, prenom_expert FROM expert WHERE id_expert = ?";
+        try (Connection con = MyDatabase.getInstance().getCnx();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, idExpert);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    name = rs.getString("nom_expert") + " " + rs.getString("prenom_expert");
+                }
+            }
+        } catch (SQLException e) {
+            // ignore
+        }
+        return name;
+    }
+
     private void accepterDemande(DemandeEntretien demande) {
         try {
             serviceDemandeEntretien.accepterDemande(demande.getIdDemande());
@@ -135,12 +170,10 @@ public class ListeDemandesEntretienController {
             String userEmail = getUserEmailById(demande.getIdUser());
             String userName = demande.getNomUser();
             String subject = "Confirmation de votre entretien avec Gradaway";
-            String body = "Bonjour " + userName + ",\n\n" +
-                "Votre demande d'entretien pour le " + demande.getDateSouhaitee().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
-                " à " + demande.getHeureSouhaitee().format(DateTimeFormatter.ofPattern("HH:mm")) +
-                " a été acceptée.\n\nMerci de vous présenter à l'heure prévue.\n\nCordialement,\nL'équipe Gradaway";
+            String date = demande.getDateSouhaitee().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            String heure = demande.getHeureSouhaitee().format(DateTimeFormatter.ofPattern("HH:mm"));
             try {
-                MailUtil.sendMail(userEmail, subject, body);
+                sendStyledEmail(userEmail, subject, userName, date, heure, demande.getTypeEntretien());
             } catch (MessagingException e) {
                 showAlert(Alert.AlertType.ERROR, "Erreur Email", "L'email n'a pas pu être envoyé: " + e.getMessage());
             }
@@ -149,6 +182,30 @@ public class ListeDemandesEntretienController {
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'acceptation de la demande: " + e.getMessage());
         }
+    }
+
+    private void sendStyledEmail(String to, String subject, String userName, String date, String heure, String typeEntretien) throws javax.mail.MessagingException {
+        String locationInfo = "";
+        if ("Présentiel".equals(typeEntretien)) {
+            String locationLink = utils.MailUtil.generateLocationLink();
+            locationInfo = "<p>Localisation : <a href='" + locationLink + "'>Cliquez ici pour voir le lieu de l'entretien</a></p>";
+        } else if ("En ligne".equals(typeEntretien)) {
+            String zoomLink = utils.MailUtil.generateZoomLink();
+            locationInfo = "<p>Lien Zoom : <a href='" + zoomLink + "'>Cliquez ici pour rejoindre la réunion</a></p>";
+        }
+
+        String htmlBody = "" +
+                "<div style='font-family: Arial, sans-serif; background: #f8f9fa; padding: 24px;'>" +
+                "  <div style='background: #3454d1; color: white; padding: 16px 24px; border-radius: 8px 8px 0 0; font-size: 22px; font-weight: bold;'>Confirmation de votre entretien</div>" +
+                "  <div style='background: white; padding: 24px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 8px #e0e0e0;'>" +
+                "    <p>Bonjour <b>" + userName + "</b>,</p>" +
+                "    <p>Votre demande d'entretien pour le <b>" + date + "</b> à <b>" + heure + "</b> a été <span style='color: #28a745; font-weight: bold;'>acceptée</span>.</p>" +
+                "    <p>Type d'entretien : <b>" + typeEntretien + "</b></p>" +
+                locationInfo +
+                "    <p style='margin-top: 24px;'>Merci de vous présenter à l'heure prévue.<br/>Cordialement,<br/><b>L'équipe Gradaway</b></p>" +
+                "  </div>" +
+                "</div>";
+        utils.MailUtil.sendMail(to, subject, htmlBody, true);
     }
 
     private String getUserEmailById(int idUser) {
@@ -183,8 +240,27 @@ public class ListeDemandesEntretienController {
         }
     }
 
+    private void affecterExpert(DemandeEntretien demande) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffecterExpert.fxml"));
+            Parent root = loader.load();
+            AffecterExpertController controller = loader.getController();
+            controller.setDemandeEntretien(demande);
+            
+            Stage stage = new Stage();
+            stage.setTitle("Affecter un Expert");
+            stage.setScene(new Scene(root));
+            stage.show();
+            
+            // Update the list when the expert assignment window is closed
+            stage.setOnHidden(e -> loadDemandes());
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture du formulaire d'affectation: " + e.getMessage());
+        }
+    }
+
     @FXML
-    private void planifierEntretien() {
+    private void DemandeEntretien() {
         DemandeEntretien demande = demandesTable.getSelectionModel().getSelectedItem();
         if (demande != null) {
             try {
@@ -232,10 +308,14 @@ public class ListeDemandesEntretienController {
         private final String objet;
         private final String statut;
         private final String offre;
+        private final int idExpert;
+        private final String expertName;
+        private final String typeEntretien;
 
         public DemandeEntretien(int idDemande, int idUser, String nomUser, String domaine,
                                LocalDate dateDemande, LocalDate dateSouhaitee,
-                               LocalTime heureSouhaitee, String objet, String statut, String offre) {
+                               LocalTime heureSouhaitee, String objet, String statut, 
+                               String offre, int idExpert, String expertName, String typeEntretien) {
             this.idDemande = idDemande;
             this.idUser = idUser;
             this.nomUser = nomUser;
@@ -246,6 +326,9 @@ public class ListeDemandesEntretienController {
             this.objet = objet;
             this.statut = statut;
             this.offre = offre;
+            this.idExpert = idExpert;
+            this.expertName = expertName;
+            this.typeEntretien = typeEntretien;
         }
 
         public int getIdDemande() { return idDemande; }
@@ -258,5 +341,8 @@ public class ListeDemandesEntretienController {
         public String getObjet() { return objet; }
         public String getStatut() { return statut; }
         public String getOffre() { return offre; }
+        public int getIdExpert() { return idExpert; }
+        public String getExpert() { return expertName; }
+        public String getTypeEntretien() { return typeEntretien; }
     }
 } 

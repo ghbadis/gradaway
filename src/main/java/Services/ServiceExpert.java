@@ -24,7 +24,7 @@ public class ServiceExpert implements IService<Expert> {
 
         try {
             // Insérer dans la table expert
-            String expertReq = "INSERT INTO expert (nom_expert, prenom_expert, email, specialite, telephone, annee_experience) VALUES (?, ?, ?, ?, ?, ?)";
+            String expertReq = "INSERT INTO expert (nom_expert, prenom_expert, email, specialite, telephone, annee_experience, photo_path) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement expertPs = con.prepareStatement(expertReq, Statement.RETURN_GENERATED_KEYS);
             expertPs.setString(1, expert.getNom_expert());
             expertPs.setString(2, expert.getPrenom_expert());
@@ -44,6 +44,13 @@ public class ServiceExpert implements IService<Expert> {
                 expertPs.setNull(6, Types.INTEGER);
             }
 
+            // Add photo_path
+            if (expert.getPhotoPath() != null && !expert.getPhotoPath().isEmpty()) {
+                expertPs.setString(7, expert.getPhotoPath());
+            } else {
+                expertPs.setNull(7, Types.VARCHAR);
+            }
+
             expertPs.executeUpdate();
 
             // Récupérer l'id_expert généré
@@ -61,7 +68,7 @@ public class ServiceExpert implements IService<Expert> {
 
     @Override
     public void modifier(Expert expert) throws SQLException {
-        String req = "UPDATE expert SET nom_expert = ?, prenom_expert = ?, email = ?, specialite = ?, telephone = ?, annee_experience = ? WHERE id_expert = ?";
+        String req = "UPDATE expert SET nom_expert = ?, prenom_expert = ?, email = ?, specialite = ?, telephone = ?, annee_experience = ?, photo_path = ? WHERE id_expert = ?";
         PreparedStatement ps = con.prepareStatement(req);
         ps.setString(1, expert.getNom_expert());
         ps.setString(2, expert.getPrenom_expert());
@@ -80,7 +87,14 @@ public class ServiceExpert implements IService<Expert> {
             ps.setNull(6, Types.INTEGER);
         }
 
-        ps.setInt(7, expert.getId_expert());
+        // Set photo_path
+        if (expert.getPhotoPath() != null && !expert.getPhotoPath().isEmpty()) {
+            ps.setString(7, expert.getPhotoPath());
+        } else {
+            ps.setNull(7, Types.VARCHAR);
+        }
+
+        ps.setInt(8, expert.getId_expert());
         ps.executeUpdate();
         System.out.println("Expert modifié avec succès");
     }
@@ -119,8 +133,28 @@ public class ServiceExpert implements IService<Expert> {
                 e.setAnneeExperience(anneeExp);
             }
 
+            String photoPath = rs.getString("photo_path");
+            if (!rs.wasNull()) {
+                e.setPhotoPath(photoPath);
+            }
+
             experts.add(e);
         }
         return experts;
+    }
+
+    public List<String> recupererDomaines() throws SQLException {
+        List<String> domaines = new ArrayList<>();
+        String req = "SELECT DISTINCT domaine FROM universite WHERE domaine IS NOT NULL ORDER BY domaine";
+        try (Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(req)) {
+            while (rs.next()) {
+                String domaine = rs.getString("domaine");
+                if (domaine != null && !domaine.trim().isEmpty()) {
+                    domaines.add(domaine);
+                }
+            }
+        }
+        return domaines;
     }
 }
