@@ -225,8 +225,16 @@ public class DemanderEntretienController {
 
     @FXML
     public void annuler(javafx.event.ActionEvent event) {
-        Stage stage = (Stage) annulerButton.getScene().getWindow();
-        stage.close();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Accueil.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) annulerButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la redirection vers l'accueil: " + e.getMessage());
+        }
     }
 
     @FXML
