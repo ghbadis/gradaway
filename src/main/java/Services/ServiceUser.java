@@ -34,7 +34,7 @@ public class ServiceUser implements IService<User> {
             ps.setString(9, user.getDomaine_etude());
             ps.setString(10, user.getUniversite_origine());
             ps.setString(11, user.getRole());
-            ps.setInt(12, user.getMoyennes());
+            ps.setDouble(12, user.getMoyennes());
             ps.setInt(13, user.getAnnee_obtention_diplome());
             ps.setString(14, user.getMdp());
             ps.setString(15, user.getImage());
@@ -74,7 +74,7 @@ public class ServiceUser implements IService<User> {
         ps.setString(9, user.getDomaine_etude());
         ps.setString(10, user.getUniversite_origine());
         ps.setString(11, user.getRole());
-        ps.setInt(12, user.getMoyennes());
+        ps.setDouble(12, user.getMoyennes());
         ps.setInt(13, user.getAnnee_obtention_diplome());
         ps.setString(14, user.getMdp());
         ps.setString(15, user.getImage());
@@ -104,7 +104,7 @@ public class ServiceUser implements IService<User> {
             int ageP = rs.getInt("age");
             int cinP = rs.getInt("cin");
             int telephoneP = rs.getInt("telephone");
-            int moyennesP = rs.getInt("moyennes");
+            double moyennesP = rs.getDouble("moyennes");
             int anneeDiplomeP = rs.getInt("annee_obtention_diplome");
             String nomP = rs.getString("nom");
             String prenomP = rs.getString("prenom");
@@ -140,7 +140,7 @@ public class ServiceUser implements IService<User> {
                     rs.getInt("age"),
                     rs.getInt("cin"),
                     rs.getInt("telephone"),
-                    rs.getInt("moyennes"),
+                    rs.getDouble("moyennes"),
                     rs.getInt("annee_obtention_diplome"),
                     rs.getString("nom"),
                     rs.getString("prenom"),
@@ -208,7 +208,7 @@ public class ServiceUser implements IService<User> {
                     rs.getInt("age"),
                     rs.getInt("cin"),
                     rs.getInt("telephone"),
-                    rs.getInt("moyennes"),
+                    rs.getDouble("moyennes"),
                     rs.getInt("annee_obtention_diplome"),
                     rs.getString("nom"),
                     rs.getString("prenom"),

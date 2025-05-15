@@ -123,12 +123,16 @@ public class SignUpView2controller {
     public void Ajouter(ActionEvent actionEvent) {
         if (validateFields()) {
             try {
+                // Convert comma to dot for database storage
+                String moyenneStr = tfmoyennes.getText().replace(',', '.');
+                double moyenne = Double.parseDouble(moyenneStr);
+
                 // Création de l'utilisateur avec les données du formulaire
                 User user = new User(
                     Integer.parseInt(tfage.getText()),
                     Integer.parseInt(tfcin.getText()),
                     Integer.parseInt(tftelephone.getText()),
-                    Integer.parseInt(tfmoyennes.getText()),
+                    moyenne,  // Changed to use double
                     tfannee_obtention_diplome.getValue(),
                     nom,
                     prenom,
@@ -202,11 +206,16 @@ public class SignUpView2controller {
                 return false;
             }
 
-            // Vérification des autres champs numériques
-            int moyennes = Integer.parseInt(tfmoyennes.getText());
-
-            if (moyennes < 9 || moyennes > 20) {
-                showAlert("Erreur", "Veuillez vérifier votre moyenne");
+            // Vérification de la moyenne avec virgule
+            String moyenneStr = tfmoyennes.getText().replace(',', '.');
+            try {
+                double moyenne = Double.parseDouble(moyenneStr);
+                if (moyenne < 9.0 || moyenne > 20.0) {
+                    showAlert("Erreur", "La moyenne doit être comprise entre 9 et 20");
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                showAlert("Erreur", "Format de moyenne invalide. Utilisez une virgule comme séparateur décimal (ex: 10,25)");
                 return false;
             }
 

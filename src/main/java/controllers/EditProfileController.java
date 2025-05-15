@@ -239,7 +239,8 @@ public class EditProfileController {
             currentUser.setDomaine_etude(tfdomaineprofil.getValue());
             currentUser.setAnnee_obtention_diplome(tfdiplomeprofil.getValue());
             currentUser.setUniversite_origine(tfuniversiteprofil.getText());
-            currentUser.setMoyennes(Integer.parseInt(tfmoyenneprofil.getText()));
+            String moyenneStr = tfmoyenneprofil.getText().replace(',', '.');
+            currentUser.setMoyennes(Double.parseDouble(moyenneStr));
 
             // Update the user in the database
             serviceUser.modifier(currentUser);
