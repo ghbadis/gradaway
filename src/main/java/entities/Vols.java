@@ -1,205 +1,108 @@
 package entities;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Vols {
     private int idVol;
-    private String compagnie;
     private String numeroVol;
+    private String compagnie;
     private String aeroportDepart;
-    private String aeroportArrivee;
     private String villeDepart;
-    private String villeArrivee;
     private String paysDepart;
+    private String aeroportArrivee;
+    private String villeArrivee;
     private String paysArrivee;
-    private Date dateDepart;
-    private Date dateArrivee;
-    private Integer duree; // en minutes
+    private LocalDateTime dateDepart;
+    private LocalDateTime dateArrivee;
+    private Integer duree;
     private double prixStandard;
     private int placesDisponibles;
     private String statut;
+    private String imagePath;
 
-    // Constructeur par défaut
-    public Vols() {
-        this.statut = "Confirmé";
-    }
-
-    // Constructeur pour l'ajout (sans idVol car auto-increment)
-    public Vols(String compagnie, String numeroVol, String aeroportDepart, String aeroportArrivee,
-               String villeDepart, String villeArrivee, String paysDepart, String paysArrivee,
-               Date dateDepart, Date dateArrivee, Integer duree, double prixStandard,
-               int placesDisponibles, String statut) {
-        this.compagnie = compagnie;
-        this.numeroVol = numeroVol;
-        this.aeroportDepart = aeroportDepart;
-        this.aeroportArrivee = aeroportArrivee;
-        this.villeDepart = villeDepart;
-        this.villeArrivee = villeArrivee;
-        this.paysDepart = paysDepart;
-        this.paysArrivee = paysArrivee;
-        this.dateDepart = dateDepart;
-        this.dateArrivee = dateArrivee;
-        this.duree = duree;
-        this.prixStandard = prixStandard;
-        this.placesDisponibles = placesDisponibles;
-        this.statut = statut != null ? statut : "Confirmé";
-    }
-
-    // Constructeur pour la modification (avec idVol)
-    public Vols(int idVol, String compagnie, String numeroVol, String aeroportDepart, String aeroportArrivee,
-               String villeDepart, String villeArrivee, String paysDepart, String paysArrivee,
-               Date dateDepart, Date dateArrivee, Integer duree, double prixStandard,
-               int placesDisponibles, String statut) {
+    public Vols(int idVol, String numeroVol, String compagnie, String aeroportDepart,
+                String villeDepart, String paysDepart, String aeroportArrivee,
+                String villeArrivee, String paysArrivee, LocalDateTime dateDepart,
+                LocalDateTime dateArrivee, Integer duree, double prixStandard,
+                int placesDisponibles, String statut, String imagePath) {
         this.idVol = idVol;
-        this.compagnie = compagnie;
         this.numeroVol = numeroVol;
+        this.compagnie = compagnie;
         this.aeroportDepart = aeroportDepart;
-        this.aeroportArrivee = aeroportArrivee;
         this.villeDepart = villeDepart;
-        this.villeArrivee = villeArrivee;
         this.paysDepart = paysDepart;
+        this.aeroportArrivee = aeroportArrivee;
+        this.villeArrivee = villeArrivee;
         this.paysArrivee = paysArrivee;
         this.dateDepart = dateDepart;
         this.dateArrivee = dateArrivee;
         this.duree = duree;
         this.prixStandard = prixStandard;
         this.placesDisponibles = placesDisponibles;
-        this.statut = statut != null ? statut : "Confirmé";
+        this.statut = statut;
+        this.imagePath = imagePath;
     }
 
-    // Getters et Setters
-    public int getIdVol() {
-        return idVol;
-    }
+    // Getters and Setters
+    public int getIdVol() { return idVol; }
+    public void setIdVol(int idVol) { this.idVol = idVol; }
 
-    public void setIdVol(int idVol) {
-        this.idVol = idVol;
-    }
+    public String getNumeroVol() { return numeroVol; }
+    public void setNumeroVol(String numeroVol) { this.numeroVol = numeroVol; }
 
-    public String getCompagnie() {
-        return compagnie;
-    }
+    public String getCompagnie() { return compagnie; }
+    public void setCompagnie(String compagnie) { this.compagnie = compagnie; }
 
-    public void setCompagnie(String compagnie) {
-        this.compagnie = compagnie;
-    }
+    public String getAeroportDepart() { return aeroportDepart; }
+    public void setAeroportDepart(String aeroportDepart) { this.aeroportDepart = aeroportDepart; }
 
-    public String getNumeroVol() {
-        return numeroVol;
-    }
+    public String getVilleDepart() { return villeDepart; }
+    public void setVilleDepart(String villeDepart) { this.villeDepart = villeDepart; }
 
-    public void setNumeroVol(String numeroVol) {
-        this.numeroVol = numeroVol;
-    }
+    public String getPaysDepart() { return paysDepart; }
+    public void setPaysDepart(String paysDepart) { this.paysDepart = paysDepart; }
 
-    public String getAeroportDepart() {
-        return aeroportDepart;
-    }
+    public String getAeroportArrivee() { return aeroportArrivee; }
+    public void setAeroportArrivee(String aeroportArrivee) { this.aeroportArrivee = aeroportArrivee; }
 
-    public void setAeroportDepart(String aeroportDepart) {
-        this.aeroportDepart = aeroportDepart;
-    }
+    public String getVilleArrivee() { return villeArrivee; }
+    public void setVilleArrivee(String villeArrivee) { this.villeArrivee = villeArrivee; }
 
-    public String getAeroportArrivee() {
-        return aeroportArrivee;
-    }
+    public String getPaysArrivee() { return paysArrivee; }
+    public void setPaysArrivee(String paysArrivee) { this.paysArrivee = paysArrivee; }
 
-    public void setAeroportArrivee(String aeroportArrivee) {
-        this.aeroportArrivee = aeroportArrivee;
-    }
+    public LocalDateTime getDateDepart() { return dateDepart; }
+    public void setDateDepart(LocalDateTime dateDepart) { this.dateDepart = dateDepart; }
 
-    public String getVilleDepart() {
-        return villeDepart;
-    }
+    public LocalDateTime getDateArrivee() { return dateArrivee; }
+    public void setDateArrivee(LocalDateTime dateArrivee) { this.dateArrivee = dateArrivee; }
 
-    public void setVilleDepart(String villeDepart) {
-        this.villeDepart = villeDepart;
-    }
+    public Integer getDuree() { return duree; }
+    public void setDuree(Integer duree) { this.duree = duree; }
 
-    public String getVilleArrivee() {
-        return villeArrivee;
-    }
+    public double getPrixStandard() { return prixStandard; }
+    public void setPrixStandard(double prixStandard) { this.prixStandard = prixStandard; }
 
-    public void setVilleArrivee(String villeArrivee) {
-        this.villeArrivee = villeArrivee;
-    }
+    public int getPlacesDisponibles() { return placesDisponibles; }
+    public void setPlacesDisponibles(int placesDisponibles) { this.placesDisponibles = placesDisponibles; }
 
-    public String getPaysDepart() {
-        return paysDepart;
-    }
+    public String getStatut() { return statut; }
+    public void setStatut(String statut) { this.statut = statut; }
 
-    public void setPaysDepart(String paysDepart) {
-        this.paysDepart = paysDepart;
-    }
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
 
-    public String getPaysArrivee() {
-        return paysArrivee;
-    }
-
-    public void setPaysArrivee(String paysArrivee) {
-        this.paysArrivee = paysArrivee;
-    }
-
-    public Date getDateDepart() {
-        return dateDepart;
-    }
-
-    public void setDateDepart(Date dateDepart) {
-        this.dateDepart = dateDepart;
-    }
-
-    public Date getDateArrivee() {
-        return dateArrivee;
-    }
-
-    public void setDateArrivee(Date dateArrivee) {
-        this.dateArrivee = dateArrivee;
-    }
-
-    public Integer getDuree() {
-        return duree;
-    }
-
-    public void setDuree(Integer duree) {
-        this.duree = duree;
-    }
-
-    public double getPrixStandard() {
-        return prixStandard;
-    }
-
-    public void setPrixStandard(double prixStandard) {
-        this.prixStandard = prixStandard;
-    }
-
-    public int getPlacesDisponibles() {
-        return placesDisponibles;
-    }
-
-    public void setPlacesDisponibles(int placesDisponibles) {
-        this.placesDisponibles = placesDisponibles;
-    }
-
-    public String getStatut() {
-        return statut;
-    }
-
-    public void setStatut(String statut) {
-        this.statut = statut != null ? statut : "Confirmé";
-    }
-
-    // Méthode toString()
     @Override
     public String toString() {
         return "Vol{" +
                 "idVol=" + idVol +
-                ", compagnie='" + compagnie + '\'' +
                 ", numeroVol='" + numeroVol + '\'' +
+                ", compagnie='" + compagnie + '\'' +
                 ", aeroportDepart='" + aeroportDepart + '\'' +
-                ", aeroportArrivee='" + aeroportArrivee + '\'' +
                 ", villeDepart='" + villeDepart + '\'' +
-                ", villeArrivee='" + villeArrivee + '\'' +
                 ", paysDepart='" + paysDepart + '\'' +
+                ", aeroportArrivee='" + aeroportArrivee + '\'' +
+                ", villeArrivee='" + villeArrivee + '\'' +
                 ", paysArrivee='" + paysArrivee + '\'' +
                 ", dateDepart=" + dateDepart +
                 ", dateArrivee=" + dateArrivee +
@@ -207,6 +110,7 @@ public class Vols {
                 ", prixStandard=" + prixStandard +
                 ", placesDisponibles=" + placesDisponibles +
                 ", statut='" + statut + '\'' +
+                ", imagePath='" + imagePath + '\'' +
                 '}';
     }
 }

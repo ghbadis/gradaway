@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+
+<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="controllers.ModiifierVolsController"
+           style="-fx-background-color: transparent;">
+
+    <!-- Main Container with Blur Background -->
+    <Rectangle width="750" height="650" arcWidth="30" arcHeight="30">
+        <fill>
+            <LinearGradient startX="0.0" startY="0.0" endX="1.0" endY="1.0">
+                <stops>
+                    <Stop color="#f8f9fa" offset="0.0" />
+                    <Stop color="#e9ecef" offset="1.0" />
+                </stops>
+            </LinearGradient>
+        </fill>
+        <effect>
+            <DropShadow radius="15" offsetX="0" offsetY="5" color="#00000033"/>
+        </effect>
+    </Rectangle>
+
+    <VBox spacing="25" style="-fx-padding: 30;">
+        <!-- Header with animated plane icon -->
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <StackPane>
+                <Circle radius="30" fill="#3f51b5" opacity="0.2"/>
+                <ImageView fitWidth="45" fitHeight="45" preserveRatio="true">
+                    <Image url="https://cdn-icons-png.flaticon.com/512/5613/5613892.png"/>
+                    <effect>
+                        <DropShadow radius="8" offsetX="0" offsetY="2" color="#00000044"/>
+                    </effect>
+                </ImageView>
+            </StackPane>
+
+            <VBox spacing="3">
+                <Text text="Modifier la réservation"
+                      style="-fx-font-size: 32px; -fx-font-weight: 800; -fx-fill: #1a237e;"/>
+                <Text text="Personnalisez votre voyage selon vos préférences"
+                      style="-fx-font-size: 16px; -fx-fill: #546e7a;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Stylish Divider -->
+        <HBox alignment="CENTER">
+            <Line startX="0" endX="650" strokeWidth="2">
+                <stroke>
+                    <LinearGradient startX="0.0" startY="0.0" endX="1.0" endY="0.0">
+                        <stops>
+                            <Stop color="#3f51b5" offset="0.0" />
+                            <Stop color="#7986cb" offset="0.5" />
+                            <Stop color="#3f51b5" offset="1.0" />
+                        </stops>
+                    </LinearGradient>
+                </stroke>
+            </Line>
+        </HBox>
+
+        <!-- Main Content with Card Effect -->
+        <StackPane>
+            <Rectangle arcWidth="25" arcHeight="25" width="680" height="420" fill="white">
+                <effect>
+                    <DropShadow radius="12" offsetX="0" offsetY="4" color="#00000022"/>
+                </effect>
+            </Rectangle>
+
+            <HBox>
+                <!-- Left Side - Flight Illustration -->
+                <VBox alignment="CENTER" prefWidth="200" style="-fx-padding: 20;">
+                    <ImageView fitWidth="160" fitHeight="160" preserveRatio="true">
+                        <Image url="https://cdn-icons-png.flaticon.com/512/6269/6269646.png"/>
+                    </ImageView>
+
+                    <Separator style="-fx-padding: 15 0 15 0;"/>
+
+                    <Text text="Informations de vol"
+                          style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: #1a237e;"/>
+
+                    <VBox spacing="10" style="-fx-padding: 10 0 0 0;">
+                        <HBox spacing="8" alignment="CENTER">
+                            <Circle radius="6" fill="#4caf50"/>
+                            <Text text="Confirmé" style="-fx-font-size: 14px; -fx-fill: #4caf50;"/>
+                        </HBox>
+
+                        <HBox spacing="8" alignment="CENTER">
+                            <Circle radius="6" fill="#f44336"/>
+                            <Text text="Annulé" style="-fx-font-size: 14px; -fx-fill: #f44336;"/>
+                        </HBox>
+
+                        <HBox spacing="8" alignment="CENTER">
+                            <Circle radius="6" fill="#ff9800"/>
+                            <Text text="En attente" style="-fx-font-size: 14px; -fx-fill: #ff9800;"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Right Side - Form Fields -->
+                <VBox style="-fx-padding: 20;">
+                    <GridPane hgap="20" vgap="18">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="150" />
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="250" />
+                        </columnConstraints>
+
+                        <!-- Référence avec icône -->
+                        <HBox spacing="8" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <ImageView fitWidth="16" fitHeight="16">
+                                <Image url="https://cdn-icons-png.flaticon.com/512/1250/1250695.png"/>
+                            </ImageView>
+                            <Label text="Référence:"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+                        </HBox>
+                        <TextField fx:id="referenceField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                                   style="-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0;
+                                         -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10;"/>
+
+                        <!-- Vol information avec icône -->
+                        <HBox spacing="8" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <ImageView fitWidth="16" fitHeight="16">
+                                <Image url="https://cdn-icons-png.flaticon.com/512/5613/5613892.png"/>
+                            </ImageView>
+                            <Label text="Numéro de vol:"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+                        </HBox>
+                        <ComboBox fx:id="numeroVolComboBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                                  style="-fx-background-color: white; -fx-border-color: #3f51b5;
+                                        -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;"/>
+
+                        <!-- Nombre de places avec icône -->
+                        <HBox spacing="8" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <ImageView fitWidth="16" fitHeight="16">
+                                <Image url="https://cdn-icons-png.flaticon.com/512/1077/1077114.png"/>
+                            </ImageView>
+                            <Label text="Nombre de places:"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+                        </HBox>
+                        <HBox spacing="10" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <Spinner fx:id="placesSpinner" min="1" max="10" prefWidth="120"
+                                     style="-fx-background-color: white; -fx-border-color: #3f51b5;
+                                           -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                            <Label text="personnes" style="-fx-text-fill: #757575; -fx-font-style: italic;"/>
+                        </HBox>
+
+                        <!-- Classe avec icône -->
+                        <HBox spacing="8" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                            <ImageView fitWidth="16" fitHeight="16">
+                                <Image url="https://cdn-icons-png.flaticon.com/512/2942/2942076.png"/>
+                            </ImageView>
+                            <Label text="Classe:"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+                        </HBox>
+                        <ComboBox fx:id="classeComboBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="3"
+                                  style="-fx-background-color: white; -fx-border-color: #3f51b5;
+                                        -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;"/>
+
+                        <!-- Type de bagage avec icône -->
+                        <HBox spacing="8" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                            <ImageView fitWidth="16" fitHeight="16">
+                                <Image url="https://cdn-icons-png.flaticon.com/512/1063/1063376.png"/>
+                            </ImageView>
+                            <Label text="Type de bagage:"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+                        </HBox>
+                        <ComboBox fx:id="bagageComboBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="4"
+                                  style="-fx-background-color: white; -fx-border-color: #3f51b5;
+                                        -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;"/>
+
+                        <!-- Statut avec icône -->
+                        <HBox spacing="8" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                            <ImageView fitWidth="16" fitHeight="16">
+                                <Image url="https://cdn-icons-png.flaticon.com/512/1828/1828833.png"/>
+                            </ImageView>
+                            <Label text="Statut:"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+                        </HBox>
+                        <ComboBox fx:id="statutComboBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="5"
+                                  style="-fx-background-color: white; -fx-border-color: #3f51b5;
+                                        -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;"/>
+
+                        <!-- Commentaires avec icône -->
+                        <HBox spacing="8" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="6">
+                            <ImageView fitWidth="16" fitHeight="16">
+                                <Image url="https://cdn-icons-png.flaticon.com/512/1380/1380338.png"/>
+                            </ImageView>
+                            <Label text="Commentaires:"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+                        </HBox>
+                        <TextArea fx:id="commentairesArea" wrapText="true" prefHeight="80" GridPane.columnIndex="1" GridPane.rowIndex="6"
+                                  style="-fx-background-color: white; -fx-border-color: #3f51b5;
+                                        -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8;"/>
+
+                        <!-- Prix total avec icône -->
+                        <HBox spacing="8" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="7">
+                            <ImageView fitWidth="16" fitHeight="16">
+                                <Image url="https://cdn-icons-png.flaticon.com/512/2933/2933116.png"/>
+                            </ImageView>
+                            <Label text="Prix total:"
+                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a237e;"/>
+                        </HBox>
+                        <StackPane GridPane.columnIndex="1" GridPane.rowIndex="7">
+                            <Rectangle arcWidth="8" arcHeight="8" fill="#e8f5e9" width="170" height="40">
+                                <stroke>
+                                    <LinearGradient>
+                                        <stops>
+                                            <Stop color="#4caf50" offset="0.0" />
+                                            <Stop color="#81c784" offset="1.0" />
+                                        </stops>
+                                    </LinearGradient>
+                                </stroke>
+                            </Rectangle>
+                            <HBox alignment="CENTER" spacing="5">
+                                <TextField fx:id="prixTotalField" editable="false" prefWidth="120"
+                                           style="-fx-background-color: transparent;
+                                                 -fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2e7d32;"/>
+                                <Label text="€" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+                            </HBox>
+                        </StackPane>
+                    </GridPane>
+                </VBox>
+            </HBox>
+        </StackPane>
+
+        <!-- Bottom Action Buttons -->
+        <HBox spacing="20" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+            <Button fx:id="annulerButton" text="Annuler" onAction="#handleAnnuler"
+                    style="-fx-background-color: transparent; -fx-text-fill: #d32f2f;
+                           -fx-border-color: #d32f2f; -fx-border-width: 2;
+                           -fx-padding: 12 30; -fx-font-weight: bold; -fx-border-radius: 30;
+                           -fx-cursor: hand; -fx-font-size: 14px;">
+                <graphic>
+                    <ImageView fitWidth="18" fitHeight="18">
+                        <Image url="https://cdn-icons-png.flaticon.com/512/1828/1828843.png"/>
+                    </ImageView>
+                </graphic>
+                <effect>
+                    <DropShadow radius="5" offsetX="0" offsetY="2" color="#00000022"/>
+                </effect>
+            </Button>
+
+            <Button fx:id="validerButton" text="Valider les modifications" onAction="#handleValider"
+                    style="-fx-background-color: linear-gradient(to right, #3f51b5, #5c6bc0);
+                           -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;
+                           -fx-padding: 12 30; -fx-background-radius: 30; -fx-cursor: hand;">
+                <graphic>
+                    <ImageView fitWidth="18" fitHeight="18">
+                        <Image url="https://cdn-icons-png.flaticon.com/512/1828/1828640.png"/>
+                    </ImageView>
+                </graphic>
+                <effect>
+                    <DropShadow radius="10" offsetX="0" offsetY="5" color="#3f51b555"/>
+                </effect>
+            </Button>
+        </HBox>
+    </VBox>
+</StackPane>

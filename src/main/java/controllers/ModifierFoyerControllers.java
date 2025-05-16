@@ -323,7 +323,7 @@ public class ModifierFoyerControllers {
      */
     @FXML
     private void navigateToVols() {
-        // À implémenter si besoin
+
     }
     
     /**

@@ -99,6 +99,7 @@
             <version>3.1.0</version>
         </dependency>
 
+
         <!-- ZXing QR Code -->
         <dependency>
             <groupId>com.google.zxing</groupId>

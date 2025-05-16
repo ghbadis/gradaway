@@ -15,8 +15,8 @@ public class Main extends Application {
             WebServer.start();
 
             FXMLLoader loader = new FXMLLoader();
-            // Load the login FXML file
-                loader.setLocation(getClass().getResource("/login-view.fxml "));
+            // Load the login FXML file from resources
+            loader.setLocation(getClass().getClassLoader().getResource("login-view.fxml"));
             Parent root = loader.load();
 
             // Configurer la scène

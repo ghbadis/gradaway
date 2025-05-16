@@ -300,7 +300,30 @@ public class MesDemandesEntretienController {
 
     @FXML
     public void onvolsButtonClick(ActionEvent actionEvent) {
-        showAlert(Alert.AlertType.INFORMATION, "Information", "La fonctionnalité des vols sera bientôt disponible.");
+        try {
+            System.out.println("AcceuilController: Opening AfficherVolsUtilisateur view");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/AfficherVolsUtilisateur.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Vols Disponibles");
+            stage.setMinWidth(1200);
+            stage.setMinHeight(800);
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("AcceuilController: Error loading AfficherVolsUtilisateur.fxml: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture de la vue des vols.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("AcceuilController: Unexpected error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Erreur Inattendue", "Une erreur inattendue est survenue.");
+            e.printStackTrace();
+        }
     }
 
     @FXML

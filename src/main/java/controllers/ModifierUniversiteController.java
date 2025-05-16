@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import Services.ServiceUniversite;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -346,7 +347,19 @@ public class ModifierUniversiteController implements Initializable {
 
     @FXML
     private void handleVolsButton() {
-        showAlert(Alert.AlertType.INFORMATION, "Information", "La fonctionnalité des vols sera bientôt disponible.");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Accueilvol.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) volsButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Vols");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+           // showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
     }
 
     @FXML

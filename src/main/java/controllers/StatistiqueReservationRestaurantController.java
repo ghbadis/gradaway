@@ -425,7 +425,19 @@ public class StatistiqueReservationRestaurantController {
     @FXML private void navigateToEvenement() { navigateTo("/gestion_evenement.fxml", "Gestion des Événements"); }
     @FXML private void navigateToHebergement() { navigateTo("/AjouterFoyer.fxml", "Gestion des Foyers"); }
     @FXML private void navigateToRestaurant() { navigateTo("/ListRestaurant.fxml", "Liste des Restaurants"); }
-    @FXML private void navigateToVols() { /* À implémenter si besoin */ }
+    @FXML private void navigateToVols() {   try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Accueilvol.fxml"));
+        Parent root = loader.load();
+
+        Stage stage = (Stage) volsButton.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Gestion des Vols");
+        stage.centerOnScreen();
+    } catch (IOException e) {
+        e.printStackTrace();
+        //showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture", e.getMessage());
+    }}
     @FXML private void logout() { navigateTo("/login-view.fxml", "Login - GradAway"); }
 
     private void navigateTo(String fxmlPath, String title) {

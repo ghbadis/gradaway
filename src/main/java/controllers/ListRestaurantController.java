@@ -147,7 +147,19 @@ public class ListRestaurantController {
 
     @FXML
     private void onvolsButtonClick(ActionEvent event) {
-        // À implémenter si besoin
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Accueilvol.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) volsButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Vols");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            //showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
     }
 
     @FXML

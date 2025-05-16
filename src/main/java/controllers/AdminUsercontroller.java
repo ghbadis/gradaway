@@ -450,7 +450,19 @@ public class AdminUsercontroller implements Initializable {
 
     @FXML
     public void onvolsAdminButtonClick(ActionEvent actionEvent) {
-        showAlert("Information", "Information", "La fonctionnalité des vols sera bientôt disponible.");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Accueilvol.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Button) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion des Vols");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de l'ouverture", e.getMessage());
+        }
     }
 
     @FXML
