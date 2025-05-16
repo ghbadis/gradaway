@@ -2,8 +2,8 @@ package utils;
 
 import entities.ReservationVol;
 import entities.Vols;
-import jakarta.mail.*;
-import jakarta.mail.internet.*;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
