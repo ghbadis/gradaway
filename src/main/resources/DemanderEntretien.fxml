@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.layout.Region?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-
-<SplitPane dividerPositions="0.2399697199091597" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DemanderEntretienController">
+<SplitPane dividerPositions="0.2399697199091597" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DemanderEntretienController">
    <items>
       <AnchorPane prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
          <children>
@@ -53,7 +39,7 @@
                               <Image url="@images/icons8-user-24.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="WHITE">
+                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="       Utilistateur" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -273,7 +259,7 @@
                   <DatePicker fx:id="dateSouhaitee" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       
                   <Label style="-fx-text-fill: white; -fx-font-size: 14px;" text="Heure souhaitée:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="heureSouhaiteeComboBox" promptText="Choisissez une plage horaire" styleClass="form-field" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="heureSouhaiteeComboBox" promptText="Choisissez une plage horaire" style="-fx-background-color: white;" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                   <Label style="-fx-text-fill: white; -fx-font-size: 14px;" text="Type d'entretien:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                   <ComboBox fx:id="typeEntretienComboBox" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="4" />

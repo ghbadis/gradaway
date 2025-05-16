@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierRestaurantController">
+<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ModifierRestaurantController">
    <items>
       <AnchorPane prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
          <children>
@@ -30,7 +30,7 @@
                               <Image url="@images/acceuil.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" onAction="#navigateToAccueil" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE" fx:id="accueilButton">
+                        <Button fx:id="accueilButton" mnemonicParsing="false" onAction="#navigateToAccueil" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -50,7 +50,7 @@
                               <Image url="@images/icons8-user-24.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" onAction="#navigateToAdmin" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE" fx:id="userButton">
+                        <Button fx:id="userButton" mnemonicParsing="false" onAction="#navigateToAdmin" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -72,7 +72,7 @@
                                     <Image url="@images/icons8-dossier-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" onAction="#navigateToDossier" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE" fx:id="dossierButton">
+                              <Button fx:id="dossierButton" mnemonicParsing="false" onAction="#navigateToDossier" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -92,7 +92,7 @@
                                     <Image url="@images/icons8-university-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" onAction="#navigateToUniversite" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE" fx:id="universiteButton">
+                              <Button fx:id="universiteButton" mnemonicParsing="false" onAction="#navigateToUniversite" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -112,7 +112,7 @@
                                     <Image url="@images/icons8-video-call-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" onAction="#navigateToEntretien" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE" fx:id="entretienButton">
+                              <Button fx:id="entretienButton" mnemonicParsing="false" onAction="#navigateToEntretien" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -132,7 +132,7 @@
                                     <Image url="@images/icons8-event-accepted-32.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" onAction="#navigateToEvenement" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE" fx:id="evenementButton">
+                              <Button fx:id="evenementButton" mnemonicParsing="false" onAction="#navigateToEvenement" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -155,7 +155,7 @@
                                     <Insets left="4.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Button mnemonicParsing="false" onAction="#navigateToHebergement" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE" fx:id="hebergementButton">
+                              <Button fx:id="hebergementButton" mnemonicParsing="false" onAction="#navigateToHebergement" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -175,7 +175,7 @@
                                     <Image url="@images/restaurant.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" onAction="#navigateToRestaurant" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE" fx:id="restaurantButton">
+                              <Button fx:id="restaurantButton" mnemonicParsing="false" onAction="#navigateToRestaurant" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -195,7 +195,7 @@
                                     <Image url="@images/icons8-plane-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" onAction="#navigateToVols" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE" fx:id="volsButton">
+                              <Button fx:id="volsButton" mnemonicParsing="false" onAction="#navigateToVols" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -215,7 +215,7 @@
                                     <Image url="@images/icons8-logout-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" onAction="#logout" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE" fx:id="logoutButton">
+                              <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -247,7 +247,7 @@
       <AnchorPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: linear-gradient(to bottom right, #f5f7fa, #e9ebee);">
           <children>
               <!-- Header Section -->
-              <StackPane layoutX="0.0" layoutY="0.0" prefHeight="80.0" prefWidth="1000.0" style="-fx-background-color: #FFC107; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 3);">
+              <StackPane prefHeight="80.0" prefWidth="1000.0" style="-fx-background-color: #69aaee; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 3);">
                   <children>
                       <Text fill="WHITE" text="Modifier un Restaurant" textAlignment="CENTER">
                           <font>
@@ -266,7 +266,7 @@
                       </padding>
       
                       <!-- Form Title -->
-                      <Text fill="#FFC107" text="Informations du Restaurant">
+                      <Text fill="#083aff" text="Informations du Restaurant">
                           <font>
                               <Font name="System Bold" size="18.0" />
                           </font>
@@ -407,7 +407,7 @@
                       </Button>
                       
                       <HBox alignment="CENTER" prefHeight="100.0" spacing="10.0">
-                          <Button fx:id="btnEnregistrer" onAction="#enregistrerModifications" prefHeight="50.0" prefWidth="160.0" style="-fx-background-color: #FFC107; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 25px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 2);" text="Enregistrer">
+                          <Button fx:id="btnEnregistrer" onAction="#enregistrerModifications" prefHeight="50.0" prefWidth="160.0" style="-fx-background-color: #69aaee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 25px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 2);" text="Enregistrer">
                               <graphic>
                                   <Region prefHeight="24.0" prefWidth="24.0" style="-fx-background-color: white; -fx-shape: 'M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z'; -fx-scale-x: 0.7; -fx-scale-y: 0.7;" />
                               </graphic>

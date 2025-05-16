@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="675.0" prefWidth="1232.0" styleClass="white-bg" stylesheets="@design.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Ajouterafficheevenementcontrolleur">
+<AnchorPane prefHeight="675.0" prefWidth="1232.0" styleClass="white-bg" stylesheets="@design.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Ajouterafficheevenementcontrolleur">
    <children>
       <TextField fx:id="chercher_txtf" layoutX="350.0" layoutY="57.0" promptText="Chercher un événement" />
       <Button fx:id="chercher_button" layoutX="557.0" layoutY="52.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="119.0" styleClass="add-btn" stylesheets="@design.css" text="Chercher" />
@@ -59,7 +51,7 @@
                               <Image url="@images/icons8-user-24.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" onAction="#userbutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="WHITE">
+                        <Button mnemonicParsing="false" onAction="#userbutton" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="     Utilistateur" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>

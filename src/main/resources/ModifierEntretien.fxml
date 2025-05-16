@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-
-<SplitPane dividerPositions="0.20924875974486176" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ModifierEntretienController">
+<SplitPane dividerPositions="0.20924875974486176" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ModifierEntretienController">
    <items>
       <AnchorPane prefHeight="694.0" prefWidth="474.0">
          <children>
@@ -32,7 +21,7 @@
                                     <Image url="@images/acceuil.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE" onAction="#onAccueilAdminButtonClick">
+                              <Button mnemonicParsing="false" onAction="#onAccueilAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Accueil" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -52,7 +41,7 @@
                                     <Image url="@images/icons8-user-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="WHITE" onAction="#onUserAdminButtonClick">
+                              <Button mnemonicParsing="false" onAction="#onUserAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="       Utilistateur" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -74,7 +63,7 @@
                                           <Image url="@images/icons8-dossier-24.png" />
                                        </image>
                                     </ImageView>
-                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE" onAction="#ondossierAdminButtonClick">
+                                    <Button mnemonicParsing="false" onAction="#ondossierAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -94,7 +83,7 @@
                                           <Image url="@images/icons8-university-24.png" />
                                        </image>
                                     </ImageView>
-                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE" onAction="#onuniversiteAdminButtonClick">
+                                    <Button mnemonicParsing="false" onAction="#onuniversiteAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -114,7 +103,7 @@
                                           <Image url="@images/icons8-video-call-24.png" />
                                        </image>
                                     </ImageView>
-                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE" onAction="#onentretienAdminButtonClick">
+                                    <Button mnemonicParsing="false" onAction="#onentretienAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -134,7 +123,7 @@
                                           <Image url="@images/icons8-event-accepted-32.png" />
                                        </image>
                                     </ImageView>
-                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE" onAction="#onevenementAdminButtonClick">
+                                    <Button mnemonicParsing="false" onAction="#onevenementAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -157,7 +146,7 @@
                                           <Insets left="4.0" />
                                        </HBox.margin>
                                     </ImageView>
-                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE" onAction="#onhebergementAdminButtonClick">
+                                    <Button mnemonicParsing="false" onAction="#onhebergementAdminButtonClick" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -177,7 +166,7 @@
                                           <Image url="@images/restaurant.png" />
                                        </image>
                                     </ImageView>
-                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE" onAction="#onrestaurantAdminButtonClick">
+                                    <Button mnemonicParsing="false" onAction="#onrestaurantAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -197,7 +186,7 @@
                                           <Image url="@images/icons8-plane-24.png" />
                                        </image>
                                     </ImageView>
-                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE" onAction="#onvolsAdminButtonClick">
+                                    <Button mnemonicParsing="false" onAction="#onvolsAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -217,7 +206,7 @@
                                           <Image url="@images/icons8-logout-24.png" />
                                        </image>
                                     </ImageView>
-                                    <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE" onAction="#onlogoutAdminButtonClick">
+                                    <Button mnemonicParsing="false" onAction="#onlogoutAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="WHITE">
                                        <font>
                                           <Font size="18.0" />
                                        </font>

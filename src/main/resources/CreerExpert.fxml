@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-
-<SplitPane dividerPositions="0.2399697199091597" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CreerExpertController">
+<SplitPane dividerPositions="0.2399697199091597" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CreerExpertController">
    <items>
       <AnchorPane prefHeight="698.0" prefWidth="250.0" style="-fx-background-color: #0d47a1;">
          <children>
@@ -30,7 +19,7 @@
                               <Image url="@images/acceuil.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE" onAction="#onAccueilAdminButtonClick">
+                        <Button mnemonicParsing="false" onAction="#onAccueilAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Admin" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -50,7 +39,7 @@
                               <Image url="@images/icons8-user-24.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="WHITE" onAction="#onUserAdminButtonClick">
+                        <Button mnemonicParsing="false" onAction="#onUserAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="       Utilistateur" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -72,7 +61,7 @@
                                     <Image url="@images/icons8-dossier-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE" onAction="#ondossierAdminButtonClick">
+                              <Button mnemonicParsing="false" onAction="#ondossierAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dossier" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -92,7 +81,7 @@
                                     <Image url="@images/icons8-university-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE" onAction="#onuniversiteAdminButtonClick">
+                              <Button mnemonicParsing="false" onAction="#onuniversiteAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="    Université" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -112,7 +101,7 @@
                                     <Image url="@images/icons8-video-call-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE" onAction="#onentretienAdminButtonClick">
+                              <Button mnemonicParsing="false" onAction="#onentretienAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="   Entretien" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -132,7 +121,7 @@
                                     <Image url="@images/icons8-event-accepted-32.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE" onAction="#onevenementAdminButtonClick">
+                              <Button mnemonicParsing="false" onAction="#onevenementAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Événement" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -155,7 +144,7 @@
                                     <Insets left="4.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE" onAction="#onhebergementAdminButtonClick">
+                              <Button mnemonicParsing="false" onAction="#onhebergementAdminButtonClick" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="         Hébergement" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -175,7 +164,7 @@
                                     <Image url="@images/restaurant.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE" onAction="#onrestaurantAdminButtonClick">
+                              <Button mnemonicParsing="false" onAction="#onrestaurantAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="      Restaurant" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -195,7 +184,7 @@
                                     <Image url="@images/icons8-plane-24.png" />
                                  </image>
                               </ImageView>
-                              <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE" onAction="#onvolsAdminButtonClick">
+                              <Button mnemonicParsing="false" onAction="#onvolsAdminButtonClick" prefHeight="40.0" prefWidth="165.0" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Vols" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -272,6 +261,18 @@
                       
                       <Label style="-fx-text-fill: white; -fx-font-size: 14px;" text="Années d'expérience:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
                       <TextField fx:id="experienceField" style="-fx-background-color: white; -fx-prompt-text-fill: gray;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
                   </GridPane>
                   
                   <HBox alignment="CENTER" spacing="20">
@@ -281,10 +282,10 @@
               </VBox>
 
               <!-- Right side - Photo upload -->
-              <VBox alignment="CENTER" spacing="20" style="-fx-background-color: #1a237e; -fx-background-radius: 10; -fx-padding: 20;" prefWidth="300">
+              <VBox alignment="CENTER" prefWidth="300" spacing="20" style="-fx-background-color: #1a237e; -fx-background-radius: 10; -fx-padding: 20;">
                   <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" text="Photo de l'expert" />
                   
-                  <ImageView fx:id="photoPreview" fitHeight="200" fitWidth="200" style="-fx-background-color: white; -fx-background-radius: 100;" preserveRatio="true" />
+                  <ImageView fx:id="photoPreview" fitHeight="200" fitWidth="200" preserveRatio="true" style="-fx-background-color: white; -fx-background-radius: 100;" />
                   
                   <Button fx:id="uploadPhotoButton" onAction="#uploadPhoto" style="-fx-background-color: #0d47a1; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 16;" text="Ajouter photo" />
                   
